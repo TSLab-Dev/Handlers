@@ -1,0 +1,54 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>	
+    <Company>TSLab</Company>
+    <Product>TSLab</Product>
+    <Authors>TSLab</Authors>
+    <AssemblyName>TSLab.Script.Handlers</AssemblyName>
+    <RootNamespace>TSLab.Script.Handlers</RootNamespace>
+    <AssemblyVersion>2.0.0.0</AssemblyVersion>
+    <FileVersion>2.0.0.0</FileVersion>
+    <Version>2.0.0</Version>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <WarningsAsErrors />
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Options\IvChartTrading.cs" />
+    <Compile Remove="Options\MarketMaker.cs" />
+    <Compile Remove="Options\SubtractVolatilities.cs" />
+    <Compile Remove="Options\TestSecurityDescription.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="StyleCop.Cache" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Utility\Utility.csproj" />
+    <ProjectReference Include="..\DataSourceCommon\DataSourceCommon.csproj" />
+    <ProjectReference Include="..\ScriptCommon\ScriptCommon.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Options\IvChartTrading.cs" />
+    <None Include="Options\MarketMaker.cs" />
+    <None Include="Options\SubtractVolatilities.cs" />
+    <None Include="Options\TestSecurityDescription.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Common.Logging" Version="3.4.1" />
+    <PackageReference Include="Common.Logging.Core" Version="3.4.1" />
+  </ItemGroup>
+
+</Project>
