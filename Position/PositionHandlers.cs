@@ -772,7 +772,7 @@ namespace TSLab.Script.Handlers
                 if (changeInfo.EntryBarNum >= 0)
                     return changeInfo.EntryBarNum;
             }
-            return -1;
+            return position.EntryBarNum;
         }
     }
 
@@ -826,7 +826,7 @@ namespace TSLab.Script.Handlers
                 if (changeInfo.EntryBarNum >= 0)
                     return changeInfo.EntryPrice;
             }
-            return 0;
+            return position.EntryPrice;
         }
     }
 
@@ -853,7 +853,7 @@ namespace TSLab.Script.Handlers
                 if (changeInfo.ExitBarNum >= 0)
                     return changeInfo.ExitPrice;
             }
-            return 0;
+            return position.ExitPrice;
         }
     }
 

@@ -11,10 +11,6 @@ using TSLab.Utils;
 
 namespace TSLab.Script.Handlers.Options
 {
-    /// <summary>
-    /// \~english Save any indicator to Global Cache
-    /// \~russian Сохранить значение любого индикатора в Глобальный Кеш
-    /// </summary>
     [HandlerCategory(HandlerCategories.OptionsIndicators)]
     [HelperName("Save to Global Cache", Language = Constants.En)]
     [HelperName("Сохранить в Глобальный Кеш", Language = Constants.Ru)]
@@ -30,46 +26,29 @@ namespace TSLab.Script.Handlers.Options
         /// <summary>Префикс ключей для организации обмена данными через Глобальный Кеш</summary>
         public const string MqId = "GCMQ";
 
-        ///// <summary>Сохранять значения в файл на диске для повторного использования между перезапусками ТСЛаб?</summary>
-        //private bool m_saveToStorage = false;
-
         #region Parameters
-        /// <summary>
-        /// \~english Handler should repeat last known value to avoid further logic errors
-        /// \~russian При true будет находить и использовать последнее известное значение
-        /// </summary>
+        
         [HelperName("Repeat last value", Constants.En)]
         [HelperName("Повтор значения", Constants.Ru)]
         [Description("При true будет находить и использовать последнее известное значение")]
         [HelperDescription("Handler should repeat last known value to avoid further logic errors", Language = Constants.En)]
         [HandlerParameter(true, NotOptimized = false, IsVisibleInBlock = true, Default = "false")]
         public bool RepeatLastValue { get; set; }
-        
-        ///// <summary>
-        ///// \~english Save to HDD to use indicator values across different TSLab sessions?
-        ///// \~russian Сохранять значения в файл на диске для повторного использования между перезапусками ТСЛаб?
-        ///// </summary>
-        //[HelperName("Save to disk?", Constants.En)]
-        //[HelperName("Сохранять на диск?", Constants.Ru)]
-        //[Description("Сохранять значения в файл на диске для повторного использования между перезапусками ТСЛаб?")]
-        //[HelperDescription("Save to HDD to use indicator values across different TSLab sessions?", Language = Constants.En)]
-        //[HandlerParameter(NotOptimized = false, IsVisibleInBlock = true, Default = "false")]
-        //public bool SaveToStorage
-        //{
-        //    get { return m_saveToStorage; }
-        //    set { m_saveToStorage = value; }
-        //}
 
-        /// <summary>
-        /// \~english Unique indicator name to be used to store values in Global Cache
-        /// \~russian Уникальное название индикатора для целей сохранения в Глобальный Кеш
-        /// </summary>
+        [HelperName("Save to disk", Constants.En)]
+        [HelperName("Сохранять на диск", Constants.Ru)]
+        [Description("Сохранять значения в файл на диске для повторного использования между перезапусками программы")]
+        [HelperDescription("Save to HDD to use indicator values across different program sessions", Language = Constants.En)]
+        [HandlerParameter(NotOptimized = false, IsVisibleInBlock = true, Default = "true")]
+        public bool SaveToStorage { get; set; }
+
         [HelperName("Values name", Constants.En)]
         [HelperName("Название значений", Constants.Ru)]
         [Description("Уникальное название индикатора для целей сохранения в Глобальный Кеш")]
         [HelperDescription("Unique indicator name to be used to store values in Global Cache", Language = Constants.En)]
         [HandlerParameter(true, NotOptimized = false, IsVisibleInBlock = true, Default = "")]
         public string ValuesName { get; set; }
+
         #endregion Parameters
 
         protected override bool IsValid(double val)
@@ -145,8 +124,8 @@ namespace TSLab.Script.Handlers.Options
             }
 
             // По факту передаю управление в метод CommonExecute
-            IList<double> updatedValues = CommonStreamExecute(m_variableId + "_" + cashKey, cashKey,
-                sec, RepeatLastValue, true, true, new object[] { indicValues });
+            var updatedValues = CommonStreamExecute(m_variableId + "_" + cashKey, cashKey,
+                sec, RepeatLastValue, true, true, new object[] { indicValues }, SaveToStorage, true);
 
             //if (basePrices.Count > 0)
             //{
@@ -242,7 +221,8 @@ namespace TSLab.Script.Handlers.Options
             }
 
             DateTime now = sec.Bars[barNum].Date;
-            double updatedIndicValue = CommonExecute(cashKey, now, RepeatLastValue, true, true, barNum, new object[] { indicValue });
+            double updatedIndicValue = CommonExecute(cashKey, now, RepeatLastValue, true, true, barNum, 
+                new object[] { indicValue }, SaveToStorage, true);
 
             //// [2017-06-28] Отключаю вывод отладочных сообщений в лог агента.
             //if (barNum >= 0.9 * len)

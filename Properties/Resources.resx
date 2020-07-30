@@ -4318,66 +4318,86 @@
   </data>
   <data name="BidAskMarketPosition.Name" xml:space="preserve">
     <value>Buy/Sell cluster</value>
+    <comment>Кластер пок./прод.</comment>
   </data>
   <data name="DeltaMarketPosition.Name" xml:space="preserve">
     <value>Delta cluster</value>
+    <comment>Дельта кластер</comment>
   </data>
   <data name="AllTimeTradeStatisticsHandler.Name" xml:space="preserve">
     <value>All Time Trade Statistics</value>
+    <comment>Торговая статистика за всё время</comment>
   </data>
   <data name="LastContractsTradeStatisticsHandler.Name" xml:space="preserve">
     <value>Last Contracts Trade Statistics</value>
+    <comment>Торговая статистика последних контрактов</comment>
   </data>
   <data name="LastTradeStatisticsHandler.Name" xml:space="preserve">
     <value>Last Trade Statistics</value>
+    <comment>Последняя торговая статистика</comment>
   </data>
   <data name="TradeStatisticsExtremumPriceHandler.Name" xml:space="preserve">
     <value>Trade Statistics Extremum Price</value>
+    <comment>Экстремальная цена торговой статистики</comment>
   </data>
   <data name="TradeStatisticsExtendedExtremumPriceHandler.Name" xml:space="preserve">
     <value>Trade Statistics Extended Extremum Price 1</value>
+    <comment>Расширенная экстремальная цена торговой статистики 1</comment>
   </data>
   <data name="TradeStatisticsExtendedExtremumPriceHandler2.Name" xml:space="preserve">
     <value>Trade Statistics Extended Extremum Price 2</value>
+    <comment>Расширенная экстремальная цена торговой статистики 2</comment>
   </data>
   <data name="TradeStatisticsExtremumValueHandler.Name" xml:space="preserve">
     <value>Trade Statistics Extremum Value</value>
+    <comment>Экстремальное значение торговой статистики</comment>
   </data>
   <data name="TradeStatisticsHandler.Name" xml:space="preserve">
     <value>Trade Statistics</value>
+    <comment>Торговая статистика</comment>
   </data>
   <data name="TradeStatisticsLowerEdgeHandler.Name" xml:space="preserve">
     <value>Trade Statistics Lower Edge</value>
+    <comment>Нижний уровень торговой статистики</comment>
   </data>
   <data name="TradeStatisticsUpperEdgeHandler.Name" xml:space="preserve">
     <value>Trade Statistics Upper Edge</value>
+    <comment>Верхний уровень торговой статистики</comment>
   </data>
   <data name="TradeStatisticsBarsCountHandler.Name" xml:space="preserve">
     <value>Trade Statistics Strings Count</value>
+    <comment>Количество строк торговой статистики</comment>
   </data>
   <data name="TradeStatisticsBarsSumHandler.Name" xml:space="preserve">
     <value>Trade Statistics Strings Sum</value>
+    <comment>Сумма строк торговой статистики</comment>
   </data>
   <data name="TradeStatisticsExtendedBarsCountHandler.Name" xml:space="preserve">
     <value>Trade Statistics Extended Strings Count 1</value>
+    <comment>Расширенное количество строк торговой статистики 1</comment>
   </data>
   <data name="TradeStatisticsExtendedBarsSumHandler.Name" xml:space="preserve">
     <value>Trade Statistics Extended Strings Sum 1</value>
+    <comment>Расширенная сумма строк торговой статистики 1</comment>
   </data>
   <data name="TradeStatisticsExtendedBarsCountHandler2.Name" xml:space="preserve">
     <value>Trade Statistics Extended Strings Count 2</value>
+    <comment>Расширенное количество строк торговой статистики 2</comment>
   </data>
   <data name="TradeStatisticsExtendedBarsSumHandler2.Name" xml:space="preserve">
     <value>Trade Statistics Extended Strings Sum 2</value>
+    <comment>Расширенная сумма строк торговой статистики 1</comment>
   </data>
   <data name="TradeStatisticsPriceValueHandler.Name" xml:space="preserve">
     <value>Trade Statistics Price Value</value>
+    <comment>Значение цены торговой статистики</comment>
   </data>
   <data name="VolumeForPeriodHandler.Name" xml:space="preserve">
     <value>Volume for period</value>
   </data>
   <data name="AlignedSecurityHandler.Name" xml:space="preserve">
     <value>Aligned instrument</value>
+    <comment>Выровненный инструмент</comment>
   </data>
   <data name="BuysHandler.Name" xml:space="preserve">
     <value>Buys</value>
@@ -4927,6 +4947,14 @@
     <value>Handler should repeat last known value to avoid further logic errors</value>
     <comment>При true будет находить и использовать последнее известное значение</comment>
   </data>
+  <data name="SaveToGlobalCache.SaveToStorage.Name" xml:space="preserve">
+    <value>Save to disk</value>
+    <comment>Сохранять на диск</comment>
+  </data>
+  <data name="SaveToGlobalCache.SaveToStorage.Description" xml:space="preserve">
+    <value>Save to HDD to use indicator values across different program sessions</value>
+    <comment>Сохранять значения в файл на диске для повторного использования между перезапусками программы</comment>
+  </data>
   <data name="SaveToGlobalCache.ValuesName.Name" xml:space="preserve">
     <value>Values name</value>
     <comment>Название значений</comment>
@@ -4950,6 +4978,14 @@
   <data name="LoadFromGlobalCache.RepeatLastValue.Description" xml:space="preserve">
     <value>Handler should repeat last known value to avoid further logic errors</value>
     <comment>При true будет находить и использовать последнее известное значение</comment>
+  </data>
+  <data name="LoadFromGlobalCache.LoadFromStorage.Name" xml:space="preserve">
+    <value>Load from disk</value>
+    <comment>Загружать с диска</comment>
+  </data>
+  <data name="LoadFromGlobalCache.LoadFromStorage.Description" xml:space="preserve">
+    <value>Load from HDD to use indicator values across different program sessions</value>
+    <comment>Загружать значения из файла на диске для повторного использования между перезапусками программы</comment>
   </data>
   <data name="LoadFromGlobalCache.AgentName.Name" xml:space="preserve">
     <value>Agent name</value>
@@ -5102,7 +5138,7 @@
     <value>Sum a few input values (from 2 to 6 inputs)</value>
   </data>
   <data name="And.Description" xml:space="preserve">
-    <value>Logical conjunction of a few input values (from 2 to 6 inputs). Output is TRUE only if all inputs are TRUE at the same time.</value>
+    <value>Logical conjunction of a few input values (from 2 to 30 inputs). Output is TRUE only if all inputs are TRUE at the same time.</value>
   </data>
   <data name="Ask.Description" xml:space="preserve">
     <value>Best sell price recorded at the end of every bar (if available).</value>
@@ -5276,7 +5312,7 @@
     <value>Theoretical option volatility received from the Exchange. This value is also shown at the Quotes window.</value>
   </data>
   <data name="Or.Description" xml:space="preserve">
-    <value>Logical disjunction of a few input values (from 2 to 6 inputs). Output is TRUE if at least one input is TRUE.</value>
+    <value>Logical disjunction of a few input values (from 2 to 30 inputs). Output is TRUE if at least one input is TRUE.</value>
   </data>
   <data name="ResettableControlledBoolConst.Description" xml:space="preserve">
     <value>Resettable controlled boolean constant (switch). If input is TRUE the result is taken from a field 'Value', otherwise the result is taken from a field 'Default value'. Second input determines 'Value'. If it contains more TRUE, then 'Value' is set to 'Default value'.</value>
@@ -5726,10 +5762,10 @@
     <value>Text (string)</value>
   </data>
   <data name="AlignedSecurityHandler.Description" xml:space="preserve">
-    <value />
+    <value>The 'Aligned Instrument’ block allows to display the same width histograms regardless of the actual number of candles in the chart.</value>
   </data>
   <data name="AllTimeTradeStatisticsHandler.Description" xml:space="preserve">
-    <value />
+    <value>The 'All Time Trade Statistics' block creates a histogram based on the entire available time interval. [br]The histogram can be built on the number of trades, the volume of trades, the buy quantity, the sell quantity, the difference between the buy and sell quantity and the relative difference between the buy and sell quantity, % (see the 'View' parameter).</value>
   </data>
   <data name="BidAskMarketPosition.Description" xml:space="preserve">
     <value>Bid/Ask footprint shows the number of purchases and sales separately for every price step or price range, depending on value of a 'Combine Steps' parameter. If there are more purchases, the line turns green, if less, the line turns red. In case the numbers of purchases and sales are equal, the line turns yellow.</value>
@@ -5750,55 +5786,55 @@
     <value>БЕЗ ОПИСАНИЯ (кубик виден только в девелоперской версии)</value>
   </data>
   <data name="LastContractsTradeStatisticsHandler.Description" xml:space="preserve">
-    <value />
+    <value>The 'Last Contracts Trade Statistics' block creates a histogram for the specified number of -last contracts.</value>
   </data>
   <data name="LastTradeStatisticsHandler.Description" xml:space="preserve">
-    <value />
+    <value>The 'Latest Trade Statistics' block creates a histogram for the specified time interval.</value>
   </data>
   <data name="SellsHandler.Description" xml:space="preserve">
     <value>A handler calculates statistics (amount or total volume) of a short trades</value>
   </data>
   <data name="TradeStatisticsBarsCountHandler.Description" xml:space="preserve">
-    <value />
+    <value>The 'Trade Statistics Strings Count' block gives the number of lines of trade statistics corresponding to the selected filter.</value>
   </data>
   <data name="TradeStatisticsBarsSumHandler.Description" xml:space="preserve">
-    <value />
+    <value>The 'Trade Statistics Strings Sum' block gives a value based on the sum of the values of rows of trade statistics.</value>
   </data>
   <data name="TradeStatisticsExtendedBarsCountHandler.Description" xml:space="preserve">
-    <value />
+    <value>The 'Trade Statistics Extended Strings Count 1' block displays the number of lines of trade statistics corresponding to the selected filter.</value>
   </data>
   <data name="TradeStatisticsExtendedBarsCountHandler2.Description" xml:space="preserve">
-    <value />
+    <value>The 'Trade Statistics Extended Strings Count 2' block displays the number of lines of trade statistics corresponding to the selected filter.</value>
   </data>
   <data name="TradeStatisticsExtendedBarsSumHandler.Description" xml:space="preserve">
-    <value />
+    <value>The 'Trade Statistics Extended Strings Sum 1' block gives a value based on the sum of the values of lines of trade statistics.</value>
   </data>
   <data name="TradeStatisticsExtendedBarsSumHandler2.Description" xml:space="preserve">
-    <value />
+    <value>The 'Trade Statistics Extended Strings Sum 2' block gives a value based on the sum of the values of lines of trade statistics.</value>
   </data>
   <data name="TradeStatisticsExtendedExtremumPriceHandler.Description" xml:space="preserve">
-    <value />
+    <value>The 'Trade Statistics Extended Extremum Price 1' block shows the maximum value of trade statistics at the extremum price.</value>
   </data>
   <data name="TradeStatisticsExtendedExtremumPriceHandler2.Description" xml:space="preserve">
-    <value />
+    <value>The 'Trade Statistics Extended Extremum Price 2' block shows the price at which the maximum value of the histogram was reached.</value>
   </data>
   <data name="TradeStatisticsExtremumPriceHandler.Description" xml:space="preserve">
-    <value />
+    <value>The 'Trade Statistics Extremum Price' block shows the price at which the maximum value of the histogram was reached.</value>
   </data>
   <data name="TradeStatisticsExtremumValueHandler.Description" xml:space="preserve">
-    <value />
+    <value>The 'Trade Statistics Extremum Value' block shows the maximum value of trade statistics at an extreme price.</value>
   </data>
   <data name="TradeStatisticsHandler.Description" xml:space="preserve">
-    <value />
+    <value>The 'Trade Statistics' block creates a histogram for the selected timeframe (time interval). [br]The histogram can be built on the number of trades , the volume of trades, the buy quantity, the sell quantity, the difference between the buy and sell quantity and the relative difference between the buy and sell quantity, % (see the 'View' parameter).</value>
   </data>
   <data name="TradeStatisticsLowerEdgeHandler.Description" xml:space="preserve">
-    <value />
+    <value>The 'Trade Statistics Lower Edge' block allows you to set the cut-off data percentage for the lower level. This block is connected to the block 'Trading statistics'.</value>
   </data>
   <data name="TradeStatisticsPriceValueHandler.Description" xml:space="preserve">
-    <value />
+    <value>The 'Trade Statistics Price Value' block creates a histogram based on the selected price. Used in conjunction with the block 'Trading statistics'.</value>
   </data>
   <data name="TradeStatisticsUpperEdgeHandler.Description" xml:space="preserve">
-    <value />
+    <value>The 'Trade Statistics Upper Level' block allows you to set the percentage of data cutoff at the upper level. This block is connected to the block 'Trading statistics'.</value>
   </data>
   <data name="VolumeForPeriodHandler.Description" xml:space="preserve">
     <value>Volume for period (total or average)</value>
@@ -6962,6 +6998,12 @@
   <data name="TradeStatisticsHandler.TimeFrameKind.Description" xml:space="preserve">
     <value>Time frame kind (from now to past, from midnight to now).</value>
   </data>
+  <data name="TradeStatisticsHandler.StartTime.Name" xml:space="preserve">
+    <value>Start time</value>
+  </data>
+  <data name="TradeStatisticsHandler.StartTime.Description" xml:space="preserve">
+    <value>Start building a profile.</value>
+  </data>
   <data name="TradeStatisticsHandler.TimeFrame.Name" xml:space="preserve">
     <value>Timeframe</value>
   </data>
@@ -7041,10 +7083,10 @@
     <value>Direction</value>
   </data>
   <data name="BarsCountForValuesSumHandler.Name" xml:space="preserve">
-    <value>Bars count for values sum</value>
+    <value>Number of bars for the sum of values</value>
   </data>
   <data name="BarsCountForValuesSumHandler.Description" xml:space="preserve">
-    <value>Bars count for values sum</value>
+    <value>Number of bars for the sum of values</value>
   </data>
   <data name="BarsCountForValuesSumHandler.ValuesSum.Name" xml:space="preserve">
     <value>Values sum</value>
@@ -7207,5 +7249,32 @@
   </data>
   <data name="EventKind.Name" xml:space="preserve">
     <value>Event kind</value>
+  </data>
+  <data name="RandomHandler.Name" xml:space="preserve">
+    <value>Random number</value>
+  </data>
+  <data name="RandomHandler.Description" xml:space="preserve">
+    <value>Random number in the specified range.</value>
+  </data>
+  <data name="RandomHandler.MinValue.Name" xml:space="preserve">
+    <value>Min value</value>
+  </data>
+  <data name="RandomHandler.MaxValue.Name" xml:space="preserve">
+    <value>Max value</value>
+  </data>
+  <data name="RandomHandler.Precision.Name" xml:space="preserve">
+    <value>Precision</value>
+  </data>
+  <data name="RandomHandler.Precision.Description" xml:space="preserve">
+    <value>The number of decimal places.</value>
+  </data>
+  <data name="RandomHandler.Seed.Name" xml:space="preserve">
+    <value>Seed</value>
+  </data>
+  <data name="RandomHandler.Seed.Description" xml:space="preserve">
+    <value>A number used to calculate a starting value for the pseudo-random number sequence. (0 - not set).</value>
+  </data>
+  <data name="RandomHandler.SaveHistory.Name" xml:space="preserve">
+    <value>Save history</value>
   </data>
 </root>

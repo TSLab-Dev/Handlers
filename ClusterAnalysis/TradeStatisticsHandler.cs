@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using TSLab.DataSource;
 using TSLab.Script.Handlers.Options;
+using TSLab.Script.Optimization;
 using TSLab.Utils;
 
 namespace TSLab.Script.Handlers
@@ -52,6 +53,13 @@ namespace TSLab.Script.Handlers
         [HandlerParameter(true, nameof(TimeFrameUnit.Hour))]
         public TimeFrameUnit TimeFrameUnit { get; set; }
 
+        [HelperName("Start time", Constants.En)]
+        [HelperName("Время начала", Constants.Ru)]
+        [Description("Начало построения профиля")]
+        [HelperDescription("Start building a profile", Constants.En)]
+        [HandlerParameter(true, "0001-01-01")]
+        public DateTime StartTime { get; set; }
+
         [HandlerParameter(true, "false", NotOptimized = true)]
         public bool UseTopTimeFrame { get; set; }
 
@@ -63,19 +71,24 @@ namespace TSLab.Script.Handlers
 
         protected override ITradeStatisticsWithKind InternalExecute(ISecurity security)
         {
-            var timeFrame = TimeFrameFactory.Create(TimeFrame, TimeFrameUnit);
+            var interval = TimeFrameFactory.GetInterval(TimeFrame, TimeFrameUnit);
             int topTimeFrameNumber;
             TimeFrameUnit topTimeFrameUnit;
-            TimeSpan topTimeFrame;
+            Interval topInterval;
 
             if (UseTopTimeFrame)
             {
                 topTimeFrameNumber = TopTimeFrame;
                 topTimeFrameUnit = TopTimeFrameUnit;
-                topTimeFrame = TimeFrameFactory.Create(topTimeFrameNumber, topTimeFrameUnit);
+                topInterval = TimeFrameFactory.GetInterval(topTimeFrameNumber, topTimeFrameUnit);
 
-                if (topTimeFrame.Ticks % timeFrame.Ticks != 0)
-                    throw new InvalidOperationException(string.Format(RM.GetString("TopTimeFrameMustBeDivisableByTimeFrame"), ToString(TopTimeFrame, topTimeFrameUnit), ToString(TimeFrame, TimeFrameUnit)));
+                if (topInterval.ToSeconds() % interval.ToSeconds() != 0
+                    && !(topInterval.Base == DataIntervals.MONTHS && interval.Base == DataIntervals.WEEKS))
+                {
+                    throw new InvalidOperationException(string.Format(
+                        RM.GetString("TopTimeFrameMustBeDivisableByTimeFrame"),
+                        ToString(TopTimeFrame, topTimeFrameUnit), ToString(TimeFrame, TimeFrameUnit)));
+                }
             }
             else
             {
@@ -94,17 +107,31 @@ namespace TSLab.Script.Handlers
                     case TimeFrameUnit.Day:
                         topTimeFrameNumber = (int)maxTimeSpan.TotalDays;
                         break;
+                    case TimeFrameUnit.Week:
+                        topTimeFrameNumber = (int)maxTimeSpan.TotalDays / 7;
+                        break;
+                    case TimeFrameUnit.Month:
+                        topTimeFrameNumber = (int)maxTimeSpan.TotalDays / 30;
+                        break;
                     default:
-                        throw new InvalidEnumArgumentException(nameof(TimeFrameUnit), (int)TimeFrameUnit, TimeFrameUnit.GetType());
+                        throw new InvalidEnumArgumentException(nameof(TimeFrameUnit), (int)TimeFrameUnit,
+                            TimeFrameUnit.GetType());
                 }
+
                 topTimeFrameNumber = topTimeFrameNumber / TimeFrame * TimeFrame;
                 topTimeFrameUnit = TimeFrameUnit;
-                topTimeFrame = TimeFrameFactory.Create(topTimeFrameNumber, topTimeFrameUnit);
+                topInterval = TimeFrameFactory.GetInterval(topTimeFrameNumber, topTimeFrameUnit);
             }
+
             var runTime = Context.Runtime;
-            var id = runTime != null ? string.Join(".", runTime.TradeName, runTime.IsAgentMode, VariableId) : VariableId;
-            var stateId = string.Join(".", security.Symbol, security.Interval, security.IsAligned, CombinePricesCount, TimeFrameKind, TimeFrame, TimeFrameUnit, topTimeFrameNumber, topTimeFrameUnit);
-            var tradeStatistics = Context.GetTradeStatistics(stateId, () => new TradeStatistics(id, stateId, GetTradeHistogramsCache(security), TimeFrameKind, timeFrame, TimeFrameUnit, topTimeFrame));
+            var id = runTime != null
+                         ? string.Join(".", runTime.TradeName, runTime.IsAgentMode, VariableId)
+                         : VariableId;
+            var stateId = string.Join(".", security.Symbol, security.Interval, security.IsAligned, CombinePricesCount,
+                TimeFrameKind, TimeFrame, TimeFrameUnit, topTimeFrameNumber, topTimeFrameUnit);
+            var tradeStatistics = Context.GetTradeStatistics(stateId,
+                () => new TradeStatistics(id, stateId, GetTradeHistogramsCache(security), TimeFrameKind, TimeFrameUnit, 
+                    interval, topInterval, StartTime));
             return new TradeStatisticsWithKind(tradeStatistics, Kind, WidthPercent);
         }
 

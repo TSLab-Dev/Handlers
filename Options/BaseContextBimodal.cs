@@ -13,21 +13,22 @@ namespace TSLab.Script.Handlers.Options
     {
         // ReSharper disable once VirtualMemberNeverOverriden.Global
         protected virtual IList<T> CommonStreamExecute(string resultsCashKey, string historyCashKey, ISecurity sec,
-            bool repeatLastValue, bool printInMainLog, bool useGlobalCacheForHistory, params object[] args)
+            bool repeatLastValue, bool printInMainLog, bool useGlobalCacheForHistory, object[] args, 
+            bool fromStorage, bool updateHistory)
         {
             if (sec == null)
                 return new T[0];
 
-            int len = m_context.BarsCount;
+            var len = m_context.BarsCount;
             if (len <= 0)
                 return new T[0];
 
             // 1. Извлекаю лист с результатами из ЛОКАЛЬНОГО кеша (настройка useGlobalCacheForHistory только для передачи в функцию CommonExecute)
-            List<T> results = m_context.LoadObject(resultsCashKey) as List<T>;
+            var results = m_context.LoadObject(resultsCashKey, fromStorage) as List<T>;
             if (results == null)
             {
                 results = new List<T>();
-                m_context.StoreObject(resultsCashKey, results);
+                m_context.StoreObject(resultsCashKey, results, fromStorage);
             }
 
             // 3. Выравниваю список, если он слишком длинный
@@ -47,9 +48,9 @@ namespace TSLab.Script.Handlers.Options
             // 5. Пошел главный цикл
             for (int barNum = 0; barNum < len; barNum++)
             {
-                DateTime now = sec.Bars[barNum].Date;
-                T t = CommonExecute(historyCashKey, now, repeatLastValue, printInMainLog, useGlobalCacheForHistory, barNum, args);
-                results[barNum] = t;
+                var now = sec.Bars[barNum].Date;
+                results[barNum] = CommonExecute(historyCashKey, now, repeatLastValue, printInMainLog, useGlobalCacheForHistory, 
+                    barNum, args, fromStorage, updateHistory);
             }
 
             return results;

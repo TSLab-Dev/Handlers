@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using TSLab.DataSource;
 using TSLab.Utils;
 
+// ReSharper disable once CheckNamespace
 namespace TSLab.Script.Handlers
 {
     public sealed partial class AlignedSecurity : DisposeHelper, ISecurity
@@ -117,15 +119,17 @@ namespace TSLab.Script.Handlers
 
         public IDataSourceSecurity SecurityDescription { get; }
 
-        public FinInfo FinInfo => throw new NotSupportedException();
+        public FinInfo FinInfo => m_security.FinInfo;
 
         public IReadOnlyList<IDataBar> Bars
         {
+            [SuppressMessage("StyleCop.CSharp.ReadabilityRules", "SA1113:CommaMustBeOnSameLineAsPreviousParameter", Justification = "Reviewed.")]
             get
             {
                 if (m_bars != null)
                     return m_bars;
 
+                // ReSharper disable PossibleMultipleWriteAccessInDoubleCheckLocking
                 lock (this)
                 {
                     if (m_bars != null)
@@ -140,10 +144,10 @@ namespace TSLab.Script.Handlers
 
                     for (var i = 1; i < originalBars.Count; i++)
                         if (ReferenceEquals(originalBars[i - 1], originalBars[i]))
-                            throw new InvalidOperationException(string.Format("There are the same bars at {0} and {1} indexes.", i - 1, i));
+                            throw new InvalidOperationException($"There are the same bars at {i - 1} and {i} indexes.");
 
-                    DateTime firstDateTime, lastDateTime;
-                    TimeFrameUtils.GetFirstBounds(m_timeFrame, originalBars[0].Date, out firstDateTime, out lastDateTime);
+                    TimeFrameUtils.GetFirstBounds(m_timeFrame, originalBars[0].Date, out var firstDateTime,
+                        out var lastDateTime);
                     var interval = GetInterval();
                     var lastClose = double.NaN;
                     var alignedBars = new List<AlignedDataBar>(originalBars.Count);
@@ -158,9 +162,11 @@ namespace TSLab.Script.Handlers
                                 var originalBar = originalBars[j];
                                 while (dateTime < originalBar.Date)
                                 {
-                                    alignedBars.Add(new AlignedDataBar(new DataBar(dateTime, lastClose, lastClose, lastClose, lastClose), -1));
+                                    alignedBars.Add(new AlignedDataBar(
+                                        new DataBar(dateTime, lastClose, lastClose, lastClose, lastClose), -1));
                                     dateTime += interval;
                                 }
+
                                 alignedBars.Add(new AlignedDataBar(originalBar, j));
                                 dateTime = originalBar.Date + interval;
                                 lastClose = originalBar.Close;
@@ -169,20 +175,25 @@ namespace TSLab.Script.Handlers
                                 {
                                     while (dateTime < lastDateTime)
                                     {
-                                        alignedBars.Add(new AlignedDataBar(new DataBar(dateTime, lastClose, lastClose, lastClose, lastClose), -1));
+                                        alignedBars.Add(new AlignedDataBar(
+                                            new DataBar(dateTime, lastClose, lastClose, lastClose, lastClose), -1));
                                         dateTime += interval;
                                     }
                                 }
                             }
+
                             if (i == originalBars.Count)
                                 break;
 
-                            TimeFrameUtils.GetBounds(m_timeFrame, originalBars[i].Date, ref firstDateTime, ref lastDateTime);
+                            TimeFrameUtils.GetBounds(m_timeFrame, originalBars[i].Date, ref firstDateTime,
+                                ref lastDateTime);
                             firstIndex = i;
                         }
                     }
+
                     return m_bars = alignedBars;
                 }
+                // ReSharper restore PossibleMultipleWriteAccessInDoubleCheckLocking
             }
         }
 
@@ -192,6 +203,10 @@ namespace TSLab.Script.Handlers
         {
             switch (IntervalBase)
             {
+                case DataIntervals.MONTHS:
+                    return TimeSpan.FromDays(Interval * 30);
+                case DataIntervals.WEEKS:
+                    return TimeSpan.FromDays(Interval * 7);
                 case DataIntervals.DAYS:
                     return TimeSpan.FromDays(Interval);
                 case DataIntervals.MINUTE:
@@ -222,32 +237,38 @@ namespace TSLab.Script.Handlers
 
         public IReadOnlyList<ITrade> GetTrades(int firstBarIndex, int lastBarIndex)
         {
-            var bars = Bars.Skip(firstBarIndex).Take(lastBarIndex - firstBarIndex + 1).Cast<AlignedDataBar>().Where(item => item.OriginalIndex >= 0);
-            if (!bars.Any())
+            var bars = Bars.Skip(firstBarIndex).Take(lastBarIndex - firstBarIndex + 1).Cast<AlignedDataBar>()
+                           .Where(item => item.OriginalIndex >= 0);
+            var alignedDataBars = bars as AlignedDataBar[] ?? bars.ToArray();
+            if (!alignedDataBars.Any())
                 return s_emptyTrades;
 
-            var firstBar = bars.First();
-            var lastBar = bars.Last();
+            var firstBar = alignedDataBars.First();
+            var lastBar = alignedDataBars.Last();
             return m_security.GetTrades(firstBar.OriginalIndex, lastBar.OriginalIndex);
         }
 
         public int GetTradesCount(int firstBarIndex, int lastBarIndex)
         {
-            var bars = Bars.Skip(firstBarIndex).Take(lastBarIndex - firstBarIndex + 1).Cast<AlignedDataBar>().Where(item => item.OriginalIndex >= 0);
-            if (!bars.Any())
+            var bars = Bars.Skip(firstBarIndex).Take(lastBarIndex - firstBarIndex + 1).Cast<AlignedDataBar>()
+                           .Where(item => item.OriginalIndex >= 0);
+            var alignedDataBars = bars as AlignedDataBar[] ?? bars.ToArray();
+            if (!alignedDataBars.Any())
                 return 0;
 
-            var firstBar = bars.First();
-            var lastBar = bars.Last();
+            var firstBar = alignedDataBars.First();
+            var lastBar = alignedDataBars.Last();
             return m_security.GetTradesCount(firstBar.OriginalIndex, lastBar.OriginalIndex);
         }
 
         public IReadOnlyList<IReadOnlyList<ITrade>> GetTradesPerBar(int firstBarIndex, int lastBarIndex)
         {
             var count = lastBarIndex - firstBarIndex + 1;
-            var bars = Bars.Skip(firstBarIndex).Take(count).Cast<AlignedDataBar>().Where(item => item.OriginalIndex >= 0);
+            var bars = Bars.Skip(firstBarIndex).Take(count).Cast<AlignedDataBar>()
+                           .Where(item => item.OriginalIndex >= 0);
 
-            if (!bars.Any())
+            var alignedDataBars = bars as AlignedDataBar[] ?? bars.ToArray();
+            if (!alignedDataBars.Any())
             {
                 var emptyTradesPerBar = new IReadOnlyList<Trade>[count];
                 for (var i = 0; i < count; i++)
@@ -255,8 +276,9 @@ namespace TSLab.Script.Handlers
 
                 return emptyTradesPerBar;
             }
-            var firstBar = bars.First();
-            var lastBar = bars.Last();
+
+            var firstBar = alignedDataBars.First();
+            var lastBar = alignedDataBars.Last();
             var originalTradesPerBar = m_security.GetTradesPerBar(firstBar.OriginalIndex, lastBar.OriginalIndex);
 
             if (firstBarIndex == firstBar.OriginalIndex && lastBarIndex == lastBar.OriginalIndex)
@@ -266,8 +288,11 @@ namespace TSLab.Script.Handlers
             for (var i = firstBarIndex; i <= lastBarIndex; i++)
             {
                 var barOriginalIndex = m_bars[i].OriginalIndex;
-                tradesPerBar[i - firstBarIndex] = barOriginalIndex >= 0 ? originalTradesPerBar[barOriginalIndex - firstBar.OriginalIndex] : s_emptyTrades;
+                tradesPerBar[i - firstBarIndex] = barOriginalIndex >= 0
+                                                      ? originalTradesPerBar[barOriginalIndex - firstBar.OriginalIndex]
+                                                      : s_emptyTrades;
             }
+
             return tradesPerBar;
         }
 
@@ -287,11 +312,11 @@ namespace TSLab.Script.Handlers
 
         public DataIntervals IntervalBase => m_security.IntervalBase;
 
-        public double LotSize => throw new NotSupportedException();
+        public double LotSize => m_security.LotSize;
 
-        public double LotTick => throw new NotSupportedException();
+        public double LotTick => m_security.LotTick;
 
-        public double Margin => throw new NotSupportedException();
+        public double Margin => m_security.Margin;
 
         public double Tick => m_security.Tick;
 
@@ -342,7 +367,7 @@ namespace TSLab.Script.Handlers
 
         public void ConnectSecurityList(IGraphListBase list)
         {
-            throw new NotSupportedException();
+            m_security.ConnectSecurityList(list);
         }
 
         public void ConnectDoubleList(IGraphListBase list, IDoubleHandlerWithUpdate handler)
@@ -350,50 +375,37 @@ namespace TSLab.Script.Handlers
             m_security.ConnectDoubleList(list, handler);
         }
 
-        public double RoundPrice(double price)
-        {
-            throw new NotSupportedException();
-        }
+        public double RoundPrice(double price) => m_security.RoundPrice(price);
 
-        public double RoundShares(double shares)
-        {
-            throw new NotSupportedException();
-        }
+        public double RoundShares(double shares) => m_security.RoundShares(shares);
 
         public CommissionDelegate Commission
         {
-            set => throw new NotSupportedException();
-            get { throw new NotSupportedException(); }
+            set => m_security.Commission = value;
+            get => m_security.Commission;
         }
 
-        public ISecurity CloneAndReplaceBars(IEnumerable<IDataBar> newcandles)
-        {
-            throw new NotSupportedException();
-        }
+        public ISecurity CloneAndReplaceBars(IEnumerable<IDataBar> newCandles) =>
+            m_security.CloneAndReplaceBars(newCandles);
 
-        public ISecurity CloneAndReplaceBars(IReadOnlyList<IDataBar> newcandles)
-        {
-            throw new NotSupportedException();
-        }
+        public ISecurity CloneAndReplaceBars(IReadOnlyList<IDataBar> newCandles) =>
+            m_security.CloneAndReplaceBars(newCandles);
 
-        public string CacheName => throw new NotSupportedException();
+        public string CacheName => m_security.CacheName;
 
-        public void UpdateQueueData()
-        {
-            throw new NotSupportedException();
-        }
+        public void UpdateQueueData() => m_security.UpdateQueueData();
 
         public double InitDeposit
         {
-            set => throw new NotSupportedException();
-            get { throw new NotSupportedException(); }
+            set => m_security.InitDeposit = value;
+            get => m_security.InitDeposit;
         }
 
-        public bool IsRealtime => throw new NotSupportedException();
+        public bool IsRealtime => m_security.IsRealtime;
 
-        public bool IsPortfolioReady => throw new NotSupportedException();
+        public bool IsPortfolioReady => m_security.IsPortfolioReady;
 
-        public bool SimulatePositionOrdering => throw new NotSupportedException();
+        public bool SimulatePositionOrdering => m_security.SimulatePositionOrdering;
 
         public bool IsAligned => true;
     }

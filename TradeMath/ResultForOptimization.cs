@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 namespace TSLab.Script.Handlers
@@ -8,9 +7,11 @@ namespace TSLab.Script.Handlers
     [InputsCount(1)]
     [Input(0, TemplateTypes.DOUBLE)]
     [OutputsCount(0)]
-    public class ResultForOptimization : IOneSourceHandler, IValuesHandler, IStreamHandler, IDoubleInputs, IDoubleReturns, IContextUses
+    public class ResultForOptimization : IOneSourceHandler, IValuesHandler, IStreamHandler, IDoubleInputs, IDoubleReturns, 
+                                         IContextUses, INeedVariableVisual
     {
         public IContext Context { set; get; }
+        public string VariableVisual { get; set; }
 
         public IList<double> Execute(IList<double> values)
         {
@@ -19,13 +20,13 @@ namespace TSLab.Script.Handlers
             if (count < 1)
                 return new double[0];
 
-            Context.ScriptResult = values.Last();
+            Context.ScriptResults[VariableVisual] = values.Last();
             return values;
         }
 
         public double Execute(double value, int barNum)
         {
-            Context.ScriptResult = value;
+            Context.ScriptResults[VariableVisual] = value;
             return value;
         }
     }

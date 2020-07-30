@@ -364,9 +364,7 @@ namespace TSLab.Script.Handlers
             double profit = 0;
             double trades = Period;
 
-            foreach (var pos in source.Positions
-                                    .Where(pos => !pos.IsActiveForBar(barNum))
-                                    .OrderByDescending(pos => pos.ExitBarNum))
+            foreach (var pos in source.Positions.OrderByDescending(pos => pos.ExitBarNum))
             {
                 profit += getProfitFunc(pos, barNum);
                 if (--trades <= 0)

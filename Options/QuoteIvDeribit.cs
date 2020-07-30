@@ -504,6 +504,9 @@ namespace TSLab.Script.Handlers.Options
                         continue;
                     }
 
+                    // [07-07-2020] PROD-7879 - После сдвига и округления цены волатильность меняется. Её нужно вычислить заново.
+                    double actualSigma = FinMath.GetOptionSigma(futPx, pair.Strike, dT, theorOptPxDollars, oldInfo.RiskFreeRate, isCall);
+
                     IOptionStrike optStrike = isCall ? pair.Call : pair.Put;
                     ISecurity sec = optStrike.Security;
                     double totalQty = posMan.GetTotalQty(sec, m_context.BarsCount, TotalProfitAlgo.AllPositions, ivTarget.IsLong);
@@ -519,8 +522,8 @@ namespace TSLab.Script.Handlers.Options
                     if (targetQty > 0)
                     {
                         string note = String.Format(CultureInfo.InvariantCulture,
-                            "{0}; ActQty:{1}; Px:{2}; IV:{3:P2}",
-                            ivTarget.EntryNotes, targetQty, theorOptPxBitcoins, sigma);
+                            "{0}; ActQty:{1}; Px:{2}; IV:{3:P3}; F:{4}; dT:{5}",
+                            ivTarget.EntryNotes, targetQty, theorOptPxBitcoins, actualSigma, futPx, dT);
                         if (ivTarget.IsLong)
                         {
                             posMan.BuyAtPrice(m_context, sec, targetQty, theorOptPxBitcoins, ivTarget.EntrySignalName, note);

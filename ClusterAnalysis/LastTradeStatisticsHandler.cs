@@ -49,12 +49,21 @@ namespace TSLab.Script.Handlers
 
         protected override ITradeStatisticsWithKind InternalExecute(ISecurity security)
         {
-            var timeFrame = TimeFrameFactory.Create(TimeFrame, TimeFrameUnit);
-            var timeFrameShift = TimeFrameFactory.Create(TimeFrameShift, TimeFrameShiftUnit);
+            var interval = TimeFrameFactory.GetInterval(TimeFrame, TimeFrameUnit);
+            var intervalShift = TimeFrameShift > 0 ? TimeFrameFactory.GetInterval(TimeFrameShift, TimeFrameShiftUnit) : null;
+
             var runTime = Context.Runtime;
-            var id = runTime != null ? string.Join(".", runTime.TradeName, runTime.IsAgentMode, VariableId) : VariableId;
-            var stateId = string.Join(".", security.Symbol, security.Interval, security.IsAligned, CombinePricesCount, TimeFrameKind, TimeFrame, TimeFrameUnit, TimeFrameShift, TimeFrameShiftUnit);
-            var tradeStatistics = Context.GetTradeStatistics(stateId, () => new LastTradeStatistics(id, stateId, GetTradeHistogramsCache(security), TimeFrameKind, timeFrame, TimeFrameUnit, timeFrameShift, TimeFrameShiftUnit));
+            var id = runTime != null
+                         ? string.Join(".", runTime.TradeName, runTime.IsAgentMode, VariableId)
+                         : VariableId;
+
+            var stateId = string.Join(".", security.Symbol, security.Interval, security.IsAligned, CombinePricesCount,
+                TimeFrameKind, TimeFrame, TimeFrameUnit, TimeFrameShift, TimeFrameShiftUnit);
+
+            var tradeStatistics = Context.GetTradeStatistics(stateId,
+                () => new LastTradeStatistics(id, stateId, GetTradeHistogramsCache(security), TimeFrameKind, 
+                    TimeFrameUnit, TimeFrameShiftUnit, interval, intervalShift));
+
             return new TradeStatisticsWithKind(tradeStatistics, Kind, WidthPercent);
         }
     }

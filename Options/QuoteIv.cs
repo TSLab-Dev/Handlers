@@ -325,7 +325,7 @@ namespace TSLab.Script.Handlers.Options
                     double theorOptPx = FinMath.GetOptionPrice(futPx, pair.Strike, dT, sigma, oldInfo.RiskFreeRate, isCall);
                     theorOptPx += m_shiftPriceStep * pair.Tick;
                     theorOptPx = Math.Round(theorOptPx / pair.Tick) * pair.Tick;
-                    if (Double.IsNaN(theorOptPx) || (theorOptPx < Double.Epsilon))
+                    if (!DoubleUtil.IsPositive(theorOptPx))
                     {
                         //string msg = String.Format("[DEBUG:{0}] Invalid theorOptPx:{1} for strike:{2}", GetType().Name, theorOptPx, nodeInfo.Strike);
                         //m_context.Log(msg, MessageType.Warning, true);
@@ -336,7 +336,7 @@ namespace TSLab.Script.Handlers.Options
                     if (m_shiftPriceStep != 0)
                     {
                         sigma = FinMath.GetOptionSigma(futPx, pair.Strike, dT, theorOptPx, oldInfo.RiskFreeRate, isCall);
-                        if (Double.IsNaN(sigma) || (sigma < Double.Epsilon))
+                        if (!DoubleUtil.IsPositive(sigma))
                         {
                             //string msg = String.Format("[DEBUG:{0}] Invalid sigma:{1} for strike:{2}", GetType().Name, sigma, nodeInfo.Strike);
                             //m_context.Log(msg, MessageType.Warning, true);
@@ -483,6 +483,9 @@ namespace TSLab.Script.Handlers.Options
                         continue;
                     }
 
+                    // [07-07-2020] PROD-7879 - После сдвига и округления цены волатильность меняется. Её нужно вычислить заново.
+                    double actualSigma = FinMath.GetOptionSigma(futPx, k, dT, theorOptPx, oldInfo.RiskFreeRate, isCall);
+
                     IOptionStrike optStrike = isCall ? pair.Call : pair.Put;
                     ISecurity sec = optStrike.Security;
                     double totalQty = posMan.GetTotalQty(sec, m_context.BarsCount, TotalProfitAlgo.AllPositions, ivTarget.IsLong);
@@ -498,8 +501,8 @@ namespace TSLab.Script.Handlers.Options
                     if (targetQty > 0)
                     {
                         string note = String.Format(CultureInfo.InvariantCulture,
-                            "{0}; ActQty:{1}; Px:{2}; IV:{3:P2}",
-                            ivTarget.EntryNotes, targetQty, theorOptPx, sigma);
+                            "{0}; ActQty:{1}; Px:{2}; IV:{3:P3}; F:{4}; dT:{5}",
+                            ivTarget.EntryNotes, targetQty, theorOptPx, actualSigma, futPx, dT);
                         if (ivTarget.IsLong)
                         {
                             posMan.BuyAtPrice(m_context, sec, targetQty, theorOptPx, ivTarget.EntrySignalName, note);

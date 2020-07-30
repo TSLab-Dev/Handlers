@@ -80,13 +80,14 @@ namespace TSLab.Script.Handlers.Options
         /// <summary>
         /// Метод под флаг TemplateTypes.DOUBLE, чтобы подключаться к источнику
         /// </summary>
-        public void Execute(double source, int barNum)
+        public double Execute(double source, int barNum)
         {
             int len = ContextBarsCount;
             if (len - 1 <= barNum)
             {
                 m_result.Value = source;
             }
+            return m_result.Value;
         }
     }
 }

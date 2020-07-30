@@ -11,10 +11,6 @@ using TSLab.Utils;
 
 namespace TSLab.Script.Handlers.Options
 {
-    /// <summary>
-    /// \~english Load indicator from Global Cache
-    /// \~russian Загрузить значение индикатора из Глобального Кеша
-    /// </summary>
     [HandlerCategory(HandlerCategories.OptionsIndicators)]
     [HelperName("Load from Global Cache", Language = Constants.En)]
     [HelperName("Загрузить из Глобального Кеша", Language = Constants.Ru)]
@@ -26,14 +22,8 @@ namespace TSLab.Script.Handlers.Options
     [HelperDescription("Load indicator from Global Cache", Constants.En)]
     public class LoadFromGlobalCache : BaseContextBimodal<double>, ICustomListValues
     {
-        ///// <summary>Сохранять значения в файл на диске для повторного использования между перезапусками ТСЛаб?</summary>
-        //private bool m_saveToStorage = false;
-
         #region Parameters
-        /// <summary>
-        /// \~english Handler should repeat last known value to avoid further logic errors
-        /// \~russian При true будет находить и использовать последнее известное значение
-        /// </summary>
+        
         [HelperName("Repeat last value", Constants.En)]
         [HelperName("Повтор значения", Constants.Ru)]
         [Description("При true будет находить и использовать последнее известное значение")]
@@ -41,25 +31,13 @@ namespace TSLab.Script.Handlers.Options
         [HandlerParameter(true, NotOptimized = false, IsVisibleInBlock = true, Default = "false")]
         public bool RepeatLastValue { get; set; }
 
-        ///// <summary>
-        ///// \~english Save to HDD to use indicator values across different TSLab sessions?
-        ///// \~russian Сохранять значения в файл на диске для повторного использования между перезапусками ТСЛаб?
-        ///// </summary>
-        //[HelperName("Save to disk?", Constants.En)]
-        //[HelperName("Сохранять на диск?", Constants.Ru)]
-        //[Description("Сохранять значения в файл на диске для повторного использования между перезапусками ТСЛаб?")]
-        //[HelperDescription("Save to HDD to use indicator values across different TSLab sessions?", Language = Constants.En)]
-        //[HandlerParameter(NotOptimized = false, IsVisibleInBlock = true, Default = "false")]
-        //public bool SaveToStorage
-        //{
-        //    get { return m_saveToStorage; }
-        //    set { m_saveToStorage = value; }
-        //}
+        [HelperName("Load from disk", Constants.En)]
+        [HelperName("Загружать с диска", Constants.Ru)]
+        [Description("Загружать значения из файла на диске для повторного использования между перезапусками программы")]
+        [HelperDescription("Load from HDD to use indicator values across different program sessions", Language = Constants.En)]
+        [HandlerParameter(NotOptimized = false, IsVisibleInBlock = true, Default = "true")]
+        public bool LoadFromStorage { get; set; }
 
-        /// <summary>
-        /// \~english Name of the agent that writes to Global Cache
-        /// \~russian Имя агента, который пишет в Глобальный Кеш
-        /// </summary>
         [HelperName("Agent name", Constants.En)]
         [HelperName("Имя агента", Constants.Ru)]
         [Description("Имя агента, который пишет в Глобальный Кеш")]
@@ -67,10 +45,6 @@ namespace TSLab.Script.Handlers.Options
         [HandlerParameter(true, NotOptimized = false, IsVisibleInBlock = true, Default = "")]
         public string AgentName { get; set; }
 
-        /// <summary>
-        /// \~english Unique indicator name to be used to store values in Global Cache
-        /// \~russian Уникальное название индикатора для целей сохранения в Глобальный Кеш
-        /// </summary>
         [HelperName("Values name", Constants.En)]
         [HelperName("Название значений", Constants.Ru)]
         [Description("Уникальное название индикатора для целей сохранения в Глобальный Кеш")]
@@ -78,16 +52,13 @@ namespace TSLab.Script.Handlers.Options
         [HandlerParameter(true, NotOptimized = false, IsVisibleInBlock = true, Default = "")]
         public string ValuesName { get; set; }
 
-        /// <summary>
-        /// \~english Override security (use this ticker instead of handler's input)
-        /// \~russian Переопределить инструмент (использовать это значение вместо полученного на входе блока)
-        /// </summary>
         [HelperName("Override security", Constants.En)]
         [HelperName("Переопределить инструмент", Constants.Ru)]
         [Description("Переопределить инструмент (использовать это значение вместо полученного на входе блока)")]
         [HelperDescription("Override security (use this ticker instead of handler's input)", Language = Constants.En)]
         [HandlerParameter(true, NotOptimized = false, IsVisibleInBlock = true, Default = "")]
         public string OverrideSymbol { get; set; }
+
         #endregion Parameters
 
         protected override bool IsValid(double val)
@@ -166,7 +137,7 @@ namespace TSLab.Script.Handlers.Options
             }
 
             // Проверяю наличие в Глобальном Кеше объекта с указанным именем
-            object testObj = m_context.LoadGlobalObject(cashKey);
+            object testObj = m_context.LoadGlobalObject(cashKey, LoadFromStorage);
             var testDict = testObj as Dictionary<DateTime, double>;
             if (testDict == null)
             {
@@ -188,8 +159,8 @@ namespace TSLab.Script.Handlers.Options
             }
 
             // По факту передаю управление в метод CommonExecute
-            IList<double> updatedValues = CommonStreamExecute(m_variableId + "_" + cashKey, cashKey,
-                sec, RepeatLastValue, true, true, EmptyArrays.Object);
+            var updatedValues = CommonStreamExecute(m_variableId + "_" + cashKey, cashKey,
+                sec, RepeatLastValue, true, true, EmptyArrays.Object, LoadFromStorage, false);
 
             //if (basePrices.Count > 0)
             //{

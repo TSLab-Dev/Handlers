@@ -24,6 +24,11 @@ namespace TSLab.Script.Handlers.Options
     [HelperDescription("This block takes precalculated IvOnF from global cache.", Constants.En)]
     public class GlobalIvOnF : BaseContextHandler, IStreamHandler, ICustomListValues
     {
+        /// <summary>yyyy-MM-dd</summary>
+        private const string DateFormat = "yyyy-MM-dd";
+
+        private const string DefaultExpiration = "2015-03-16";
+
         private bool m_repeatLastIv;
         private bool m_rescaleTime = false;
         /// <summary>
@@ -32,6 +37,8 @@ namespace TSLab.Script.Handlers.Options
         private bool m_ignoreCacheError = false;
         private ExpiryMode m_expiryMode = ExpiryMode.FixedExpiry;
         private TimeRemainMode m_tRemainMode = TimeRemainMode.RtsTradingTime;
+
+        private string m_expDateStr = DefaultExpiration;
 
         #region Parameters
         /// <summary>
@@ -87,8 +94,26 @@ namespace TSLab.Script.Handlers.Options
         [Description("Дата экспирации в формате гггг-ММ-дд")]
         [HelperDescription("Expiration date (format yyyy-MM-dd)", Language = Constants.En)]
         [HandlerParameter(true, NotOptimized = false, IsVisibleInBlock = true,
-            Default = "2015-03-16")]
-        public string Expiry { get; set; }
+            Default = DefaultExpiration)]
+        public string Expiry
+        {
+            get { return m_expDateStr; }
+            set
+            {
+                if (String.IsNullOrWhiteSpace(value))
+                    return;
+
+                string s = value.Trim(Constants.CharsToTrimDateTimeParameters);
+                if (m_expDateStr.Equals(s, StringComparison.InvariantCultureIgnoreCase))
+                    return;
+
+                DateTime t;
+                if (DateTime.TryParseExact(s, DateFormat, CultureInfo.InvariantCulture, DateTimeStyles.AssumeLocal, out t))
+                {
+                    m_expDateStr = s;
+                }
+            }
+        }
 
         ///// <summary>
         ///// \~english Expiration date (format yyyy-MM-dd)

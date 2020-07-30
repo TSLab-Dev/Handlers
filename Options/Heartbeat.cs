@@ -153,7 +153,7 @@ namespace TSLab.Script.Handlers.Options
                 Context.Log(msg, MessageType.Info, false);
 
                 timerState = new CallState(m_id, Context, sec.SecurityDescription, m_onlyAtTradingSession);
-                var timer = new ThreadingTimerProfiler(Recalculate, timerState, m_delayMs, Timeout.Infinite);
+                var timer = TimerFactory.CreateThreadingTimer(Recalculate, timerState, m_delayMs, Timeout.Infinite);
                 // Обязательно дозаполняем ссылку на таймер
                 timerState.Timer = timer;
 
@@ -207,7 +207,7 @@ namespace TSLab.Script.Handlers.Options
 
                         // Создаём новый таймер. При этом используем НОВЫЙ m_id
                         timerState = new CallState(m_id, Context, sec.SecurityDescription, m_onlyAtTradingSession);
-                        var timer = new ThreadingTimerProfiler(Recalculate, timerState, m_delayMs, Timeout.Infinite);
+                        var timer = TimerFactory.CreateThreadingTimer(Recalculate, timerState, m_delayMs, Timeout.Infinite);
                         // Обязательно дозаполняем ссылку на таймер
                         timerState.Timer = timer;
 
@@ -228,7 +228,7 @@ namespace TSLab.Script.Handlers.Options
 
                     // Создаём новый таймер. При этом используем НОВЫЙ m_id
                     timerState = new CallState(m_id, Context, sec.SecurityDescription, m_onlyAtTradingSession);
-                    var timer = new ThreadingTimerProfiler(Recalculate, timerState, m_delayMs, Timeout.Infinite);
+                    var timer = TimerFactory.CreateThreadingTimer(Recalculate, timerState, m_delayMs, Timeout.Infinite);
                     // Обязательно дозаполняем ссылку на таймер
                     timerState.Timer = timer;
 

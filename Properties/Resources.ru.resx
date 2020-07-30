@@ -4649,10 +4649,10 @@
     <value>СумПредл</value>
   </data>
   <data name="BuyDeposit.Name" xml:space="preserve">
-    <value>Гарантийные обязательства покупателя</value>
+    <value>Гарантийные обеспечения покупателя</value>
   </data>
   <data name="SellDeposit.Name" xml:space="preserve">
-    <value>Гарантийные обязательства продавца</value>
+    <value>Гарантийные обеспечения продавца</value>
   </data>
   <data name="HighestPos.Name" xml:space="preserve">
     <value>Баров с последнего максимума</value>
@@ -4811,6 +4811,14 @@
     <value>При true будет находить и использовать последнее известное значение</value>
     <comment>Handler should repeat last known value to avoid further logic errors</comment>
   </data>
+  <data name="SaveToGlobalCache.SaveToStorage.Name" xml:space="preserve">
+    <value>Сохранять на диск</value>
+    <comment>Save to disk</comment>
+  </data>
+  <data name="SaveToGlobalCache.SaveToStorage.Description" xml:space="preserve">
+    <value>Сохранять значения в файл на диске для повторного использования между перезапусками программы</value>
+    <comment>Save to HDD to use indicator values across different program sessions</comment>
+  </data>
   <data name="SaveToGlobalCache.ValuesName.Name" xml:space="preserve">
     <value>Название значений</value>
     <comment>Values name</comment>
@@ -4834,6 +4842,14 @@
   <data name="LoadFromGlobalCache.RepeatLastValue.Description" xml:space="preserve">
     <value>При true будет находить и использовать последнее известное значение</value>
     <comment>Handler should repeat last known value to avoid further logic errors</comment>
+  </data>
+  <data name="LoadFromGlobalCache.LoadFromStorage.Name" xml:space="preserve">
+    <value>Загружать с диска</value>
+    <comment>Load from disk</comment>
+  </data>
+  <data name="LoadFromGlobalCache.LoadFromStorage.Description" xml:space="preserve">
+    <value>Загружать значения из файла на диске для повторного использования между перезапусками программы</value>
+    <comment>Load from HDD to use indicator values across different program sessions</comment>
   </data>
   <data name="LoadFromGlobalCache.AgentName.Name" xml:space="preserve">
     <value>Имя агента</value>
@@ -4983,7 +4999,7 @@
     <value>При true будет показывать узлы на отображаемой линии</value>
   </data>
   <data name="Add.Description" xml:space="preserve">
-    <value>Сложить несколько чисел (от 2 до 6 входов)</value>
+    <value>Сложить несколько чисел (от 2 до 30 входов)</value>
   </data>
   <data name="And.Description" xml:space="preserve">
     <value>Операция логическое 'И' нескольких значений (от 2 до 6 входов). На выходе true, только если все входы одновременно имеют значение true.</value>
@@ -5160,7 +5176,7 @@
     <value>Теоретическая волатильность опциона (если есть) в том виде, как её присылает биржа. Эта же величиная показывается в таблице 'Котировки'.</value>
   </data>
   <data name="Or.Description" xml:space="preserve">
-    <value>Операция логическое 'ИЛИ' нескольких значений (от 2 до 6 входов). На выходе true, если хотя бы один вход имеют значение true.</value>
+    <value>Операция логическое 'ИЛИ' нескольких значений (от 2 до 30 входов). На выходе true, если хотя бы один вход имеют значение true.</value>
   </data>
   <data name="ResettableControlledBoolConst.Description" xml:space="preserve">
     <value>Сбрасываемая управляемая логическая константа (переключатель). При поступлении на вход значения 'Истина' данный блок выдает значение из поля 'Значение', при поступлении на вход значения 'Ложь' используется 'Значение по умолчанию'. Второй вход определяет чему равно 'Значение'. Если в нем больше истин, то 'Значение' становится равно 'Значению по умолчанию'.</value>
@@ -5579,7 +5595,7 @@
   <data name="AbsolutCommission.Commission.Name" xml:space="preserve">
     <value>Комиссия</value>
   </data>
-  <data name="+" xml:space="preserve">
+  <data name="AbsolutCommission.Commission.Description" xml:space="preserve">
     <value>Абсолютная комиссия на 1 лот инструмента</value>
   </data>
   <data name="RelativeCommisionWithMinimal.MinimalCommission.Name" xml:space="preserve">
@@ -6842,6 +6858,12 @@
   <data name="TradeStatisticsHandler.TimeFrameKind.Description" xml:space="preserve">
     <value>Вид таймфрейма (из настоящего в прошлое, от полуночи в настоящее).</value>
   </data>
+  <data name="TradeStatisticsHandler.StartTime.Name" xml:space="preserve">
+    <value>Время начала</value>
+  </data>
+  <data name="TradeStatisticsHandler.StartTime.Description" xml:space="preserve">
+    <value>Начало построения профиля.</value>
+  </data>
   <data name="TradeStatisticsHandler.TimeFrame.Name" xml:space="preserve">
     <value>Интервал</value>
   </data>
@@ -6950,7 +6972,7 @@
   <data name="ControlMessageHandler.FalseMessage.Description" xml:space="preserve">
     <value>Ложное сообщение</value>
   </data>
-   <data name="ControlMessageHandler.Message.Name" xml:space="preserve">
+  <data name="ControlMessageHandler.Message.Name" xml:space="preserve">
     <value>Сообщение</value>
   </data>
   <data name="ControlMessageHandler.Message.Description" xml:space="preserve">
@@ -7087,5 +7109,38 @@
   </data>
   <data name="EventKind.Name" xml:space="preserve">
     <value>Вид события</value>
+  </data>
+  <data name="RandomHandler.Name" xml:space="preserve">
+    <value>Случайное число</value>
+  </data>
+  <data name="RandomHandler.Description" xml:space="preserve">
+    <value>Случайное число в заданном диапазоне.</value>
+  </data>
+  <data name="RandomHandler.MinValue.Name" xml:space="preserve">
+    <value>Мин. значение</value>
+  </data>
+  <data name="RandomHandler.MaxValue.Name" xml:space="preserve">
+    <value>Макс. значение</value>
+  </data>
+  <data name="RandomHandler.Precision.Name" xml:space="preserve">
+    <value>Точность</value>
+  </data>
+  <data name="RandomHandler.Precision.Description" xml:space="preserve">
+    <value>Число знаков после запятой.</value>
+  </data>
+  <data name="RandomHandler.Seed.Name" xml:space="preserve">
+    <value>Seed</value>
+  </data>
+  <data name="RandomHandler.Seed.Description" xml:space="preserve">
+    <value>Число, используемое для вычисления начального значения последовательности псевдослучайных чисел.</value>
+  </data>
+  <data name="RandomHandler.SaveHistory.Name" xml:space="preserve">
+    <value>Сохранить историю</value>
+  </data>
+  <data name="BuyDeposit.Description" xml:space="preserve">
+    <value>Блок выводит значение Гарантийного обеспечения покупателя</value>
+  </data>
+  <data name="SellDeposit.Description" xml:space="preserve">
+    <value>Блок выводит значение Гарантийного обеспечения продавца</value>
   </data>
 </root>

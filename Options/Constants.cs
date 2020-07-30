@@ -16,8 +16,8 @@ namespace TSLab.Script.Handlers.Options
         /// <summary>1 000 000.0</summary>
         public const double MillionMult = 1000000.0;
 
-        public const string En = "en-US";
-        public const string Ru = "ru-RU";
+        public const string En = "en-us";
+        public const string Ru = "ru-ru";
 
         /// <summary>HTML dot (&point;)</summary>
         public const string HtmlDot = @"&point;";
@@ -49,6 +49,12 @@ namespace TSLab.Script.Handlers.Options
         public const string RiskFreeRate = "RiskFreeRate";
         /// <summary>Разрешение на работу блока для задания в качестве имени атрибута Input</summary>
         public const string Permission = "Permission";
+
+        /// <summary>
+        /// [19-06-2020] PROD-* Люди постоянно ошибаются на вводе даты экспирации в строковом виде.
+        /// Обычно нажимают Enter и контрол ввода текста потом честно отправляет этот перенос строки на парсинг даты.
+        /// </summary>
+        internal static readonly char[] CharsToTrimDateTimeParameters = new[] { ' ', '\t', '\r', '\n', '.', ',', '-', ';', ':', '+', '_', '=' };
 
         /// <summary>
         /// Статическое поле с пустым неизменяемым листом, чтобы избежать бессмысленных 'new' с последующей сборкой мусора.

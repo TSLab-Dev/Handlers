@@ -92,6 +92,15 @@ namespace TSLab.Script.Handlers.Options
         /// </summary>
         public IOptionSeries Execute(IOption opt)
         {
+            var res = ExecuteInternal(opt);
+            if (res == null)
+                throw new ScriptException(
+                    $"Can't select series for {opt?.Symbol}. Mode={m_expiryMode} Date={m_expDateStr}");
+            return res;
+        }
+
+        private IOptionSeries ExecuteInternal(IOption opt)
+        {
             ISecurity sec = opt.UnderlyingAsset;
             if (sec.Bars.Count <= 0)
                 return null;

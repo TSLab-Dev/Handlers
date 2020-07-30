@@ -181,7 +181,7 @@ namespace TSLab.Script.Handlers.Service
             {
                 var delayMs = GetInterval(recalcTime);
                 var timerInfo = new TimerInfo(context, security);
-                var timer = new ThreadingTimerProfiler(Recalculate, timerInfo, delayMs, new TimeSpan(24, 0, 0));
+                var timer = TimerFactory.CreateThreadingTimer(Recalculate, timerInfo, delayMs, new TimeSpan(24, 0, 0));
                 timerInfo.Timer = timer;
                 return timerInfo;
             }

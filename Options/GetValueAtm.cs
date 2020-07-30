@@ -18,17 +18,17 @@ namespace TSLab.Script.Handlers.Options
     [HelperName("Get Value ATM (IntSer)", Language = Constants.En)]
     [HelperName("Значение на деньгах (IntSer)", Language = Constants.Ru)]
     [HandlerAlwaysKeep]
-    [InputsCount(1)]
+    [InputsCount(2)]
     [Input(0, TemplateTypes.INTERACTIVESPLINE, Name = "Profile")]
+    [Input(1, TemplateTypes.DOUBLE, Name = "Moneyness")]
     [OutputType(TemplateTypes.DOUBLE)]
     [Description("Численный расчет значения точки на-деньгах  (вычисляется одна точка из профиля)")]
     [HelperDescription("Numerical estimate of value at-the-money (only one point of profile is returned)", Constants.En)]
     public class GetValueAtm : BaseContextHandler, IValuesHandlerWithNumber
     {
-        /// <summary>"GETVAL"</summary>
-        private const string MsgId = "GETVAL";
+        ///// <summary>"GETVAL"</summary>
+        //private const string MsgId = "GETVAL";
 
-        private double m_moneyness = 0;
         private bool m_repeatLastValue;
         private OptimProperty m_result = new OptimProperty(0, false, double.MinValue, double.MaxValue, 1.0, 3);
 
@@ -64,11 +64,7 @@ namespace TSLab.Script.Handlers.Options
         [HelperDescription("Moneyness", Language = Constants.En)]
         [HandlerParameter(true, NotOptimized = false, IsVisibleInBlock = true,
             Default = "0", Min = "-10000000", Max = "10000000", Step = "1")]
-        public double Moneyness
-        {
-            get { return m_moneyness; }
-            set { m_moneyness = value; }
-        }
+        public double Moneyness { get; set; }
 
         /// <summary>
         /// \~english Value ATM
@@ -100,6 +96,18 @@ namespace TSLab.Script.Handlers.Options
         #endregion Parameters
 
         public double Execute(InteractiveSeries profile, int barNum)
+        {
+            double res = Process(profile, Moneyness, barNum);
+            return res;
+        }
+
+        public double Execute(InteractiveSeries profile, double moneyness, int barNum)
+        {
+            double res = Process(profile, moneyness, barNum);
+            return res;
+        }
+
+        private double Process(InteractiveSeries profile, double moneyness, int barNum)
         {
             // В данном случае намеренно возвращаю Double.NaN
             double failRes = Double.NaN;
@@ -140,8 +148,8 @@ namespace TSLab.Script.Handlers.Options
                 return failRes;
 
             DateTime now = sec.Bars[barNum].Date;
-            double rawRes;
-            if (results.TryGetValue(now, out rawRes))
+            if (results.TryGetValue(now, out double rawRes) &&
+                (barNum < len - 1)) // !!! ВАЖНО !!! На последнем баре ВСЕГДА заново делаем вычисления
             {
                 m_prevValue = rawRes;
                 return rawRes;
@@ -166,28 +174,29 @@ namespace TSLab.Script.Handlers.Options
 
                     double f = profInfo.F;
                     double dT = profInfo.dT;
-                    if (Double.IsNaN(f) || (f < Double.Epsilon))
+                    if (!DoubleUtil.IsPositive(f))
                     {
                         string msg = String.Format(RM.GetString("OptHandlerMsg.FutPxMustBePositive"), GetType().Name, f);
                         m_context.Log(msg, MessageType.Error);
-                        return failRes;
+                        // [GLSP-1557] В данном случае намеренно возвращаю Double.NaN, чтобы предотвратить распространение
+                        //             заведомо неправильных данных по системе (их попадание в дельта-хеджер и т.п.).
+                        return Double.NaN;
                     }
 
-                    if (!DoubleUtil.IsZero(m_moneyness))
+                    if (!DoubleUtil.IsPositive(dT))
                     {
-                        if (Double.IsNaN(dT) || (dT < Double.Epsilon))
-                        {
-                            string msg = String.Format(RM.GetString("OptHandlerMsg.TimeMustBePositive"), GetType().Name, dT);
-                            m_context.Log(msg, MessageType.Error);
-                            return failRes;
-                        }
+                        string msg = String.Format(RM.GetString("OptHandlerMsg.TimeMustBePositive"), GetType().Name, dT);
+                        m_context.Log(msg, MessageType.Error);
+                        // [GLSP-1557] В данном случае намеренно возвращаю Double.NaN, чтобы предотвратить распространение
+                        //             заведомо неправильных данных по системе (их попадание в дельта-хеджер и т.п.).
+                        return Double.NaN;
                     }
 
                     double effectiveF;
-                    if (DoubleUtil.IsZero(m_moneyness))
+                    if (DoubleUtil.IsZero(moneyness))
                         effectiveF = f;
                     else
-                        effectiveF = f * Math.Exp(m_moneyness * Math.Sqrt(profInfo.dT));
+                        effectiveF = f * Math.Exp(moneyness * Math.Sqrt(dT));
                     if (profInfo.ContinuousFunction.TryGetValue(effectiveF, out rawRes))
                     {
                         m_prevValue = rawRes;
@@ -195,12 +204,22 @@ namespace TSLab.Script.Handlers.Options
                     }
                     else
                     {
-                        rawRes = failRes;
+                        if (barNum < len - 1)
+                        {
+                            // [GLSP-1557] Не последний бар? Тогда использую failRes
+                            rawRes = failRes;
+                        }
+                        else
+                        {
+                            // [GLSP-1557] В данном случае намеренно возвращаю Double.NaN, чтобы предотвратить распространение
+                            //             заведомо неправильных данных по системе (их попадание в дельта-хеджер и т.п.).
+                            return Double.NaN;
+                        }
                     }
                     #endregion Process last bar(s)
 
                     m_result.Value = rawRes;
-                    m_context.Log(MsgId + ": " + m_result.Value, MessageType.Info, PrintInLog);
+                    //m_context.Log(MsgId + ": " + m_result.Value, MessageType.Info, PrintInLog);
 
                     return rawRes;
                 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace TSLab.Script.Handlers.Options
 {
@@ -52,9 +53,10 @@ namespace TSLab.Script.Handlers.Options
         /// </summary>
         /// <param name="cashKey">ключ кеша</param>
         /// <param name="useGlobalCacheForHistory">искать серию исторических данных в Глобальном Кеше?</param>
+        /// <param name="fromStorage">читать с диска</param>
         /// <returns>коллекция с историей</returns>
         // ReSharper disable once VirtualMemberNeverOverriden.Global
-        protected virtual Dictionary<DateTime, T> GetHistory(string cashKey, bool useGlobalCacheForHistory)
+        protected virtual Dictionary<DateTime, T> GetHistory(string cashKey, bool useGlobalCacheForHistory, bool fromStorage = false)
         {
             if ((m_context == null) || String.IsNullOrWhiteSpace(cashKey))
                 return null;
@@ -64,7 +66,7 @@ namespace TSLab.Script.Handlers.Options
                 Dictionary<DateTime, T> history;
                 if (useGlobalCacheForHistory)
                 {
-                    history = m_context.LoadGlobalObject(cashKey) as Dictionary<DateTime, T>;
+                    history = m_context.LoadGlobalObject(cashKey, fromStorage) as Dictionary<DateTime, T>;
 
                     if (history == null)
                     {
@@ -73,12 +75,12 @@ namespace TSLab.Script.Handlers.Options
                         m_context.Log(msg, MessageType.Info, false);
 
                         history = new Dictionary<DateTime, T>();
-                        m_context.StoreGlobalObject(cashKey, history);
+                        m_context.StoreGlobalObject(cashKey, history, fromStorage);
                     }
                 }
                 else
                 {
-                    history = m_context.LoadObject(cashKey) as Dictionary<DateTime, T>;
+                    history = m_context.LoadObject(cashKey, fromStorage) as Dictionary<DateTime, T>;
 
                     if (history == null)
                     {
@@ -87,7 +89,7 @@ namespace TSLab.Script.Handlers.Options
                         m_context.Log(msg, MessageType.Info, false);
 
                         history = new Dictionary<DateTime, T>();
-                        m_context.StoreObject(cashKey, history);
+                        m_context.StoreObject(cashKey, history, fromStorage);
                     }
                 }
 
@@ -97,6 +99,19 @@ namespace TSLab.Script.Handlers.Options
             }
             
             return m_privateCache;
+        }
+
+        protected virtual void SaveHistory(Dictionary<DateTime, T> history, string cashKey,
+                                           bool useGlobalCacheForHistory, bool isStorage = false)
+        {
+            lock (history)
+            {
+                if (useGlobalCacheForHistory)
+                    m_context.StoreGlobalObject(cashKey, history, isStorage);
+                else
+                    m_context.StoreObject(cashKey, history, isStorage);
+                m_privateCache = null;
+            }
         }
 
         /// <summary>
@@ -123,7 +138,9 @@ namespace TSLab.Script.Handlers.Options
         /// <param name="args">произвольные аргументы</param>
         /// <returns>значение для точки с указанным индексом</returns>
         // ReSharper disable once VirtualMemberNeverOverriden.Global        
-        protected virtual T CommonExecute(string cashKey, DateTime now, bool repeatLastValue, bool printInMainLog, bool useGlobalCacheForHistory, int barNum, params object[] args)
+        protected virtual T CommonExecute(string cashKey, DateTime now, bool repeatLastValue, bool printInMainLog, 
+                                          bool useGlobalCacheForHistory, int barNum, object[] args, 
+                                          bool isStorage = false, bool updateHistory = false)
         {
             // 1. Подготовка значения на случай проблем
             T failRes = GetFailRes(repeatLastValue);
@@ -134,7 +151,7 @@ namespace TSLab.Script.Handlers.Options
                 return failRes;
 
             // 5. Подготовка кеша
-            Dictionary<DateTime, T> history = GetHistory(cashKey, useGlobalCacheForHistory);
+            Dictionary<DateTime, T> history = GetHistory(cashKey, useGlobalCacheForHistory, isStorage);
             if (history == null)
                 return failRes;
 
@@ -156,15 +173,18 @@ namespace TSLab.Script.Handlers.Options
                     #region Отдельно обрабатываю нулевой бар
                     T tmp = default(T);
                     DateTime foundKey = new DateTime(1, 1, 1);
-                    foreach (var kvp in history)
+                    lock (history)
                     {
-                        if (kvp.Key > now)
-                            continue;
-
-                        if (foundKey < kvp.Key)
+                        foreach (var kvp in history.ToArray())
                         {
-                            foundKey = kvp.Key;
-                            tmp = kvp.Value;
+                            if (kvp.Key > now)
+                                continue;
+
+                            if (foundKey < kvp.Key)
+                            {
+                                foundKey = kvp.Key;
+                                tmp = kvp.Value;
+                            }
                         }
                     }
 
@@ -192,6 +212,10 @@ namespace TSLab.Script.Handlers.Options
                             m_prevValue = val;
                             // [2019-06-07] Как правило, кубик с вычислениями должен обновить историю. Но не всегда.
                             bool updateSuccess = TryUpdateHistory(history, history, now, val);
+
+                            if (updateHistory)
+                                SaveHistory(history, cashKey, useGlobalCacheForHistory, isStorage);
+
                             return val;
                         }
                     }

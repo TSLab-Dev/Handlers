@@ -329,11 +329,11 @@ namespace TSLab.Script.Handlers
     [HelperName("And", Language = Constants.En)]
     [HelperName("И", Language = Constants.Ru)]
     #region Атрибуты с описанием и ссылками
-    [InputsCount(2, 6)]
+    [InputsCount(2, 30)]
     [OutputsCount(1)]
     [OutputType(TemplateTypes.BOOL)]
-    [Description("Операция логическое 'И' нескольких значений (от 2 до 6 входов). На выходе true, только если все входы одновременно имеют значение true.")]
-    [HelperDescription("Logical conjunction of a few input values (from 2 to 6 inputs). Output is TRUE only if all inputs are TRUE at the same time.", Constants.En)]
+    [Description("Операция логическое 'И' нескольких значений (от 2 до 30 входов). На выходе true, только если все входы одновременно имеют значение true.")]
+    [HelperDescription("Logical conjunction of a few input values (from 2 to 30 inputs). Output is TRUE only if all inputs are TRUE at the same time.", Constants.En)]
     [HelperLink(@"http://www.tslab.ru/files/script/script_AND.xml", "Пример по RSI и Bollinger", Constants.Ru)]
     [HelperLink(@"http://www.tslab.ru/files/script/script_AND.xml", "Example of RSI and Bollinger", Constants.En)]
     #endregion Атрибуты с описанием и ссылками
@@ -441,11 +441,11 @@ namespace TSLab.Script.Handlers
     [HelperName("Or", Language = Constants.En)]
     [HelperName("ИЛИ", Language = Constants.Ru)]
     #region Атрибуты с описанием и ссылками
-    [InputsCount(2, 6)]
+    [InputsCount(2, 30)]
     [OutputsCount(1)]
     [OutputType(TemplateTypes.BOOL)]
-    [Description("Операция логическое 'ИЛИ' нескольких значений (от 2 до 6 входов). На выходе true, если хотя бы один вход имеют значение true.")]
-    [HelperDescription("Logical disjunction of a few input values (from 2 to 6 inputs). Output is TRUE if at least one input is TRUE.", Constants.En)]
+    [Description("Операция логическое 'ИЛИ' нескольких значений (от 2 до 30 входов). На выходе true, если хотя бы один вход имеют значение true.")]
+    [HelperDescription("Logical disjunction of a few input values (from 2 to 30 inputs). Output is TRUE if at least one input is TRUE.", Constants.En)]
     [HelperLink(@"http://www.tslab.ru/files/script/script_AND.xml", "Пример по RSI и Bollinger", Constants.Ru)]
     [HelperLink(@"http://www.tslab.ru/files/script/script_AND.xml", "Example of RSI and Bollinger", Constants.En)]
     #endregion Атрибуты с описанием и ссылками

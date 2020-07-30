@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using TSLab.Utils.Profiling;
@@ -21,7 +20,6 @@ namespace TSLab.Script.Handlers
         }
 
         public static readonly HeartbeatManager Instance = new HeartbeatManager();
-        private static readonly Common.Logging.ILog s_log = Common.Logging.LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         private readonly IDictionary<string, Context> m_contextsMap = new Dictionary<string, Context>();
 
         private HeartbeatManager()
@@ -97,7 +95,7 @@ namespace TSLab.Script.Handlers
             }
             catch (Exception ex)
             {
-                s_log.Error(ex);
+                if (Logging.On) Logging.Exception(Logging.Handlers, "Heartbeat", ex);
             }
             finally
             {

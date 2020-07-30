@@ -4,8 +4,10 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 
+using TSLab.DataSource;
 using TSLab.Script.Optimization;
 using TSLab.Script.Options;
+using TSLab.Utils;
 
 namespace TSLab.Script.Handlers.Options
 {
@@ -120,13 +122,14 @@ namespace TSLab.Script.Handlers.Options
                 if (String.IsNullOrWhiteSpace(value))
                     return;
 
-                if (m_expDateStr.Equals(value, StringComparison.InvariantCultureIgnoreCase))
+                string s = value.Trim(TimeToExpiry.s_charsToTrim);
+                if (m_expDateStr.Equals(s, StringComparison.InvariantCultureIgnoreCase))
                     return;
 
                 DateTime t;
-                if (DateTime.TryParseExact(value, TimeToExpiry.DateTimeFormat, CultureInfo.InvariantCulture, DateTimeStyles.AssumeLocal, out t))
+                if (DateTime.TryParseExact(s, TimeToExpiry.DateTimeFormat, CultureInfo.InvariantCulture, DateTimeStyles.AssumeLocal, out t))
                 {
-                    m_expDateStr = value;
+                    m_expDateStr = s;
                     m_expirationDate = t;
                 }
             }
@@ -149,13 +152,14 @@ namespace TSLab.Script.Handlers.Options
                 if (String.IsNullOrWhiteSpace(value))
                     return;
 
-                if (m_expTimeStr.Equals(value, StringComparison.InvariantCultureIgnoreCase))
+                string s = value.Trim(TimeToExpiry.s_charsToTrim);
+                if (m_expTimeStr.Equals(s, StringComparison.InvariantCultureIgnoreCase))
                     return;
 
                 TimeSpan t;
-                if (TimeSpan.TryParseExact(value, TimeToExpiry.TimeFormat, CultureInfo.InvariantCulture, TimeSpanStyles.None, out t))
+                if (TimeSpan.TryParseExact(s, TimeToExpiry.TimeFormat, CultureInfo.InvariantCulture, TimeSpanStyles.None, out t))
                 {
-                    m_expTimeStr = value;
+                    m_expTimeStr = s;
                     m_expirationTime = t;
                 }
             }
@@ -178,11 +182,12 @@ namespace TSLab.Script.Handlers.Options
                 if (String.IsNullOrWhiteSpace(value))
                     return;
 
-                if (m_fixedDateStr.Equals(value, StringComparison.InvariantCultureIgnoreCase))
+                string s = value.Trim(TimeToExpiry.s_charsToTrim);
+                if (m_fixedDateStr.Equals(s, StringComparison.InvariantCultureIgnoreCase))
                     return;
 
                 DateTime t;
-                if (DateTime.TryParseExact(value, DateTimeFormat, CultureInfo.InvariantCulture, DateTimeStyles.AssumeLocal, out t))
+                if (DateTime.TryParseExact(s, DateTimeFormat, CultureInfo.InvariantCulture, DateTimeStyles.AssumeLocal, out t))
                 {
                     m_fixedDateStr = value;
                     m_fixedDate = t;
@@ -299,7 +304,23 @@ namespace TSLab.Script.Handlers.Options
                 m_context.Log(msg, MessageType.Warning, true);
                 barNum = len - 1;
             }
-            DateTime now = opt.UnderlyingAsset.Bars[barNum].Date;
+
+            IConnectable ds = null;
+            DateTime lastBarNow = DateTime.MaxValue, serverNow = DateTime.MaxValue;
+            int intervalSec = Context.Runtime.IntervalInstance.ToSeconds();
+            // Проверка на положительное значение intervalSec не принципиальна. В бою будет использовано серверное время.
+            DateTime now = lastBarNow = sec.Bars[len - 1].Date.AddSeconds(intervalSec);
+            if (Context.Runtime.IsAgentMode)
+            {
+                // [2020-06-03] PROD-7823(?) В режиме агента для последнего бара нужно использовать время провайдера
+                ds = sec.SecurityDescription.TradePlace.DataSource as IConnectable;
+                if ((ds != null) && ds.IsConnected)
+                {
+                    serverNow = ds.ServerTime;
+                    if (serverNow > lastBarNow)
+                        now = serverNow;
+                }
+            }
             double dTYears = CommonExecute(m_variableId + "_times", now, true, true, false, barNum, new object[] { opt, sec });
 
             // Просто заполнение свойства для отображения на UI
@@ -309,6 +330,20 @@ namespace TSLab.Script.Handlers.Options
                 // Принято решение, что для удобства пользователя время на UI показывается всегда в днях.
                 double displayValue = m_timeAsDays;
                 m_dT.Value = displayValue;
+
+                // [2020-06-03] PROD-7823(?) Логгируем отрицательное время для протокола.
+                if (Context.Runtime.IsAgentMode && (!DoubleUtil.IsPositive(dTYears)))
+                {
+                    string dT = dTYears.ToString(CultureInfo.InvariantCulture);
+                    string bts = lastBarNow.ToString(DateTimeFormatWithMs, CultureInfo.InvariantCulture);
+                    string sts = serverNow.ToString(DateTimeFormatWithMs, CultureInfo.InvariantCulture);
+                    string conn = (ds != null) ? ds.IsConnected.ToString().ToUpperInvariant() : "NULL";
+                    string agentName = Context?.Runtime?.TradeName?.Replace(Constants.HtmlDot, ".") ?? "EMPTY";
+                    string msg = String.Format(CultureInfo.InvariantCulture,
+                        "[{0}:TimeToExpiry2] dT < 0! dT:{1}; bar close time:{2} connected:{3}; server time:{4}",
+                        agentName, dT, bts, conn, sts);
+                    m_context.Log(msg, MessageType.Error, false);
+                }
             }
 
             return dTYears;

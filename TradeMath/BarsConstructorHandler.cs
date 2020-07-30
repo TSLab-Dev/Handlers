@@ -7,6 +7,7 @@ using TSLab.DataSource;
 using TSLab.Script.Handlers.Options;
 using TSLab.Utils;
 
+// ReSharper disable once CheckNamespace
 namespace TSLab.Script.Handlers
 {
     [HandlerCategory(HandlerCategories.TradeMath)]

@@ -4,8 +4,10 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 
+using TSLab.DataSource;
 using TSLab.Script.Optimization;
 using TSLab.Script.Options;
+using TSLab.Utils;
 
 namespace TSLab.Script.Handlers.Options
 {
@@ -33,6 +35,8 @@ namespace TSLab.Script.Handlers.Options
         public static readonly string TimeFormat = "g";
         /// <summary>dd-MM-yyyy HH:mm</summary>
         public static readonly string DateTimeFormat = "dd-MM-yyyy HH:mm";
+
+        internal static readonly char[] s_charsToTrim = new[] { ' ', '\t', '\r', '\n', '.', ',', '-', ';', ':' };
 
         private static readonly DateTime s_yearBeg = new DateTime(2017, 1, 1);
         private static readonly DateTime s_yearEnd = new DateTime(2018, 1, 1);
@@ -143,13 +147,14 @@ namespace TSLab.Script.Handlers.Options
                 if (String.IsNullOrWhiteSpace(value))
                     return;
 
-                if (m_expDateStr.Equals(value, StringComparison.InvariantCultureIgnoreCase))
+                string s = value.Trim(s_charsToTrim);
+                if (m_expDateStr.Equals(s, StringComparison.InvariantCultureIgnoreCase))
                     return;
 
                 DateTime t;
-                if (DateTime.TryParseExact(value, TimeToExpiry.DateTimeFormat, CultureInfo.InvariantCulture, DateTimeStyles.AssumeLocal, out t))
+                if (DateTime.TryParseExact(s, TimeToExpiry.DateTimeFormat, CultureInfo.InvariantCulture, DateTimeStyles.AssumeLocal, out t))
                 {
-                    m_expDateStr = value;
+                    m_expDateStr = s;
                     m_expirationDate = t;
                 }
             }
@@ -172,13 +177,14 @@ namespace TSLab.Script.Handlers.Options
                 if (String.IsNullOrWhiteSpace(value))
                     return;
 
-                if (m_expTimeStr.Equals(value, StringComparison.InvariantCultureIgnoreCase))
+                string s = value.Trim(s_charsToTrim);
+                if (m_expTimeStr.Equals(s, StringComparison.InvariantCultureIgnoreCase))
                     return;
 
                 TimeSpan t;
-                if (TimeSpan.TryParseExact(value, TimeToExpiry.TimeFormat, CultureInfo.InvariantCulture, TimeSpanStyles.None, out t))
+                if (TimeSpan.TryParseExact(s, TimeToExpiry.TimeFormat, CultureInfo.InvariantCulture, TimeSpanStyles.None, out t))
                 {
-                    m_expTimeStr = value;
+                    m_expTimeStr = s;
                     m_expirationTime = t;
                 }
             }
@@ -201,13 +207,14 @@ namespace TSLab.Script.Handlers.Options
                 if (String.IsNullOrWhiteSpace(value))
                     return;
 
-                if (m_fixedDateStr.Equals(value, StringComparison.InvariantCultureIgnoreCase))
+                string s = value.Trim(s_charsToTrim);
+                if (m_fixedDateStr.Equals(s, StringComparison.InvariantCultureIgnoreCase))
                     return;
 
                 DateTime t;
-                if (DateTime.TryParseExact(value, DateTimeFormat, CultureInfo.InvariantCulture, DateTimeStyles.AssumeLocal, out t))
+                if (DateTime.TryParseExact(s, DateTimeFormat, CultureInfo.InvariantCulture, DateTimeStyles.AssumeLocal, out t))
                 {
-                    m_fixedDateStr = value;
+                    m_fixedDateStr = s;
                     m_fixedDate = t;
                 }
             }
@@ -358,11 +365,27 @@ namespace TSLab.Script.Handlers.Options
             exceptionFlag = false;
             if (len > 0)
             {
+                IConnectable ds = null;
+                DateTime lastBarNow = DateTime.MaxValue, serverNow = DateTime.MaxValue;
                 double time = Constants.NaN, timeAsDays = Constants.NaN;
                 try
                 {
                     double timeAsYears;
-                    time = EstimateTimeForGivenBar(opt, sec, sec.Bars[len - 1].Date, prevBarDate, prevExpDate,
+                    int intervalSec = Context.Runtime.IntervalInstance.ToSeconds();
+                    // Проверка на положительное значение intervalSec не принципиальна. В бою будет использовано серверное время.
+                    DateTime now = lastBarNow = sec.Bars[len - 1].Date.AddSeconds(intervalSec);
+                    if (Context.Runtime.IsAgentMode)
+                    {
+                        // [2020-06-03] PROD-7823(?) В режиме агента для последнего бара нужно использовать время провайдера
+                        ds = sec.SecurityDescription.TradePlace.DataSource as IConnectable;
+                        if ((ds != null) && ds.IsConnected)
+                        {
+                            serverNow = ds.ServerTime;
+                            if (serverNow > lastBarNow)
+                                now = serverNow;
+                        }
+                    }
+                    time = EstimateTimeForGivenBar(opt, sec, now, prevBarDate, prevExpDate,
                         out timeAsDays, out timeAsYears, out prevBarDate, out prevExpDate);
                 }
                 catch (Exception ex)
@@ -374,6 +397,20 @@ namespace TSLab.Script.Handlers.Options
                 // Принято решение, что для удобства пользователя время на UI показывается всегда в днях.
                 double displayValue = timeAsDays;
                 m_dT.Value = displayValue;
+
+                // [2020-06-03] PROD-7823(?) Логгируем отрицательное время для протокола.
+                if (Context.Runtime.IsAgentMode && (!DoubleUtil.IsPositive(time)))
+                {
+                    string dT = time.ToString(CultureInfo.InvariantCulture);
+                    string bts = lastBarNow.ToString(DateTimeFormatWithMs, CultureInfo.InvariantCulture);
+                    string sts = serverNow.ToString(DateTimeFormatWithMs, CultureInfo.InvariantCulture);
+                    string conn = (ds != null) ? ds.IsConnected.ToString().ToUpperInvariant() : "NULL";
+                    string agentName = Context?.Runtime?.TradeName?.Replace(Constants.HtmlDot, ".") ?? "EMPTY";
+                    string msg = String.Format(CultureInfo.InvariantCulture,
+                        "[{0}:TimeToExpiry] dT < 0! dT:{1}; bar close time:{2} connected:{3}; server time:{4}",
+                        agentName, dT, bts, conn, sts);
+                    m_context.Log(msg, MessageType.Error, false);
+                }
             }
 
             if (exceptionFlag && (lastEx != null))

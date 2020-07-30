@@ -31,7 +31,7 @@ namespace TSLab.Script.Handlers.Options
         private bool m_repeatLastPx = false;
         private BasePxMode m_pxMode = BasePxMode.LastTrade;
         private FixedValueMode m_valueMode = FixedValueMode.AsIs;
-        private double m_fixedPx = Double.Parse(DefaultPx);
+        private double m_fixedPx = double.Parse(DefaultPx, CultureInfo.InvariantCulture);
         private OptimProperty m_displayPrice = new OptimProperty(double.Parse(DefaultPx, CultureInfo.InvariantCulture), false, double.MinValue, double.MaxValue, 1.0, 0);
 
         #region Parameters

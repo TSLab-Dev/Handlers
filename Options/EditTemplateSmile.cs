@@ -28,8 +28,6 @@ namespace TSLab.Script.Handlers.Options
     [HelperDescription("Edit template smile", Constants.En)]
     public class EditTemplateSmile : BaseCanvasDrawing, IValuesHandlerWithNumber, IDisposable
     {
-        private static readonly Common.Logging.ILog s_log = Common.Logging.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
         private const double DefaultPow = 0.56;
         private const string GlobalSmile = "GlobalSmile";
 
@@ -445,7 +443,7 @@ namespace TSLab.Script.Handlers.Options
                             //thread.Start();
                             //thread.Join(); // Надо ли делать Join?
 
-                            s_log.WarnFormat("Global smile info:\r\n\r\n{0}\r\n\r\n", xelStr);
+                            if (Logging.On) Logging.PrintWarning(Logging.Handlers, $"Global smile info:\r\n{xelStr}");
                         }
                         catch (Exception clipEx)
                         {
