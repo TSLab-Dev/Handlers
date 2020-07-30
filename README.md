@@ -1,3 +1,3 @@
-Sources of the built-in handlers
+Sources of the built-in TSLab handlers
 
-Исходные файлы встроенных обработчиков
+Исходные файлы встроенных TSLab обработчиков
