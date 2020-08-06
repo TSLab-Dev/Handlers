@@ -22,4 +22,8 @@ jobs:
     - name: Pack
       run: dotnet pack --configuration Release
     - name: Publish
-      run: dotnet nuget push bin/Release/TSLab.Script.Handlers.2.1.0.nupkg -k oy2ec2w462665fmxa2uqbohd4rmywrzercphqvl7vtgbse --skip-duplicate -s https://api.nuget.org/v3/index.json
+      id: publish_nuget
+      uses: rohith/publish-nuget@v2
+      with:
+        PROJECT_FILE_PATH: ScriptCommonHandlers.csproj
+        NUGET_KEY: ${{secrets.NUGET_API_KEY}}
