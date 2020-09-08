@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Globalization;
 using System.Threading;
@@ -112,6 +113,7 @@ namespace TSLab.Script.Handlers.Options
         /// </summary>
         private IList<double> ExecuteStream(ISecurity sec, string symbolKey)
         {
+            //var sw = Stopwatch.StartNew();
             if ((sec == null) || String.IsNullOrWhiteSpace(symbolKey))
                 return Constants.EmptyListDouble;
 
@@ -169,6 +171,7 @@ namespace TSLab.Script.Handlers.Options
             //    m_displayPrice.Value = displayValue;
             //}
 
+            //m_context.Log($"LoadCache time: {sw.Elapsed}", MessageType.Info, true);
             return new ReadOnlyCollection<double>(updatedValues);
         }
         #endregion Потоковые обработчики

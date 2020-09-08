@@ -136,11 +136,14 @@ namespace TSLab.Script.Handlers.Options
         /// <param name="useGlobalCacheForHistory">искать серию исторических данных в Глобальном Кеше?</param>
         /// <param name="barNum">индекс бара</param>
         /// <param name="args">произвольные аргументы</param>
+        /// <param name="isStorage">читать/сохранять с диска</param>
+        /// <param name="updateHistory">сохранять ли результат</param>
+        /// <param name="maxValues">сколько значений сохранять (если 0, то maxValues = количество баров)</param>
         /// <returns>значение для точки с указанным индексом</returns>
         // ReSharper disable once VirtualMemberNeverOverriden.Global        
         protected virtual T CommonExecute(string cashKey, DateTime now, bool repeatLastValue, bool printInMainLog, 
                                           bool useGlobalCacheForHistory, int barNum, object[] args, 
-                                          bool isStorage = false, bool updateHistory = false)
+                                          bool isStorage = false, bool updateHistory = false, int maxValues = 0)
         {
             // 1. Подготовка значения на случай проблем
             T failRes = GetFailRes(repeatLastValue);
@@ -211,10 +214,20 @@ namespace TSLab.Script.Handlers.Options
                         {
                             m_prevValue = val;
                             // [2019-06-07] Как правило, кубик с вычислениями должен обновить историю. Но не всегда.
-                            bool updateSuccess = TryUpdateHistory(history, history, now, val);
+                            lock (history)
+                            {
+                                TryUpdateHistory(history, history, now, val);
 
-                            if (updateHistory)
-                                SaveHistory(history, cashKey, useGlobalCacheForHistory, isStorage);
+                                if (updateHistory)
+                                {
+                                    if (maxValues <= 0)
+                                        maxValues = barsCount;
+                                    var keys = history.Keys.OrderByDescending(x => x).Skip(maxValues).ToList();
+                                    keys.ForEach(x => history.Remove(x));
+
+                                    SaveHistory(history, cashKey, useGlobalCacheForHistory, isStorage);
+                                }
+                            }
 
                             return val;
                         }

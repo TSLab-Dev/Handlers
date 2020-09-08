@@ -14,7 +14,7 @@ namespace TSLab.Script.Handlers.Options
         // ReSharper disable once VirtualMemberNeverOverriden.Global
         protected virtual IList<T> CommonStreamExecute(string resultsCashKey, string historyCashKey, ISecurity sec,
             bool repeatLastValue, bool printInMainLog, bool useGlobalCacheForHistory, object[] args, 
-            bool fromStorage, bool updateHistory)
+            bool fromStorage, bool updateHistory, int maxValues = 0)
         {
             if (sec == null)
                 return new T[0];
@@ -46,9 +46,10 @@ namespace TSLab.Script.Handlers.Options
             }
 
             // 5. Пошел главный цикл
+            var bars = sec.Bars;
             for (int barNum = 0; barNum < len; barNum++)
             {
-                var now = sec.Bars[barNum].Date;
+                var now = bars[barNum].Date;
                 results[barNum] = CommonExecute(historyCashKey, now, repeatLastValue, printInMainLog, useGlobalCacheForHistory, 
                     barNum, args, fromStorage, updateHistory);
             }

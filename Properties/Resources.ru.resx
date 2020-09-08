@@ -4811,6 +4811,12 @@
     <value>При true будет находить и использовать последнее известное значение</value>
     <comment>Handler should repeat last known value to avoid further logic errors</comment>
   </data>
+  <data name="SaveToGlobalCache.MaxValues.Name" xml:space="preserve">
+    <value>Максимальное количество</value>
+  </data>
+  <data name="SaveToGlobalCache.MaxValues.Description" xml:space="preserve">
+    <value>Максимальное количество сохраняемых значений. Если 0, то будет ограничиваться количеством баров</value>
+  </data>
   <data name="SaveToGlobalCache.SaveToStorage.Name" xml:space="preserve">
     <value>Сохранять на диск</value>
     <comment>Save to disk</comment>

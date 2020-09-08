@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Globalization;
 
@@ -48,6 +49,13 @@ namespace TSLab.Script.Handlers.Options
         [HelperDescription("Unique indicator name to be used to store values in Global Cache", Language = Constants.En)]
         [HandlerParameter(true, NotOptimized = false, IsVisibleInBlock = true, Default = "")]
         public string ValuesName { get; set; }
+
+        [HelperName("Maximum numbers", Constants.En)]
+        [HelperName("Максимальное количество", Constants.Ru)]
+        [Description("Максимальное количество сохраняемых значений. Если 0, то будет ограничиваться количеством баров")]
+        [HelperDescription("The maximum number of values. If 0, then it will be limited by the number of bars", Language = Constants.En)]
+        [HandlerParameter(true, NotOptimized = false, IsVisibleInBlock = true, Default = "0")]
+        public int MaxValues { get; set; }
 
         #endregion Parameters
 
@@ -101,6 +109,7 @@ namespace TSLab.Script.Handlers.Options
         /// </summary>
         private void ExecuteStream(ISecurity sec, string symbolKey, IList<double> indicValues)
         {
+            //var sw = Stopwatch.StartNew();
             if ((sec == null) || String.IsNullOrWhiteSpace(symbolKey) ||
                 (indicValues == null) || (indicValues.Count <= 0))
                 return;
@@ -125,7 +134,7 @@ namespace TSLab.Script.Handlers.Options
 
             // По факту передаю управление в метод CommonExecute
             var updatedValues = CommonStreamExecute(m_variableId + "_" + cashKey, cashKey,
-                sec, RepeatLastValue, true, true, new object[] { indicValues }, SaveToStorage, true);
+                sec, RepeatLastValue, true, true, new object[] { indicValues }, SaveToStorage, true, MaxValues);
 
             //if (basePrices.Count > 0)
             //{
@@ -135,6 +144,7 @@ namespace TSLab.Script.Handlers.Options
             //}
 
             //return new ReadOnlyCollection<double>(updatedValues);
+            //m_context.Log($"SaveCache time: {sw.Elapsed}", MessageType.Info, true);
         }
         #endregion Потоковые обработчики
 
@@ -222,7 +232,7 @@ namespace TSLab.Script.Handlers.Options
 
             DateTime now = sec.Bars[barNum].Date;
             double updatedIndicValue = CommonExecute(cashKey, now, RepeatLastValue, true, true, barNum, 
-                new object[] { indicValue }, SaveToStorage, true);
+                new object[] { indicValue }, SaveToStorage, true, MaxValues);
 
             //// [2017-06-28] Отключаю вывод отладочных сообщений в лог агента.
             //if (barNum >= 0.9 * len)
