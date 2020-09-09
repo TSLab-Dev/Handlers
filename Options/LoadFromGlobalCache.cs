@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Diagnostics;
-using System.Diagnostics.Contracts;
 using System.Globalization;
 using System.Threading;
 using TSLab.DataSource;
@@ -143,11 +141,11 @@ namespace TSLab.Script.Handlers.Options
             var testDict = testObj as Dictionary<DateTime, double>;
             if (testDict == null)
             {
-                var container = testObj as NotClearableContainer;
-                if ((container != null) && (container.Content != null))
+                var container = testObj as NotClearableContainer<Dictionary<DateTime, double>>;
+                if (container?.Content != null)
                     testDict = container.Content as Dictionary<DateTime, double>;
             }
-            if ((testObj == null) || (testDict == null))
+            if (testObj == null || testDict == null)
             {
                 // Данного ключа в глобальном кеше нет? Тогда выход.
                 // [{0}] There is no value in global cache. Probably, you have to start agent '{1}' for security '{2}' to collect values '{3}'.

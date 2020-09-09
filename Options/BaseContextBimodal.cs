@@ -51,7 +51,7 @@ namespace TSLab.Script.Handlers.Options
             {
                 var now = bars[barNum].Date;
                 results[barNum] = CommonExecute(historyCashKey, now, repeatLastValue, printInMainLog, useGlobalCacheForHistory, 
-                    barNum, args, fromStorage, updateHistory);
+                    barNum, args, fromStorage, updateHistory, maxValues);
             }
 
             return results;

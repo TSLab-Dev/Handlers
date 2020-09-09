@@ -1,14 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Diagnostics;
-using System.Diagnostics.Contracts;
 using System.Globalization;
-
-using TSLab.DataSource;
 using TSLab.Script.Options;
-using TSLab.Utils;
 
 namespace TSLab.Script.Handlers.Options
 {

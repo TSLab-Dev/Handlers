@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using TSLab.DataSource;
 
 namespace TSLab.Script.Handlers.Options
 {
@@ -63,10 +64,19 @@ namespace TSLab.Script.Handlers.Options
 
             if (m_privateCache == null)
             {
-                Dictionary<DateTime, T> history;
+                Dictionary<DateTime, T> history = null;
                 if (useGlobalCacheForHistory)
                 {
-                    history = m_context.LoadGlobalObject(cashKey, fromStorage) as Dictionary<DateTime, T>;
+                    var obj = m_context.LoadGlobalObject(cashKey, fromStorage);
+                    switch (obj)
+                    {
+                        case Dictionary<DateTime, T> t:
+                            history = t;
+                            break;
+                        case NotClearableContainer<Dictionary<DateTime, T>> t:
+                            history = t.Content;
+                            break;
+                    }
 
                     if (history == null)
                     {
@@ -75,12 +85,22 @@ namespace TSLab.Script.Handlers.Options
                         m_context.Log(msg, MessageType.Info, false);
 
                         history = new Dictionary<DateTime, T>();
-                        m_context.StoreGlobalObject(cashKey, history, fromStorage);
+                        var data = new NotClearableContainer<Dictionary<DateTime, T>>(history);
+                        m_context.StoreGlobalObject(cashKey, data, fromStorage);
                     }
                 }
                 else
                 {
-                    history = m_context.LoadObject(cashKey, fromStorage) as Dictionary<DateTime, T>;
+                    var obj = m_context.LoadObject(cashKey, fromStorage);
+                    switch (obj)
+                    {
+                        case Dictionary<DateTime, T> t:
+                            history = t;
+                            break;
+                        case NotClearableContainer<Dictionary<DateTime, T>> t:
+                            history = t.Content;
+                            break;
+                    }
 
                     if (history == null)
                     {
@@ -89,13 +109,12 @@ namespace TSLab.Script.Handlers.Options
                         m_context.Log(msg, MessageType.Info, false);
 
                         history = new Dictionary<DateTime, T>();
-                        m_context.StoreObject(cashKey, history, fromStorage);
+                        var data = new NotClearableContainer<Dictionary<DateTime, T>>(history);
+                        m_context.StoreObject(cashKey, data, fromStorage);
                     }
                 }
 
                 m_privateCache = history;
-
-                return history;
             }
             
             return m_privateCache;
@@ -106,10 +125,11 @@ namespace TSLab.Script.Handlers.Options
         {
             lock (history)
             {
+                var data = new NotClearableContainer<Dictionary<DateTime, T>>(history);
                 if (useGlobalCacheForHistory)
-                    m_context.StoreGlobalObject(cashKey, history, isStorage);
+                    m_context.StoreGlobalObject(cashKey, data, isStorage);
                 else
-                    m_context.StoreObject(cashKey, history, isStorage);
+                    m_context.StoreObject(cashKey, data, isStorage);
                 m_privateCache = null;
             }
         }
