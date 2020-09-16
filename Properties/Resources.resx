@@ -4317,11 +4317,11 @@
     <value>Stoch RSI</value>
   </data>
   <data name="BidAskMarketPosition.Name" xml:space="preserve">
-    <value>Buy/Sell cluster</value>
+    <value>Buy/Sell cluster(view only)</value>
     <comment>Кластер пок./прод.</comment>
   </data>
   <data name="DeltaMarketPosition.Name" xml:space="preserve">
-    <value>Delta cluster</value>
+    <value>Delta cluster(view only)</value>
     <comment>Дельта кластер</comment>
   </data>
   <data name="AllTimeTradeStatisticsHandler.Name" xml:space="preserve">
@@ -4409,7 +4409,7 @@
     <value>Buys Minus Sells</value>
   </data>
   <data name="VolumeMarketPosition.Name" xml:space="preserve">
-    <value>Volume cluster</value>
+    <value>Volume cluster(view only)</value>
   </data>
   <data name="MessageHandler.Name" xml:space="preserve">
     <value>Message</value>

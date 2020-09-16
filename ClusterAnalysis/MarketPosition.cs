@@ -97,8 +97,8 @@ namespace TSLab.Script.Handlers
 
     //[HandlerName("Volume Footprint")]
     // Категория и описание входов/выходов идет через базовый класс.
-    [HelperName("Volume cluster", Language = Constants.En)]
-    [HelperName("Кластер объёма", Language = Constants.Ru)]
+    [HelperName("Volume cluster(view only)", Language = Constants.En)]
+    [HelperName("Кластер объёма(только отображает)", Language = Constants.Ru)]
     [Description("Отображает сумму покупок и продаж для каждого шага или диапазона цены, в зависимости от настройки параметра 'Объединять шагов'.")]
     [HelperDescription("Volume footprint shows the sum of purchases and sales for every price step or price range, depending on value of a 'Combine Steps' parameter.", Constants.En)]
     public class VolumeMarketPosition : MarketPositionBase
@@ -144,8 +144,8 @@ namespace TSLab.Script.Handlers
 
     //[HandlerName("Bid/Ask Footprint")]
     // Категория и описание входов/выходов идет через базовый класс.
-    [HelperName("Buy/Sell cluster", Language = Constants.En)]
-    [HelperName("Кластер пок./прод.", Language = Constants.Ru)]
+    [HelperName("Buy/Sell cluster(view only)", Language = Constants.En)]
+    [HelperName("Кластер пок./прод.(только отображает)", Language = Constants.Ru)]
     [Description("Отображает количество покупок и продаж отдельно для каждого шага или диапазона цены, в зависимости от настройки параметра 'Объединять шагов'. В случае если покупок больше, строка окрашивается зеленым цветом, если меньше - красным. В случае равенства числа покупок и числа продаж строка окрашивается желтым цветом.")]
     [HelperDescription("Bid/Ask footprint shows the number of purchases and sales separately for every price step or price range, depending on value of a 'Combine Steps' parameter. If there are more purchases, the line turns green, if less, the line turns red. In case the numbers of purchases and sales are equal, the line turns yellow.", Constants.En)]
     public class BidAskMarketPosition : MarketPositionBase
@@ -281,8 +281,8 @@ namespace TSLab.Script.Handlers
 
     //[HandlerName("Delta Footprint")]
     // Категория и описание входов/выходов идет через базовый класс.
-    [HelperName("Delta cluster", Language = Constants.En)]
-    [HelperName("Дельта кластер", Language = Constants.Ru)]
+    [HelperName("Delta cluster(view only)", Language = Constants.En)]
+    [HelperName("Дельта кластер(только отображает)", Language = Constants.Ru)]
     [Description("Отображает разность числа покупок и числа продаж отдельно для каждого шага или диапазона цены, в зависимости от настройки параметра 'Объединять шагов'. В случае если покупок больше, строка окрашивается зеленым цветом, если меньше - красным цветом. В случае равенства числа покупок и числа продаж строка окрашивается желтым.")]
     [HelperDescription("Delta Footprint shows difference in the number of purchases and sales separately for every price step or price range, depending on value of a 'Combine Steps' parameter. If there are more purchases, the line turns green, if less, the line turns red. In case the numbers of sales and purchases are equal, the line turns yellow.", Constants.En)]
     public class DeltaMarketPosition : BidAskMarketPosition

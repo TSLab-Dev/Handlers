@@ -4217,10 +4217,10 @@
     <value>Stoch RSI</value>
   </data>
   <data name="BidAskMarketPosition.Name" xml:space="preserve">
-    <value>Кластер пок./прод.</value>
+    <value>Кластер пок./прод.(только отображает)</value>
   </data>
   <data name="DeltaMarketPosition.Name" xml:space="preserve">
-    <value>Дельта кластер</value>
+    <value>Дельта кластер(только отображает)</value>
   </data>
   <data name="AllTimeTradeStatisticsHandler.Name" xml:space="preserve">
     <value>Торговая статистика за всё время</value>
@@ -4289,7 +4289,7 @@
     <value>Покупки минус продажи</value>
   </data>
   <data name="VolumeMarketPosition.Name" xml:space="preserve">
-    <value>Кластер объёма</value>
+    <value>Кластер объёма(только отображает)</value>
   </data>
   <data name="MessageHandler.Name" xml:space="preserve">
     <value>Сообщение</value>
