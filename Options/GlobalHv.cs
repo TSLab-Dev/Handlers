@@ -24,21 +24,26 @@ namespace TSLab.Script.Handlers.Options
     public class GlobalHv : BaseContextHandler, IStreamHandler
     {
         /// <summary>
-        /// Никогда больше не трогай DefaultPeriodInt!
-        /// 810 зашито повсюду и его изменение приведет к потере накопленной истории
+        /// Старайся не трогать DefaultPeriodInt!
+        /// 990 зашито повсюду и его изменение может привести к потере накопленной истории
         /// у всех клиентов.
         /// </summary>
-        private const int DefaultPeriodInt = 810;
+        private const int DefaultPeriodInt = 990;
         /// <summary>
-        /// Никогда больше не трогай DefaultPeriod!
-        /// 810 зашито повсюду и его изменение приведет к потере накопленной истории
+        /// Старайся не трогать DefaultMultDbl!
+        /// 500 зашито повсюду и его изменение может привести к потере накопленной истории
         /// у всех клиентов.
         /// </summary>
-        private const string DefaultPeriod = "810";
-        private const string DefaultMult = "452";
+        private const double DefaultMultDbl = 500;
+        /// <summary>
+        /// Старайся не трогать DefaultPeriodInt!
+        /// 990 зашито повсюду и его изменение может привести к потере накопленной истории
+        /// у всех клиентов.
+        /// </summary>
+        private const string DefaultPeriod = "990";
+        private const string DefaultMult = "500";
         private const string DefaultTimeframeSec = "60";
 
-        private bool m_useAllData;
         private bool m_repeatLastHv;
         private int m_period = Int32.Parse(DefaultPeriod);
         private int m_timeframe = Int32.Parse(DefaultTimeframeSec);
@@ -55,11 +60,7 @@ namespace TSLab.Script.Handlers.Options
         [HelperDescription("Should handler use all data including overnight gaps?", Language = Constants.En)]
         [HandlerParameter(true, NotOptimized = false, IsVisibleInBlock = true,
             Default = "false", Name = "Use All Data")]
-        public bool UseAllData
-        {
-            get { return m_useAllData; }
-            set { m_useAllData = value; }
-        }
+        public bool UseAllData { get; set; }
 
         /// <summary>
         /// \~english Calculation period
@@ -108,7 +109,7 @@ namespace TSLab.Script.Handlers.Options
             get { return m_annualizingMultiplier; }
             set
             {
-                if (value > 0)
+                if (DoubleUtil.IsPositive(value))
                     m_annualizingMultiplier = value;
             }
         }
@@ -178,7 +179,7 @@ namespace TSLab.Script.Handlers.Options
             Dictionary<DateTime, double> hvSigmas = null;
             //int barLengthInSeconds = (int)sec.IntervalInstance.ToSeconds();
             int barLengthInSeconds = m_timeframe;
-            string cashKey = HV.GetGlobalCashKey(sec.Symbol, false, m_useAllData, barLengthInSeconds, m_annualizingMultiplier, m_period);
+            string cashKey = HV.GetGlobalCashKey(sec.Symbol, false, UseAllData, barLengthInSeconds, m_annualizingMultiplier, m_period);
             try
             {
                 object globalObj = Context.LoadGlobalObject(cashKey, true);

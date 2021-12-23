@@ -246,7 +246,7 @@
     <value>Центральный страйк серии</value>
   </data>
   <data name="CloseVirtualFutPosition.Name" xml:space="preserve">
-    <value>Закрыть вирт. позицию</value>
+    <value>Закрыть виртуальную позицию</value>
   </data>
   <data name="CloseVirtualFutPosition.Description" xml:space="preserve">
     <value>Закрыть виртуальную позицию в БА</value>
@@ -403,7 +403,9 @@
     <value>Метроном 2</value>
   </data>
   <data name="HeartbeatHandler.Description" xml:space="preserve">
-    <value>Метроном 2</value>
+    <value>Автоматический принудительный пересчет скрипта через заданный промежуток времени.
+Принудительный пересчет запускается через метод Recalc() в АПИ.
+По умолчанию включена защита, чтобы пересчет не запускался чаще 300мс.</value>
   </data>
   <data name="HV.Name" xml:space="preserve">
     <value>HV (из учебника)</value>
@@ -430,7 +432,7 @@
     <value>Численный расчет дельты позиции в текущей точке БА (вычисляется одна точка; потоковый обработчик)</value>
   </data>
   <data name="OpenVirtualFutPosition.Name" xml:space="preserve">
-    <value>Открыть вирт. позицию</value>
+    <value>Открыть виртуальную позицию</value>
   </data>
   <data name="OpenVirtualFutPosition.Description" xml:space="preserve">
     <value>Создание виртуальной позиции по БА (потоковый обработчик)</value>
@@ -3627,13 +3629,13 @@
     <value>Обработчик</value>
   </data>
   <data name="HasLongPositionActive.Name" xml:space="preserve">
-    <value>Есть активная длинная поз.</value>
+    <value>Есть активная длинная позиция</value>
   </data>
   <data name="HasPositionActive.Name" xml:space="preserve">
     <value>Есть активная позиция</value>
   </data>
   <data name="HasShortPositionActive.Name" xml:space="preserve">
-    <value>Есть активная короткая поз.</value>
+    <value>Есть активная короткая позиция</value>
   </data>
   <data name="HasTwoLoss.Name" xml:space="preserve">
     <value>2 убытка подряд</value>
@@ -3657,10 +3659,10 @@
     <value>База интервала</value>
   </data>
   <data name="LastClosedIsLong2.Name" xml:space="preserve">
-    <value>Посл. закр. поз. была длинной</value>
+    <value>Последняя закрытая позиция была длинной</value>
   </data>
   <data name="LastClosedIsShort2.Name" xml:space="preserve">
-    <value>Посл. закр. поз. была короткой</value>
+    <value>Последняя закрытая позиция была короткой</value>
   </data>
   <data name="LastClosedNamePositionExitDate.Name" xml:space="preserve">
     <value>Дата выхода последней закрытой позиции по имени</value>
@@ -3690,10 +3692,10 @@
     <value>Цена последнего выхода</value>
   </data>
   <data name="LastClosedIsLong.Name" xml:space="preserve">
-    <value>Посл. поз. закрыта и длинная</value>
+    <value>Последняя позиция закрыта и длинная</value>
   </data>
   <data name="LastClosedIsShort.Name" xml:space="preserve">
-    <value>Посл. поз. закрыта и короткая</value>
+    <value>Последняя позиция закрыта и короткая</value>
   </data>
   <data name="Long.Name" xml:space="preserve">
     <value>Покупка</value>
@@ -4129,6 +4131,9 @@
   <data name="BoolConst.Name" xml:space="preserve">
     <value>Логическая константа</value>
   </data>
+<data name="StringConst.Name" xml:space="preserve">
+    <value>Строковая константа</value>
+  </data>
   <data name="OpenInterest.Name" xml:space="preserve">
     <value>Открытый интерес</value>
   </data>
@@ -4170,9 +4175,6 @@
   </data>
   <data name="AroonUp.Name" xml:space="preserve">
     <value>Aroon+</value>
-  </data>
-  <data name="AverageTrueRange.Name" xml:space="preserve">
-    <value>ATR</value>
   </data>
   <data name="BollingerBands1.Name" xml:space="preserve">
     <value>Полоса Болинжера (+)</value>
@@ -4245,6 +4247,9 @@
   </data>
   <data name="TradeStatisticsHandler.Name" xml:space="preserve">
     <value>Торговая статистика</value>
+  </data>
+  <data name="TradeStatisticsCombineHandler.Name" xml:space="preserve">
+    <value>Сложенная Торговая статистика</value>
   </data>
   <data name="TradeStatisticsLowerEdgeHandler.Name" xml:space="preserve">
     <value>Нижний уровень торговой статистики</value>
@@ -4634,10 +4639,10 @@
     <value>Цена выхода из измененной позиции</value>
   </data>
   <data name="PositionIsVirtualHandler.Name" xml:space="preserve">
-    <value>Виртуальная позиция?</value>
+    <value>Есть виртуальная позиция</value>
   </data>
   <data name="PositionIsVirtualClosedHandler.Name" xml:space="preserve">
-    <value>Виртуальный выход из позиции?</value>
+    <value>Есть виртуальный выход из позиции</value>
   </data>
   <data name="Median.Name" xml:space="preserve">
     <value>Просадка (кривой) прибыли</value>
@@ -5020,7 +5025,7 @@
     <value>Индекс элемента в списке баров или числовых значений.</value>
   </data>
   <data name="BarsConstructorHandler.Description" xml:space="preserve">
-    <value>Кубик преобразует 5 числовых серий на входе в синтетический инструмент с барами. Порядок входов: открытие, закрытие, максимум, минимум, объем.</value>
+    <value>Блок преобразует 5 числовых серий на входе в синтетический инструмент с барами. Порядок входов: открытие, закрытие, максимум, минимум, объем.</value>
   </data>
   <data name="Bid.Description" xml:space="preserve">
     <value>Цена лучшей покупки, запомненная в конце каждого бара (если доступно).</value>
@@ -5030,6 +5035,9 @@
   </data>
   <data name="BoolBreaker.Description" xml:space="preserve">
     <value>Используется совместно с блоком 'Контрольная панель' для осуществления ручного управления кнопками на ней (режим полуавтоматической торговли). При нажатии на кнопку будет выдан true только для текущей свечи, что гарантирует, что сигнал будет выдан всегда на текущей свече.</value>
+  </data>
+  <data name="StringConst.Description" xml:space="preserve">
+    <value>По аналогии с константой выдает фиксированное строковое значение на каждый бар.</value>
   </data>
   <data name="BoolConst.Description" xml:space="preserve">
     <value>По аналогии с константой выдает фиксированное логическое значение на каждый бар.</value>
@@ -5073,6 +5081,18 @@
   <data name="ControlledBoolConst.DefaultValue.Description" xml:space="preserve">
     <value>Значение на выходе блока, если на вход подать 'Ложь'</value>
   </data>
+  <data name="ValueReceiverHandler.DefaultValue.Name" xml:space="preserve">
+    <value>Значение по умолчанию</value>
+  </data>
+  <data name="ValueReceiverHandler.DefaultValue.Description" xml:space="preserve">
+    <value>Значение на выходе блока, если не удалось получить с сервера</value>
+  </data>
+<data name="BoolReceiverHandler.DefaultValue.Name" xml:space="preserve">
+    <value>Значение по умолчанию</value>
+  </data>
+<data name="BoolReceiverHandler.DefaultValue.Description" xml:space="preserve">
+    <value>Значение на выходе блока, если не удалось получить с сервера</value>
+  </data>
   <data name="CrossOver.Description" xml:space="preserve">
     <value>Функция определяет моменты, когда второй вход (сигнал) пересекает опорную линию (первый вход) сверху вниз.</value>
   </data>
@@ -5104,7 +5124,7 @@
     <value>Разжать посчитанные в сжатом диапазоне логические данные для последующего их использования с данными в оригинальном диапазоне. Блок 'Разжать' необходимо соединить с разжимаемым блоком, а также с блоком 'Сжать', соответствующим разжимаемому блоку.</value>
   </data>
   <data name="EqualHandler.Description" xml:space="preserve">
-    <value>Кубик возвращает true, если на вход переданы равные значения (в пределах точности вычислений)</value>
+    <value>Блок возвращает true, если на вход переданы равные значения (в пределах точности вычислений)</value>
   </data>
   <data name="Flip.Description" xml:space="preserve">
     <value>Имитирует работу триггера с двумя входами, при появлении 'Истина' на первом входе, выходное значение становится 'Истина' до появления 'Истина' на втором входе. При появлении 'Истина' на втором входе, значение индикатора становится 'Ложь', до появления значения 'Истина' на первом входе. Если 'Истина' появляется одновременно на двух входах, то значение индикатора - 'Ложь', т.е. первый вход игнорируется.</value>
@@ -5200,7 +5220,7 @@
     <value>Значение на выходе блока, если на вход подать 'Ложь'</value>
   </data>
   <data name="SecDivideWith.Description" xml:space="preserve">
-    <value>Кубик преобразует бары на входе в синтетический инструмент (каждый исходный бар делится на свой вес, взятый из второго входа).</value>
+    <value>Блок преобразует бары на входе в синтетический инструмент (каждый исходный бар делится на свой вес, взятый из второго входа).</value>
   </data>
   <data name="SecDivideWith.Decimals.Name" xml:space="preserve">
     <value>Десятичных знаков</value>
@@ -5209,10 +5229,10 @@
     <value>Количество десятичных знаков после запятой при округлении чисел вверх</value>
   </data>
   <data name="SecMultiply.Description" xml:space="preserve">
-    <value>Кубик преобразует бары на входе в синтетический инструмент (все цены исходных баров умножаются на заданный коэффициент).</value>
+    <value>Блок преобразует бары на входе в синтетический инструмент (все цены исходных баров умножаются на заданный коэффициент).</value>
   </data>
   <data name="SecMultiplyWith.Description" xml:space="preserve">
-    <value>Кубик преобразует бары на входе в синтетический инструмент (каждый исходный бар умножаются на свой вес, взятый из второго входа).</value>
+    <value>Блок преобразует бары на входе в синтетический инструмент (каждый исходный бар умножаются на свой вес, взятый из второго входа).</value>
   </data>
   <data name="SecMultiplyWith.Decimals.Name" xml:space="preserve">
     <value>Десятичных знаков</value>
@@ -5247,6 +5267,15 @@
   <data name="Shift.Period.Description" xml:space="preserve">
     <value>Период индикатора (окно расчетов)</value>
   </data>
+  <data name="PrevValue.Name" xml:space="preserve">
+    <value>Предыдущее значение</value>
+  </data>
+  <data name="PrevValue.Description" xml:space="preserve">
+    <value>Возвращает предыдущее значение на N шагов назад.</value>
+  </data>
+  <data name="PrevValue.Period.Description" xml:space="preserve">
+    <value>Период индикатора (окно расчетов)</value>
+  </data>
   <data name="StepPrice.Description" xml:space="preserve">
     <value>Стоимость шага цены, запомненная в конце каждого бара (если доступно).</value>
   </data>
@@ -5258,6 +5287,12 @@
   </data>
   <data name="Tick.Description" xml:space="preserve">
     <value>Шаг цены инструмента. Эта же величина показывается в таблице 'Котировки'.</value>
+  </data>
+  <data name="LotTick.Name" xml:space="preserve">
+    <value>Шаг лота</value>
+  </data>
+  <data name="LotTick.Description" xml:space="preserve">
+    <value>Шаг лота инструмента. Эта же величина показывается в таблице 'Котировки'.</value>
   </data>
   <data name="Time.Description" xml:space="preserve">
     <value>Время каждого бара преобразуется в число в формате ЧЧММСС. Внимание! Блок 'Время' рассчитывается в момент пересчета агента. Соотвественно, выполнение входа в позицию и выполнение выхода из позиции возможны в указанный период времени работы агента + интервал пересчета агента. Если время выполнения заявки запланировано на момент позже времени закрытия торговой сессии, то данная заявка будет исполнена на следующий день.</value>
@@ -5694,8 +5729,11 @@
   <data name="TradeStatisticsHandler.Description" xml:space="preserve">
     <value>Блок 'Торговая статистика' создает гистограмму за выбранный таймфрейм (временной интервал). [br]Гистограмма может быть построена на количестве сделок, объеме торгов, количестве покупок, количестве продаж, разнице количества покупок и продаж и относительной разнице количества покупок и продаж, % (см. параметр 'Вид').</value>
   </data>
+  <data name="TradeStatisticsCombineHandler.Description" xml:space="preserve">
+    <value>Блок 'Сложенная Торговая статистика' суммирует последние N гистограмм, поданных на вход.</value>
+  </data>
   <data name="TradeStatisticsLowerEdgeHandler.Description" xml:space="preserve">
-    <value>Кубик 'Нижний уровень торговой статистики' позволяет установить в процентном значении отсечку данных по нижнему уровню. Данный блок соединяется с блоком 'Торговая статистика'.</value>
+    <value>Блок 'Нижний уровень торговой статистики' позволяет установить в процентном значении отсечку данных по нижнему уровню. Данный блок соединяется с блоком 'Торговая статистика'.</value>
   </data>
   <data name="TradeStatisticsPriceValueHandler.Description" xml:space="preserve">
     <value>Блок 'Значение цены торговой статистики' создает гистограмму на основе выбранной цены. Используется совместно с блоком 'Торговая статистика'.</value>
@@ -5757,13 +5795,28 @@
   <data name="AroonUp.Period.Description" xml:space="preserve">
     <value>Период индикатора (окно расчетов)</value>
   </data>
+  <data name="AverageTrueRange.Name" xml:space="preserve">
+    <value>ATR (старый)</value>
+  </data>
   <data name="AverageTrueRange.Description" xml:space="preserve">
-    <value>Индикатор среднего истинного диапазона (Average True Range - ATR). Представляет собой скользящее среднее значений истинного диапазона (TR).</value>
+    <value>Нестандартный (старый) расчет среднего истинного диапазона (Average True Range - ATR). Представляет собой экспоненциально сглаженное среднее значение истинного диапазона (TR).</value>
   </data>
   <data name="AverageTrueRange.Period.Name" xml:space="preserve">
     <value>Период</value>
   </data>
   <data name="AverageTrueRange.Period.Description" xml:space="preserve">
+    <value>Период индикатора (окно расчетов)</value>
+  </data>
+  <data name="AverageTrueRangeNew.Name" xml:space="preserve">
+    <value>ATR</value>
+  </data>
+  <data name="AverageTrueRangeNew.Description" xml:space="preserve">
+    <value>Индикатор среднего истинного диапазона (Average True Range - ATR). Представляет собой скользящее среднее значений истинного диапазона (TR).</value>
+  </data>
+  <data name="AverageTrueRangeNew.Period.Name" xml:space="preserve">
+    <value>Период</value>
+  </data>
+  <data name="AverageTrueRangeNew.Period.Description" xml:space="preserve">
     <value>Период индикатора (окно расчетов)</value>
   </data>
   <data name="BollingerBands1.Description" xml:space="preserve">
@@ -6250,7 +6303,9 @@
     <value>Дата входа в позицию, представленная как число в формате ГГММДД.</value>
   </data>
   <data name="EntryPrice.Description" xml:space="preserve">
-    <value>Цена сделки, по которой открылась позиция. Для режима реальных торгов это цена по которой была выставлена заявка на открытие позиции.</value>
+    <value>В режиме лаборатории цена сделки, по которой открылась позиция.
+В режиме реальных торгов, средняя цена сделок по выставленной заявке.
+Если цены сделок неизвестны, берется цена из заявки. Если при этом заявка выставлялась с типом "по рынку", то берется цена 0 или цена верхнего, или нижнего лимита (для фьючерсов) по инструменту.</value>
   </data>
   <data name="EntryTime.Description" xml:space="preserve">
     <value>Время входа в позицию, представленное как число в формате ЧЧММСС.</value>
@@ -6265,7 +6320,7 @@
     <value>Логическая функция проверяющая наличие активной короткой позиции.</value>
   </data>
   <data name="HasTwoLoss.Description" xml:space="preserve">
-    <value>Наличие двух или более убыточных позиций подряд.</value>
+    <value>Наличие двух или более убыточных позиций подряд</value>
   </data>
   <data name="IsItLossAtLastPosition.Description" xml:space="preserve">
     <value>Проверяет наличие убытка по закрытой позиции.</value>
@@ -6394,10 +6449,10 @@
     <value>Доход (убыток) приносимый позицией в процентах. В расчете на один контракт/лот.</value>
   </data>
   <data name="TrailStop.Description" xml:space="preserve">
-    <value>То же, что и 'Следящий стоп абс.', но параметры ведения задаются в процентах.</value>
+    <value>То же, что и 'Трейл Стоп Абс.', но параметры ведения задаются в процентах.</value>
   </data>
   <data name="TrailStopAbs.Description" xml:space="preserve">
-    <value>Следящий стоп, значения ведения задаются в абсолютных величинах. У блока 3 параметра, которые описывают два режима работы: [br]1й режим - Стоп - лосс описывается параметром 'Стоп лосс', который задает максимальное падение (для шорта - рост) от цены входа, которые мы готовы принять. Это падение задается числом. [br]Во 2й режим блок переходит, если было зафиксировано увеличение цены (в случае шорта уменьшение) на величину заданную параметром 'Вкл. трейл'. [br]Важно! Переход в режим ведения происходит только в случае превышения ценой заданного уровня! В случае касания цены без превышения ведение не включается. В этом случае уровень поддержки на следующем баре вычисляется, как MFE(этого бара) минус параметр 'трейл лосс'. Иными словами, начинается 'ведение' прибыли. [br]Параметр 'Исп. расч. цену' позволяет вести расчет стопа от расчетной цены открытия. Для режима лаборатории это цена открытия, следующего за сигналом бара. Для режима реальных торгов это цена, по которой была выставлена заявка на открытие позиции. Отключение данного параметра приводит к использованию реальной цены открытия полученной в ходе торгов. [br]Расчетную цену невозможно рассчитать, если включена опция 'По рынку с фикс ценой' и задано проскальзывание отличное от 0.</value>
+    <value>Трейл Стоп, значения ведения задаются в абсолютных величинах. У блока 3 параметра, которые описывают два режима работы: [br]1й режим - Стоп - лосс описывается параметром 'Стоп лосс', который задает максимальное падение (для шорта - рост) от цены входа, которые мы готовы принять. Это падение задается числом. [br]Во 2й режим блок переходит, если было зафиксировано увеличение цены (в случае шорта уменьшение) на величину заданную параметром 'Вкл. трейл'. [br]Важно! Переход в режим ведения происходит только в случае превышения ценой заданного уровня! В случае касания цены без превышения ведение не включается. В этом случае уровень поддержки на следующем баре вычисляется, как MFE(этого бара) минус параметр 'трейл лосс'. Иными словами, начинается 'ведение' прибыли. [br]Параметр 'Исп. расч. цену' позволяет вести расчет стопа от расчетной цены открытия. Для режима лаборатории это цена открытия, следующего за сигналом бара. Для режима реальных торгов это цена, по которой была выставлена заявка на открытие позиции. Отключение данного параметра приводит к использованию реальной цены открытия полученной в ходе торгов. [br]Расчетную цену невозможно рассчитать, если включена опция 'По рынку с фикс ценой' и задано проскальзывание отличное от 0.</value>
   </data>
   <data name="BuysHandler.QuantityMode.Name" xml:space="preserve">
     <value>Единицы объема</value>
@@ -7105,13 +7160,13 @@
     <value>Событие</value>
   </data>
   <data name="EventKindHandler.Description" xml:space="preserve">
-    <value>Событие</value>
+    <value>При очередном пересчет, если выполнено указанное событие, блок Событие вернет значение true. Данное значение можно использовать в алгоритме. [br]Блок можно использовать в редакторе множество раз. Блок подключается к источнику, отдает событие по инструменту.</value>
   </data>
   <data name="EventKindHandler.EventKind.Name" xml:space="preserve">
     <value>Вид события</value>
   </data>
   <data name="EventKindHandler.EventKind.Description" xml:space="preserve">
-    <value>Вид события</value>
+    <value>Вид события: Ничего, Заявка отклонена, Заявка выполнена полностью, Открытие позиции, Закрытие позиции, Изменение кол-ва в заявке, Торговля начата, Торговля остановлена, Заявка отменена, Ограничение претрейда</value>
   </data>
   <data name="EventKind.Name" xml:space="preserve">
     <value>Вид события</value>
@@ -7148,5 +7203,259 @@
   </data>
   <data name="SellDeposit.Description" xml:space="preserve">
     <value>Блок выводит значение Гарантийного обеспечения продавца</value>
+  </data>
+  <data name="PositionByName.Name" xml:space="preserve">
+    <value>Позиция по имени</value>
+  </data>
+  <data name="PositionByName.Description" xml:space="preserve">
+    <value>Получить значение позиции из таблицы Позиции.</value>
+  </data>
+  <data name="PositionByName.Symbol.Name" xml:space="preserve">
+    <value>Название инструмента</value>
+  </data>
+  <data name="PositionByName.Symbol.Description" xml:space="preserve">
+    <value>Название инструмента из таблицы Позиции.</value>
+  </data>
+  <data name="PositionByName.Account.Name" xml:space="preserve">
+    <value>Счет</value>
+  </data>
+  <data name="PositionByName.Account.Description" xml:space="preserve">
+    <value>Название счета (необязательно).</value>
+  </data>
+  <data name="PositionByName.PositionField.Name" xml:space="preserve">
+    <value>Поле позиции</value>
+  </data>
+  <data name="PositionByName.PositionField.Description" xml:space="preserve">
+    <value>Выводимое поле позиции.</value>
+  </data>
+  <data name="NetValueByAccount.Name" xml:space="preserve">
+    <value>Чистая стоимость по счету</value>
+  </data>
+  <data name="NetValueByAccount.Description" xml:space="preserve">
+    <value>Получить суммарное значение чистой стоимости по счету. Если счет не указан, то берется название счета из агента (только в режиме агента).</value>
+  </data>
+  <data name="NetValueByAccount.Account.Name" xml:space="preserve">
+    <value>Счет</value>
+  </data>
+    <data name="NetValueByAccount.Account.Description" xml:space="preserve">
+    <value>Название счета (необязательно).</value>
+  </data>
+  <data name="LastExitAvgPrice.Name" xml:space="preserve">
+    <value>Средняя цена выхода последней позиции</value>
+  </data>
+  <data name="LastExitAvgPrice.Description" xml:space="preserve">
+    <value>Средняя цена выхода последней позиции.</value>
+  </data>
+  <data name="LastClosedNamePositionAvgExitPrice.Name" xml:space="preserve">
+    <value>Средняя цена выхода последней позиции по имени</value>
+  </data>
+  <data name="LastClosedNamePositionAvgExitPrice.Description" xml:space="preserve">
+    <value>Средняя цена выхода последней позиции по имени.</value>
+  </data>
+  <data name="LastClosedNamePositionAvgExitPrice.Name.Name" xml:space="preserve">
+    <value>Имя</value>
+  </data>
+  <data name="LastClosedNamePositionAvgExitPrice.Name.Description" xml:space="preserve">
+    <value>Имя сигнала закрытия</value>
+  </data>
+  <data name="ChannelHandler.ChannelApiKey.Description" xml:space="preserve">
+    <value>Ключ, определяющий в какой канал TSChannel будут передаваться значения. Скопируйте значение API Key из "Передатчика" соответствующего канала в своем кабинете signal.tslab.pro</value>
+  </data>
+  <data name="ChannelHandler.ChannelApiKey.Name" xml:space="preserve">
+    <value>Api Key</value>
+  </data>
+  <data name="ChannelHandler.Name" xml:space="preserve">
+    <value>Передатчик</value>
+  </data>
+  <data name="ParameterSenderHandler.Name" xml:space="preserve">
+    <value>Упаковщик параметра</value>
+  </data>
+  <data name="ReceiverHandler.Name" xml:space="preserve">
+    <value>Приемник</value>
+  </data>
+  <data name="ReceiverHandler.ReceiverApiKey.Description" xml:space="preserve">
+    <value>Ключ, определяющий из какого канала TSChannel будут приниматься значения. Скопируйте значение API Key из "Приемника" соответствующего канала в своем кабинете signal.tslab.pro</value>
+  </data>
+  <data name="ReceiverHandler.ReceiverApiKey.Name" xml:space="preserve">
+    <value>Api Key</value>
+  </data>
+  <data name="ValueReceiverHandler.Name" xml:space="preserve">
+    <value>Распаковщик значения</value>
+  </data>
+  <data name="ValueReceiverHandler.Value.Description" xml:space="preserve">
+    <value>Принятое значение для связи с параметрами других блоков.</value>
+  </data>
+  <data name="ValueReceiverHandler.Value.Name" xml:space="preserve">
+    <value>Значение</value>
+  </data>
+  <data name="ValueSenderHandler.Name" xml:space="preserve">
+    <value>Упаковщик значения</value>
+  </data>
+<data name="BoolReceiverHandler.Name" xml:space="preserve">
+    <value>Распаковщик логического значения</value>
+  </data>
+<data name="BoolReceiverHandler.Value.Description" xml:space="preserve">
+    <value>Принятое значение для связи с параметрами других блоков.</value>
+  </data>
+<data name="BoolReceiverHandler.Value.Name" xml:space="preserve">
+    <value>Значение</value>
+  </data>
+  <data name="AddPositionHandler.Name" xml:space="preserve">
+    <value>Добавить позицию в цикле</value>
+  </data>
+  <data name="AddPositionHandler.UseVirtualClosing.Name" xml:space="preserve">
+    <value>Использовать "виртуальное закрытие"</value>
+  </data>
+  <data name="AddPositionHandler.Description" xml:space="preserve">
+    <value>Выполняется проход на баре по всем циклам итерации. Во время прохода выполняется просчет позиций, которые необходимо открыть. Добавляется такое количество позиций, сколько итераций вернуло результат true.</value>
+  </data>
+  <data name="AddPositionHandler.UseVirtualClosing.Description" xml:space="preserve">
+    <value>Параметр необходим для случаев, когда пропущен сигнал закрытия позиции, чтобы не было новых пропусков. Он говорит о том, что сигнал позиции выдан скриптом, но реальная заявка еще не прошла. Например, ожидается автозакрытие. При включенной опции Цикл будет переходить к следующей свободной итерации, при выключенной, новых открытий позиции не будет.</value>
+  </data>
+  <data name="CycleAndHandler.Description" xml:space="preserve">
+    <value>Если на всех итерациях Логические значения принимают значение true, то на выходе блока возвращается значение true на баре (на пересчёте). Если одно из Логических значений принимает значение false, то на выходе блока возвращается значение false.</value>
+  </data>
+  <data name="CycleAndHandler.Name" xml:space="preserve">
+    <value>И цикла</value>
+  </data>
+  <data name="CycleBoolResultHandler.Description" xml:space="preserve">
+    <value>Выводит логическое значение из цикла на бар по номеру итерации.</value>
+  </data>
+  <data name="CycleBoolResultHandler.Index.Description" xml:space="preserve">
+    <value>логический результат по номеру итерации цикла</value>
+  </data>
+  <data name="CycleBoolResultHandler.Index.Name" xml:space="preserve">
+    <value>Индекс</value>
+  </data>
+  <data name="CycleBoolResultHandler.Name" xml:space="preserve">
+    <value>Логический результат цикла</value>
+  </data>
+  <data name="CycleBoolResultHandler.UseLastIndex.Description" xml:space="preserve">
+    <value>всегда использовать последний номер итерации цикла</value>
+  </data>
+  <data name="CycleBoolResultHandler.UseLastIndex.Name" xml:space="preserve">
+    <value>Использовать последний индекс</value>
+  </data>
+  <data name="CycleBoolResultsHandler.Description" xml:space="preserve">
+    <value>Можно вывести на график. График отобразит все итерации цикла. Результаты блока можно передать в другой Цикл, при поддержке одинакового количества итераций.
+ Вложенные циклы не поддерживаются.</value>
+  </data>
+  <data name="CycleBoolResultsHandler.Name" xml:space="preserve">
+    <value>Логические результаты цикла</value>
+  </data>
+  <data name="CycleHandler.Description" xml:space="preserve">
+    <value>У блока Цикл сверху есть служебный соединитель для связи с блоками Открытия позиций или Обновляемыми значениями (простое и обновляемое значение цикла). Таким образом обозначается вход в цикл  (начало расчета цикла).
+ Если данный соединитель ни с чем не соединен, то началом расчета цикла считается первая Формула (или Логическая формула), на которую подан выход из блока Цикл и в которой присутствует обращение к блоку Цикл по его имени.[br]Все блоки, которые находятся в связях между началом цикла и окончанием цикла, участвуют в расчете результатов работы цикла. Блоки (потоковые и не потоковые обработчики), соединенные от блока, находящегося в цикле, автоматически привязываются к циклу и их нельзя привязать к другому циклу.</value>
+  </data>
+  <data name="CycleHandler.MaxCount.Description" xml:space="preserve">
+    <value>задает максимальное количество итераций.</value>
+  </data>
+  <data name="CycleHandler.MaxCount.Name" xml:space="preserve">
+    <value>Макс.Количество</value>
+  </data>
+  <data name="CycleHandler.Name" xml:space="preserve">
+    <value>Цикл</value>
+  </data>
+  <data name="CycleOrHandler.Description" xml:space="preserve">
+    <value>Если в одной из итераций логическое значение принимает значение true, то на выходе блока возвращается значение true на баре (на пересчёте), иначе возвращается значение false. На входе результаты логических значений работы цикла, например, логическая формула.</value>
+  </data>
+  <data name="CycleOrHandler.Name" xml:space="preserve">
+    <value>Или цикла</value>
+  </data>
+  <data name="CycleDoubleResultHandler.Description" xml:space="preserve">
+    <value>Отдает значение по номеру итерации, и выводит значение на бар.</value>
+  </data>
+  <data name="CycleDoubleResultHandler.Index.Description" xml:space="preserve">
+    <value>указывает с какой итерации необходимо скопировать вещественное значение для вывода его на бар.</value>
+  </data>
+  <data name="CycleDoubleResultHandler.Index.Name" xml:space="preserve">
+    <value>Индекс</value>
+  </data>
+  <data name="CycleDoubleResultHandler.Name" xml:space="preserve">
+    <value>Результат цикла</value>
+  </data>
+  <data name="CycleDoubleResultHandler.UseLastIndex.Name" xml:space="preserve">
+    <value>Использовать последний индекс</value>
+  </data>
+  <data name="CycleDoubleResultsHandler.Description" xml:space="preserve">
+    <value>Можно вывести на график. Можно передать в другой цикл, при поддержке одинакового количества итераций. Вложенные циклы не поддерживаются. Служебный соединитель, для вывода параметра в контрольную панель.</value>
+  </data>
+  <data name="CycleDoubleResultsHandler.Name" xml:space="preserve">
+    <value>Результаты цикла</value>
+  </data>
+  <data name="CycleDoubleSumHandler.Description" xml:space="preserve">
+    <value>Результат - сумма значений всех итераций цикла.</value>
+  </data>
+  <data name="CycleDoubleSumHandler.Name" xml:space="preserve">
+    <value>Сумма цикла</value>
+  </data>
+  <data name="CycleValueUpdaterHandler.Description" xml:space="preserve">
+    <value>Обычное обновляемое значение в цикле переходит со старой итерации на значение новой итерации. Обновляемое значение цикла работает с массивом значений итераций. На выходе список вещественных значений. Для каждой итерации цикла ведется свое отдельное, независимое обновляемое значение.</value>
+  </data>
+  <data name="CycleValueUpdaterHandler.ExecutionOrder.Description" xml:space="preserve">
+    <value>Определяет очередь расчета Обновляемого значения в алгоритме, в общем порядке (по умолчанию), в конце алгоритма (в очереди данной ветки расчета) или после выхода из позиции.</value>
+  </data>
+  <data name="CycleValueUpdaterHandler.ExecutionOrder.Name" xml:space="preserve">
+    <value>Порядок исполнения</value>
+  </data>
+  <data name="CycleValueUpdaterHandler.Name" xml:space="preserve">
+    <value>Обновляемое значение цикла</value>
+  </data>
+  <data name="CycleValueUpdaterHandler.StartFrom.Description" xml:space="preserve">
+    <value>Начальное значение блока.</value>
+  </data>
+  <data name="CycleValueUpdaterHandler.StartFrom.Name" xml:space="preserve">
+    <value>Начальное</value>
+  </data>
+  <data name="ExportValuesHandler.Description" xml:space="preserve">
+    <value>Передает значение по установленному пользователем Идентификатору.</value>
+  </data>
+  <data name="ExportValuesHandler.Id.Name" xml:space="preserve">
+    <value>Идентификатор</value>
+  </data>
+  <data name="ImportBoolValuesHandler.Description" xml:space="preserve">
+    <value>Отдает логическое значение, по Идентификатору, установленному в блоке Экспорт значений</value>
+  </data>
+  <data name="ImportBoolValuesHandler.Id.Name" xml:space="preserve">
+    <value>Идентификатор</value>
+  </data>
+  <data name="ImportDoubleValuesHandler.Description" xml:space="preserve">
+    <value>Отдает число, по Идентификатору, установленному в блоке Экспорт значений.</value>
+  </data>
+  <data name="ImportDoubleValuesHandler.Id.Name" xml:space="preserve">
+    <value>Идентификатор</value>
+  </data>
+  <data name="ImportIntValuesHandler.Description" xml:space="preserve">
+    <value>Отдает целое число, по Идентификатору, установленному в блоке Экспорт значений.</value>
+  </data>
+  <data name="ImportIntValuesHandler.Id.Name" xml:space="preserve">
+    <value>Идентификатор</value>
+  </data>
+  <data name="INTERACTIVESPLINE.Description" xml:space="preserve">
+    <value>Источник - интерактивный сплайн. Данный блок представляет график в виде кривой, проходящей через заданные точки. Полученные данные можно вывести на панель холста ("Панель холста"). Данный тип данных возвращают такие блоки как " Подготовить линию", "IV Smile", "Улыбка' Блека-Шолза".  [br]Цвет, толщина, тип линии и её прозрачность настраивается в редакторе скриптов. Каждый узел имеет такие дополнительные настройки как цвет узла, символ и размер символа в узле. К узлу можно прикрепить всплывающую подсказку (с помощью блока, который формирует линию) и метку (постоянно видимый текст).</value>
+  </data>
+  <data name="TimestampHandler.Description" xml:space="preserve">
+    <value>Время в формате Unix Time Stamp с миллисекундами. [br]Особенность: блок отдает число без преобразований, вне зависимости от настроек "Локальное время" в поставщике данных. Блок отдает на баре соответствующее время/дату UTC в формате UTS</value>
+  </data>
+  <data name="ChannelHandler.Description" xml:space="preserve">
+    <value>Передает все сформированные блоками - упаковщиками пары "ключ: значение" на сервер TSChannel. Передача пакета значений происходит в момент пересчета скрипта.</value>
+  </data>
+  <data name="ParameterSenderHandler.Description" xml:space="preserve">
+    <value>Формирует пару "Ключ / Значение" на основе параметра другого блока, например индикатора. [br]Имя блока определяет ключ (имя) передаваемого в канал значения. При получении в другом скрипте идентифицировать значение можно будет именно по этому имени.</value>
+  </data>
+  <data name="ReceiverHandler.Description" xml:space="preserve">
+    <value>Получает пакеты данных из канала TSChannel. Прием нового пакета данных происходит в момент пересчета скрипта.</value>
+  </data>
+  <data name="ValueReceiverHandler.Description" xml:space="preserve">
+    <value>Извлекает значение, соответствующее нужному ключу из принятого пакета данных и делает его доступным для дальнейших расчетов. [br]Имя блока определяет ключ (имя) распаковываемого значения.</value>
+  </data>
+  <data name="ValueSenderHandler.Description" xml:space="preserve">
+    <value>Формирует пару "Ключ / Значение" на основе вычисленного в скрипте значения. [br]Имя блока определяет ключ (имя) передаваемого в канал значения. При получении в другом скрипте идентифицировать значение можно будет именно по этому имени.</value>
+  </data>
+  <data name="LotSize.Name" xml:space="preserve">
+    <value>Размер лота</value>
+  </data>
+  <data name="LotSize.Description" xml:space="preserve">
+    <value>Размер лота инструмента. Блок возвращает количество акций в одном лоте. Эта же величина показывается в таблице 'Котировки'.</value>
   </data>
 </root>

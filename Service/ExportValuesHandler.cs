@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using TSLab.DataSource;
 
+// ReSharper disable once CheckNamespace
 namespace TSLab.Script.Handlers
 {
     [HandlerCategory(HandlerCategories.ServiceElements)]
@@ -58,6 +59,9 @@ namespace TSLab.Script.Handlers
 
         private void Export<T>(ISecurity security, IList<T> values)
         {
+            if (Context.IsOptimization)
+                return;
+
             var bars = security.Bars;
             var count = Math.Min(bars.Count, values.Count);
             var dateTimes = new DateTime[count];

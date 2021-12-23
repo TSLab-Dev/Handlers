@@ -39,7 +39,9 @@ namespace TSLab.Script.Handlers
             if (compressedBarsCount == 0)
                 return EmptyArrays.Double;
 
-            var decompressedSecurity = Context.Runtime.Securities.First(item => item.SecurityDescription.Id == security.SecurityDescription.Id);
+            var decompressedSecurity = Context.Runtime.Securities.First(
+                item => item.SecurityDescription.Id == security.SecurityDescription.Id
+                        && item.SecurityDescription.DSName == security.SecurityDescription.DSName);
             var decompressedBars = decompressedSecurity.Bars;
             var decompressedBarsCount = decompressedBars.Count;
             var decompressedIndex = 0;

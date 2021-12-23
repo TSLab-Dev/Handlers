@@ -317,7 +317,8 @@ namespace TSLab.Script.Handlers.Options
                 if ((ds != null) && ds.IsConnected)
                 {
                     serverNow = ds.ServerTime;
-                    if (serverNow > lastBarNow)
+                    if ((serverNow > lastBarNow) &&
+                        (serverNow.Date == lastBarNow.Date)) // [2021-02-25] Эта проверка нужна, чтобы не менять время последнего бара в прошедшем дне
                         now = serverNow;
                 }
             }

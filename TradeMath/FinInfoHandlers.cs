@@ -28,32 +28,6 @@ namespace TSLab.Script.Handlers
         protected abstract double? GetValue(FinInfo finInfo);
     }
 
-    // Категория и описание входов/выходов идет через базовый класс.
-    [HelperName("Number of purchases", Language = Constants.En)]
-    [HelperName("СумСпрос", Language = Constants.Ru)]
-    [Description("Суммарное текущее количество заявок на покупку. Эта же величина показывается в таблице 'Котировки'.")]
-    [HelperDescription("Shows the number of purchases (bids). This value is shown also in 'Quotes' table.", Constants.En)]
-    public sealed class BuyCount : FinInfoHandler
-    {
-        protected override double? GetValue(FinInfo finInfo)
-        {
-            return finInfo.BuyCount;
-        }
-    }
-
-    // Категория и описание входов/выходов идет через базовый класс.
-    [HelperName("Number of sales", Language = Constants.En)]
-    [HelperName("СумПредл", Language = Constants.Ru)]
-    [Description("Суммарное текущее количество заявок на продажу. Эта же величина показывается в таблице 'Котировки'.")]
-    [HelperDescription("Shows the number of sales (asks). This value is shown also in 'Quotes' table.", Constants.En)]
-    public sealed class SellCount : FinInfoHandler
-    {
-        protected override double? GetValue(FinInfo finInfo)
-        {
-            return finInfo.SellCount;
-        }
-    }
-
     // Гарантийные обязательства покупателя
     public sealed class BuyDeposit : FinInfoHandler
     {
@@ -90,6 +64,31 @@ namespace TSLab.Script.Handlers
                 tick = Math.Pow(10, -finInfo.Security.Decimals);
 
             return tick;
+        }
+    }
+
+    // Категория и описание входов/выходов идет через базовый класс.
+    [HelperName("Lot step", Language = Constants.En)]
+    [HelperName("Шаг лота", Language = Constants.Ru)]
+    [Description("Шаг лота инструмента. Эта же величина показывается в таблице 'Котировки'.")]
+    [HelperDescription("Lot step of a security. This value is shown also in 'Quotes' table.", Constants.En)]
+    public sealed class LotTick : FinInfoHandler
+    {
+        protected override double? GetValue(FinInfo finInfo)
+        {
+            return finInfo?.Security?.LotTick;
+        }
+    }
+
+    [HelperName("Lot size", Language = Constants.En)]
+    [HelperName("Размер лота", Language = Constants.Ru)]
+    [Description("Размер лота инструмента. Блок возвращает количество акций в одном лоте. Эта же величина показывается в таблице 'Котировки'.")]
+    [HelperDescription("Lot size of a security. The block returns the number of shares in one lot. This value is shown also in 'Quotes' table.", Constants.En)]
+    public sealed class LotSize : FinInfoHandler
+    {
+        protected override double? GetValue(FinInfo finInfo)
+        {
+            return finInfo?.Security?.LotSize;
         }
     }
 }

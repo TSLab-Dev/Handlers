@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 
 using TSLab.Script.Handlers.Options;
@@ -27,13 +28,15 @@ namespace TSLab.Script.Handlers
 
         public IList<double> Execute(IBaseTradeStatisticsWithKind tradeStatistics)
         {
+            var sw = Stopwatch.StartNew();
             var histograms = tradeStatistics.GetHistograms();
             var tradeHistogramsCache = tradeStatistics.TradeHistogramsCache;
             var barsCount = tradeHistogramsCache.Bars.Count;
             var trimLevelPercent = TrimLevelPercent;
             const double DefaultValue = double.NaN;
 
-            if (histograms.Count == 0 || histograms.All(item => item.Bars.Count == 0) || trimLevelPercent < 0 || trimLevelPercent > 100 || double.IsNaN(trimLevelPercent))
+            if (histograms.Count == 0 || histograms.All(item => item.Bars.Count == 0) || trimLevelPercent < 0 
+                || trimLevelPercent > 100 || double.IsNaN(trimLevelPercent))
                 return new ConstGenBase<double>(barsCount, DefaultValue);
 
             double[] results = null;
@@ -82,6 +85,8 @@ namespace TSLab.Script.Handlers
             if (canBeCached)
                 DerivativeTradeStatisticsCache.Instance.SetContext(id, stateId, tradeHistogramsCache, results, context);
 
+            if (sw.Elapsed.TotalSeconds > 5)
+                Context?.Log($"Time elapsed {this.GetType().Name}: {sw.Elapsed}", MessageType.Debug);
             return results;
         }
 

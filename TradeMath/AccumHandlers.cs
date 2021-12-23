@@ -16,7 +16,7 @@ namespace TSLab.Script.Handlers
     [HandlerCategory(HandlerCategories.TradeMath)]
     [HelperName("Max", Language = Constants.En)]
     [HelperName("Наибольшее", Language = Constants.Ru)]
-    [InputsCount(2, 6)]
+    [InputsCount(2, 10)]
     [OutputsCount(1)]
     [OutputType(TemplateTypes.DOUBLE)]
     [Description("Максимальное значение из нескольких (от 2 до 6 входов)")]
@@ -49,6 +49,11 @@ namespace TSLab.Script.Handlers
         public double Execute(double source1, double source2, double source3, double source4, double source5, double source6)
         {
             return Execute(Math.Max(source1, source2), source3, source4, source5, source6);
+        }
+
+        public double Execute(double source1, double source2, double source3, double source4, double source5, double source6, params double[] others)
+        {
+            return Math.Max(Execute(source1, source2, source3, source4, source5, source6), others.Max());
         }
 
         #endregion
@@ -92,13 +97,45 @@ namespace TSLab.Script.Handlers
             return results;
         }
 
+        public IList<double> Execute(IList<double> source1, IList<double> source2, IList<double> source3, IList<double> source4, IList<double> source5, IList<double> source6, IList<double> source7)
+        {
+            var source = Execute(source7, source6, source5, source4, source3, source2);
+            var results = Execute(source, source1);
+            Context?.ReleaseArray((Array)source);
+            return results;
+        }
+
+        public IList<double> Execute(IList<double> source1, IList<double> source2, IList<double> source3, IList<double> source4, IList<double> source5, IList<double> source6, IList<double> source7, IList<double> source8)
+        {
+            var source = Execute(source8, source7, source6, source5, source4, source3, source2);
+            var results = Execute(source, source1);
+            Context?.ReleaseArray((Array)source);
+            return results;
+        }
+
+        public IList<double> Execute(IList<double> source1, IList<double> source2, IList<double> source3, IList<double> source4, IList<double> source5, IList<double> source6, IList<double> source7, IList<double> source8, IList<double> source9)
+        {
+            var source = Execute(source9, source8, source7, source6, source5, source4, source3, source2);
+            var results = Execute(source, source1);
+            Context?.ReleaseArray((Array)source);
+            return results;
+        }
+
+        public IList<double> Execute(IList<double> source1, IList<double> source2, IList<double> source3, IList<double> source4, IList<double> source5, IList<double> source6, IList<double> source7, IList<double> source8, IList<double> source9, IList<double> source10)
+        {
+            var source = Execute(source10, source9, source8, source7, source6, source5, source4, source3, source2);
+            var results = Execute(source, source1);
+            Context?.ReleaseArray((Array)source);
+            return results;
+        }
+
         #endregion
     }
 
     [HandlerCategory(HandlerCategories.TradeMath)]
     [HelperName("Min", Language = Constants.En)]
     [HelperName("Наименьшее", Language = Constants.Ru)]
-    [InputsCount(2, 6)]
+    [InputsCount(2, 10)]
     [OutputsCount(1)]
     [OutputType(TemplateTypes.DOUBLE)]
     [Description("Минимальное значение из нескольких (от 2 до 6 входов)")]
@@ -131,6 +168,11 @@ namespace TSLab.Script.Handlers
         public double Execute(double source1, double source2, double source3, double source4, double source5, double source6)
         {
             return Execute(Math.Min(source1, source2), source3, source4, source5, source6);
+        }
+
+        public double Execute(double source1, double source2, double source3, double source4, double source5, double source6, params double[] others)
+        {
+            return Math.Min(Execute(source1, source2, source3, source4, source5, source6), others.Min());
         }
 
         #endregion
@@ -174,13 +216,45 @@ namespace TSLab.Script.Handlers
             return results;
         }
 
+        public IList<double> Execute(IList<double> source1, IList<double> source2, IList<double> source3, IList<double> source4, IList<double> source5, IList<double> source6, IList<double> source7)
+        {
+            var source = Execute(source7, source6, source5, source4, source3, source2);
+            var results = Execute(source, source1);
+            Context?.ReleaseArray((Array)source);
+            return results;
+        }
+
+        public IList<double> Execute(IList<double> source1, IList<double> source2, IList<double> source3, IList<double> source4, IList<double> source5, IList<double> source6, IList<double> source7, IList<double> source8)
+        {
+            var source = Execute(source8, source7, source6, source5, source4, source3, source2);
+            var results = Execute(source, source1);
+            Context?.ReleaseArray((Array)source);
+            return results;
+        }
+
+        public IList<double> Execute(IList<double> source1, IList<double> source2, IList<double> source3, IList<double> source4, IList<double> source5, IList<double> source6, IList<double> source7, IList<double> source8, IList<double> source9)
+        {
+            var source = Execute(source9, source8, source7, source6, source5, source4, source3, source2);
+            var results = Execute(source, source1);
+            Context?.ReleaseArray((Array)source);
+            return results;
+        }
+
+        public IList<double> Execute(IList<double> source1, IList<double> source2, IList<double> source3, IList<double> source4, IList<double> source5, IList<double> source6, IList<double> source7, IList<double> source8, IList<double> source9, IList<double> source10)
+        {
+            var source = Execute(source10, source9, source8, source7, source6, source5, source4, source3, source2);
+            var results = Execute(source, source1);
+            Context?.ReleaseArray((Array)source);
+            return results;
+        }
+
         #endregion
     }
 
     [HandlerCategory(HandlerCategories.TradeMath)]
     [HelperName("Sum up", Language = Constants.En)]
     [HelperName("Сложить", Language = Constants.Ru)]
-    [InputsCount(2, 6)]
+    [InputsCount(2, 10)]
     [OutputsCount(1)]
     [OutputType(TemplateTypes.DOUBLE)]
     [Description("Сложить несколько чисел (от 2 до 6 входов)")]
@@ -214,6 +288,11 @@ namespace TSLab.Script.Handlers
         public double Execute(double source1, double source2, double source3, double source4, double source5, double source6)
         {
             return source1 + source2 + source3 + source4 + source5 + source6;
+        }
+
+        public double Execute(double source1, double source2, double source3, double source4, double source5, double source6, params double[] others)
+        {
+            return source1 + source2 + source3 + source4 + source5 + source6 + others.Sum();
         }
 
         #endregion
@@ -252,6 +331,38 @@ namespace TSLab.Script.Handlers
         public IList<double> Execute(IList<double> source1, IList<double> source2, IList<double> source3, IList<double> source4, IList<double> source5, IList<double> source6)
         {
             var source = Execute(source6, source5, source4, source3, source2);
+            var results = Execute(source, source1);
+            Context?.ReleaseArray((Array)source);
+            return results;
+        }
+
+        public IList<double> Execute(IList<double> source1, IList<double> source2, IList<double> source3, IList<double> source4, IList<double> source5, IList<double> source6, IList<double> source7)
+        {
+            var source = Execute(source7, source6, source5, source4, source3, source2);
+            var results = Execute(source, source1);
+            Context?.ReleaseArray((Array)source);
+            return results;
+        }
+
+        public IList<double> Execute(IList<double> source1, IList<double> source2, IList<double> source3, IList<double> source4, IList<double> source5, IList<double> source6, IList<double> source7, IList<double> source8)
+        {
+            var source = Execute(source8, source7, source6, source5, source4, source3, source2);
+            var results = Execute(source, source1);
+            Context?.ReleaseArray((Array)source);
+            return results;
+        }
+
+        public IList<double> Execute(IList<double> source1, IList<double> source2, IList<double> source3, IList<double> source4, IList<double> source5, IList<double> source6, IList<double> source7, IList<double> source8, IList<double> source9)
+        {
+            var source = Execute(source9, source8, source7, source6, source5, source4, source3, source2);
+            var results = Execute(source, source1);
+            Context?.ReleaseArray((Array)source);
+            return results;
+        }
+
+        public IList<double> Execute(IList<double> source1, IList<double> source2, IList<double> source3, IList<double> source4, IList<double> source5, IList<double> source6, IList<double> source7, IList<double> source8, IList<double> source9, IList<double> source10)
+        {
+            var source = Execute(source10, source9, source8, source7, source6, source5, source4, source3, source2);
             var results = Execute(source, source1);
             Context?.ReleaseArray((Array)source);
             return results;

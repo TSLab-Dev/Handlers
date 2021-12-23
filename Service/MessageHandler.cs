@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using TSLab.Script.Handlers.Options;
 
+// ReSharper disable once CheckNamespace
 namespace TSLab.Script.Handlers
 {
     [HandlerCategory(HandlerCategories.ServiceElements)]

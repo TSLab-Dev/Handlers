@@ -26,21 +26,25 @@ namespace TSLab.Script.Handlers.Options
     public class HV : BaseContextHandler, IStreamHandler
     {
         /// <summary>
-        /// Никогда больше не трогай DefaultPeriodInt!
-        /// 810 зашито повсюду и его изменение приведет к потере накопленной истории
+        /// Старайся не трогать DefaultPeriodInt!
+        /// 990 зашито повсюду и его изменение может привести к потере накопленной истории
         /// у всех клиентов.
         /// </summary>
-        private const int DefaultPeriodInt = 810;
+        private const int DefaultPeriodInt = 990;
         /// <summary>
-        /// Никогда больше не трогай DefaultPeriod!
-        /// 810 зашито повсюду и его изменение приведет к потере накопленной истории
+        /// Старайся не трогать DefaultMultDbl!
+        /// 500 зашито повсюду и его изменение может привести к потере накопленной истории
         /// у всех клиентов.
         /// </summary>
-        private const string DefaultPeriod = "810";
-        private const string DefaultMult = "452";
+        private const double DefaultMultDbl = 500;
+        /// <summary>
+        /// Старайся не трогать DefaultPeriodInt!
+        /// 990 зашито повсюду и его изменение может привести к потере накопленной истории
+        /// у всех клиентов.
+        /// </summary>
+        private const string DefaultPeriod = "990";
+        private const string DefaultMult = "500";
 
-        private bool m_reset = true;
-        private bool m_useAllData;
         private int m_period = Int32.Parse(DefaultPeriod);
         private double m_annualizingMultiplier = Double.Parse(DefaultMult);
 
@@ -74,11 +78,7 @@ namespace TSLab.Script.Handlers.Options
         [Description("При true будет учитывать все данные, включая ночные гепы")]
         [HelperDescription("Should handler use all data including overnight gaps?", Language = Constants.En)]
         [HandlerParameter(true, NotOptimized = false, IsVisibleInBlock = true, Default = "false", Name = "Use All Data")]
-        public bool UseAllData
-        {
-            get { return m_useAllData; }
-            set { m_useAllData = value; }
-        }
+        public bool UseAllData { get; set; }
 
         /// <summary>
         /// \~english Calculation period
@@ -111,7 +111,7 @@ namespace TSLab.Script.Handlers.Options
             get { return m_annualizingMultiplier; }
             set
             {
-                if (value > 0)
+                if (DoubleUtil.IsPositive(value))
                     m_annualizingMultiplier = value;
             }
         }
@@ -125,11 +125,7 @@ namespace TSLab.Script.Handlers.Options
         [Description("Повторять вычисление для всех баров при каждом вызове")]
         [HelperDescription("Repeat calculation for all bars every execution", Language = Constants.En)]
         [HandlerParameter(true, NotOptimized = false, IsVisibleInBlock = true, Default = "true")]
-        public bool Reset
-        {
-            get { return m_reset; }
-            set { m_reset = value; }
-        }
+        public bool Reset { get; set; }
 
         /// <summary>
         /// \~english Use global cache
@@ -193,7 +189,7 @@ namespace TSLab.Script.Handlers.Options
             Dictionary<DateTime, double> hvSigmas;
             #region Get cache
             int barLengthInSeconds = (int)sec.IntervalInstance.ToSeconds();
-            string cashKey = GetGlobalCashKey(sec.Symbol, false, m_useAllData, barLengthInSeconds, m_annualizingMultiplier, m_period);
+            string cashKey = GetGlobalCashKey(sec.Symbol, false, UseAllData, barLengthInSeconds, m_annualizingMultiplier, m_period);
             if (UseGlobalCache)
             {
                 object globalObj = Context.LoadGlobalObject(cashKey, true);
@@ -234,7 +230,7 @@ namespace TSLab.Script.Handlers.Options
 
             List<double> historySigmas = LocalHistory;
 
-            if (m_reset || m_context.Runtime.IsFixedBarsCount)
+            if (Reset || m_context.Runtime.IsFixedBarsCount)
                 historySigmas.Clear();
 
             int len = Context.BarsCount;
@@ -258,7 +254,7 @@ namespace TSLab.Script.Handlers.Options
             }
             #endregion Get cache
 
-            if (m_reset || m_context.Runtime.IsFixedBarsCount)
+            if (Reset || m_context.Runtime.IsFixedBarsCount)
                 logs.Clear();
 
             if (len <= 0)
@@ -300,7 +296,7 @@ namespace TSLab.Script.Handlers.Options
                 double hv;
                 if (TryEstimateHv(
                     logs, m_period, barLengthInSeconds, m_annualizingMultiplier,
-                    m_useAllData, out hv))
+                    UseAllData, out hv))
                 {
                     double vol = hv;
                     historySigmas.Add(vol);
@@ -334,14 +330,23 @@ namespace TSLab.Script.Handlers.Options
         /// Сформировать уникальный ключ для ГЛОБАЛЬНОГО КЕША
         /// </summary>
         public static string GetGlobalCashKey(string symbol, bool returnPct, bool useAllData,
-            int barLengthInSeconds, double multiplier, int period = DefaultPeriodInt)
+            int barLengthInSeconds, double multiplier = DefaultMultDbl, int period = DefaultPeriodInt)
         {
             string cashKey;
             if (period == DefaultPeriodInt)
             {
-                cashKey = String.Intern(typeof(HV).Name + "_hvSigmas_" + symbol + "_Pct-" + returnPct + "_All-" + useAllData + "_" +
-                   barLengthInSeconds + "_" +
-                   multiplier.ToString("E", CultureInfo.InvariantCulture).Replace('+', '~'));
+                if (DoubleUtil.AreClose(multiplier, DefaultMultDbl))
+                {
+                    // Короткое имя позволит в дальнейшем менее болезненно проходить следующие изменения в расписании работы ФОРТС.
+                    cashKey = String.Intern(typeof(HV).Name + "_hvSigmas_" + symbol + "_Pct-" + returnPct + "_All-" + useAllData + "_" +
+                       barLengthInSeconds);
+                }
+                else
+                {
+                    cashKey = String.Intern(typeof(HV).Name + "_hvSigmas_" + symbol + "_Pct-" + returnPct + "_All-" + useAllData + "_" +
+                       barLengthInSeconds + "_" +
+                       multiplier.ToString("E", CultureInfo.InvariantCulture).Replace('+', '~'));
+                }
             }
             else
             {

@@ -475,7 +475,7 @@
     <value>Heartbeat 2</value>
   </data>
   <data name="HeartbeatHandler.Description" xml:space="preserve">
-    <value>Heartbeat 2</value>
+    <value>Automatic forced recalculation of the script after a specified period of time. The forced recalculation is started via the Recalc() method in the API. By default, protection is enabled so that the recalculation does not start more often than 300ms.</value>
   </data>
   <data name="HV.Name" xml:space="preserve">
     <value>HV (from book)</value>
@@ -4250,9 +4250,6 @@
   <data name="AroonUp.Name" xml:space="preserve">
     <value>Aroon+</value>
   </data>
-  <data name="AverageTrueRange.Name" xml:space="preserve">
-    <value>ATR</value>
-  </data>
   <data name="BollingerBands1.Name" xml:space="preserve">
     <value>Bollinger Bands (+)</value>
   </data>
@@ -4288,6 +4285,9 @@
   </data>
   <data name="BoolConst.Name" xml:space="preserve">
     <value>Boolean Constant</value>
+  </data>
+<data name="StringConst.Name" xml:space="preserve">
+    <value>String Constant</value>
   </data>
   <data name="MomentumOsc.Name" xml:space="preserve">
     <value>Chande Momentum Oscillator</value>
@@ -4356,12 +4356,16 @@
     <value>Trade Statistics</value>
     <comment>Торговая статистика</comment>
   </data>
+  <data name="TradeStatisticsCombineHandler.Name" xml:space="preserve">
+    <value>Stacked Trading Statistics</value>
+    <comment>Сложенная Торговая статистика</comment>
+  </data>
   <data name="TradeStatisticsLowerEdgeHandler.Name" xml:space="preserve">
-    <value>Trade Statistics Lower Edge</value>
+    <value>Trade Statistics Lower Level</value>
     <comment>Нижний уровень торговой статистики</comment>
   </data>
   <data name="TradeStatisticsUpperEdgeHandler.Name" xml:space="preserve">
-    <value>Trade Statistics Upper Edge</value>
+    <value>Trade Statistics Upper Level</value>
     <comment>Верхний уровень торговой статистики</comment>
   </data>
   <data name="TradeStatisticsBarsCountHandler.Name" xml:space="preserve">
@@ -5170,6 +5174,9 @@
   <data name="BoolConst.Description" xml:space="preserve">
     <value>This block sets a fixed boolean value for every bar.</value>
   </data>
+  <data name="StringConst.Description" xml:space="preserve">
+    <value>This block sets a fixed string value for every bar.</value>
+  </data>
   <data name="BuyCount.Description" xml:space="preserve">
     <value>Shows the number of purchases (bids). This value is shown also in 'Quotes' table.</value>
   </data>
@@ -5208,6 +5215,18 @@
   </data>
   <data name="ControlledBoolConst.DefaultValue.Description" xml:space="preserve">
     <value>A value to return as output of a handler when input is false</value>
+  </data>
+  <data name="ValueReceiverHandler.DefaultValue.Name" xml:space="preserve">
+    <value>Default value</value>
+  </data>
+  <data name="ValueReceiverHandler.DefaultValue.Description" xml:space="preserve">
+    <value>A value to return as output of a handler when can't load from server</value>
+  </data>
+<data name="BoolReceiverHandler.DefaultValue.Name" xml:space="preserve">
+    <value>Default value</value>
+  </data>
+<data name="BoolReceiverHandler.DefaultValue.Description" xml:space="preserve">
+    <value>A value to return as output of a handler when can't load from server</value>
   </data>
   <data name="CrossOver.Description" xml:space="preserve">
     <value>Handler returns true, if second input (signal) crosses down a reference line (first input).</value>
@@ -5381,6 +5400,15 @@
     <value>Period</value>
   </data>
   <data name="Shift.Period.Description" xml:space="preserve">
+    <value>Indicator period (processing window)</value>
+  </data>
+  <data name="PrevValue.Name" xml:space="preserve">
+    <value>Previous value</value>
+  </data>
+  <data name="PrevValue.Description" xml:space="preserve">
+    <value>Returns the previous value N steps back.</value>
+  </data>
+  <data name="PrevValue.Period.Description" xml:space="preserve">
     <value>Indicator period (processing window)</value>
   </data>
   <data name="StepPrice.Description" xml:space="preserve">
@@ -5833,8 +5861,11 @@
   <data name="TradeStatisticsHandler.Description" xml:space="preserve">
     <value>The 'Trade Statistics' block creates a histogram for the selected timeframe (time interval). [br]The histogram can be built on the number of trades , the volume of trades, the buy quantity, the sell quantity, the difference between the buy and sell quantity and the relative difference between the buy and sell quantity, % (see the 'View' parameter).</value>
   </data>
+  <data name="TradeStatisticsCombineHandler.Description" xml:space="preserve">
+    <value>The 'Stacked Trade Statistics' block summarizes the last N histograms submitted to input.</value>
+  </data>
   <data name="TradeStatisticsLowerEdgeHandler.Description" xml:space="preserve">
-    <value>The 'Trade Statistics Lower Edge' block allows you to set the cut-off data percentage for the lower level. This block is connected to the block 'Trading statistics'.</value>
+    <value>The 'Trade Statistics Lower Level' block allows you to set the cut-off data percentage for the lower level. This block is connected to the block 'Trading statistics'.</value>
   </data>
   <data name="TradeStatisticsPriceValueHandler.Description" xml:space="preserve">
     <value>The 'Trade Statistics Price Value' block creates a histogram based on the selected price. Used in conjunction with the block 'Trading statistics'.</value>
@@ -5896,13 +5927,28 @@
   <data name="AroonUp.Period.Description" xml:space="preserve">
     <value>Indicator period (processing window)</value>
   </data>
+  <data name="AverageTrueRange.Name" xml:space="preserve">
+    <value>ATR (Old)</value>
+  </data>
   <data name="AverageTrueRange.Description" xml:space="preserve">
-    <value>The average True Range (ATR). This indicator shows a moving average value of the True Range values (TR).</value>
+    <value>Old algo to calculate ATR. This indicator shows a exponentially moving average value of the True Range values (TR).</value>
   </data>
   <data name="AverageTrueRange.Period.Name" xml:space="preserve">
     <value>Period</value>
   </data>
   <data name="AverageTrueRange.Period.Description" xml:space="preserve">
+    <value>Indicator period (processing window)</value>
+  </data>
+  <data name="AverageTrueRangeNew.Name" xml:space="preserve">
+    <value>ATR</value>
+  </data>
+  <data name="AverageTrueRangeNew.Description" xml:space="preserve">
+    <value>The average True Range (ATR). This indicator shows a moving average value of the True Range values (TR).</value>
+  </data>
+  <data name="AverageTrueRangeNew.Period.Name" xml:space="preserve">
+    <value>Period</value>
+  </data>
+  <data name="AverageTrueRangeNew.Period.Description" xml:space="preserve">
     <value>Indicator period (processing window)</value>
   </data>
   <data name="BollingerBands1.Description" xml:space="preserve">
@@ -6389,7 +6435,9 @@
     <value>A date of position entry presented as number in YYMMDD format.</value>
   </data>
   <data name="EntryPrice.Description" xml:space="preserve">
-    <value>The price of the trade at which the position was opened. In the trading mode this is the price at which the position opening order was placed.</value>
+    <value>In the laboratory mode, the price of the deal at which the position was opened.
+In real trading mode, the average price of transactions for the placed order.
+If the transaction prices are unknown, the price is taken from the order. If the order was placed with the "by market" type, then the price of 0 or the price of the upper or lower limit (for futures) for the instrument is taken.</value>
   </data>
   <data name="EntryTime.Description" xml:space="preserve">
     <value>Time of  position entry presented as number in HHMMSS format.</value>
@@ -7245,13 +7293,13 @@
     <value>Event</value>
   </data>
   <data name="EventKindHandler.Description" xml:space="preserve">
-    <value>Event</value>
+    <value>During the next recalculation, if the specified event is executed, the Event block will return the value true. This value can be used in the algorithm. [br]The block can be used many times in the editor. The block connects to the source, returns an event for the tool.</value>
   </data>
   <data name="EventKindHandler.EventKind.Name" xml:space="preserve">
     <value>Event kind</value>
   </data>
   <data name="EventKindHandler.EventKind.Description" xml:space="preserve">
-    <value>Event kind</value>
+    <value>Event type: None, Order rejected, Order filled, Position opening, Position closing, Order quantity changed, Trading is started, Trading is stopped, Order canceled, Pretrade limitation.</value>
   </data>
   <data name="EventKind.Name" xml:space="preserve">
     <value>Event kind</value>
@@ -7282,5 +7330,254 @@
   </data>
   <data name="RandomHandler.SaveHistory.Name" xml:space="preserve">
     <value>Save history</value>
+  </data>
+  <data name="PositionByName.Name" xml:space="preserve">
+    <value>Position by name</value>
+  </data>
+  <data name="PositionByName.Description" xml:space="preserve">
+    <value>Get the position value from the Positions table.</value>
+  </data>
+  <data name="PositionByName.Symbol.Name" xml:space="preserve">
+    <value>Symbol</value>
+  </data>
+  <data name="PositionByName.Symbol.Description" xml:space="preserve">
+    <value>Symbol from the position table.</value>
+  </data>
+  <data name="PositionByName.Account.Name" xml:space="preserve">
+    <value>Account</value>
+  </data>
+  <data name="PositionByName.Account.Description" xml:space="preserve">
+    <value>Account name (optional).</value>
+  </data>
+  <data name="PositionByName.PositionField.Name" xml:space="preserve">
+    <value>Position field</value>
+  </data>
+  <data name="PositionByName.PositionField.Description" xml:space="preserve">
+    <value>Output position field.</value>
+  </data>
+  <data name="NetValueByAccount.Name" xml:space="preserve">
+    <value>Net value by account</value>
+  </data>
+  <data name="NetValueByAccount.Description" xml:space="preserve">
+    <value>Get the total net value of the account. If the account is not specified, the account name is taken from the agent (only in agent mode).</value>
+  </data>
+  <data name="NetValueByAccount.Account.Name" xml:space="preserve">
+    <value>Account</value>
+  </data>
+    <data name="NetValueByAccount.Account.Description" xml:space="preserve">
+    <value>Account name (optional).</value>
+  </data>
+  <data name="LastExitAvgPrice.Name" xml:space="preserve">
+    <value>Average exit price last position</value>
+  </data>
+  <data name="LastExitAvgPrice.Description" xml:space="preserve">
+    <value>Average exit price last position.</value>
+  </data>
+  <data name="LastClosedNamePositionAvgExitPrice.Name" xml:space="preserve">
+    <value>Average exit price last position by name</value>
+  </data>
+  <data name="LastClosedNamePositionAvgExitPrice.Description" xml:space="preserve">
+    <value>Average exit price last position by name.</value>
+  </data>
+  <data name="LastClosedNamePositionAvgExitPrice.Name.Name" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="LastClosedNamePositionAvgExitPrice.Name.Description" xml:space="preserve">
+    <value>Close signal name</value>
+  </data>
+  <data name="ChannelHandler.ChannelApiKey.Description" xml:space="preserve">
+    <value>The key that determines which TSChannel the values will be transmitted to. Copy the API Key value from the "Transmitter" of the corresponding channel in your account on signal.tslab.pro</value>
+  </data>
+  <data name="ChannelHandler.ChannelApiKey.Name" xml:space="preserve">
+    <value>Api Key</value>
+  </data>
+  <data name="ChannelHandler.Name" xml:space="preserve">
+    <value>Transmitter‌</value>
+  </data>
+  <data name="ParameterSenderHandler.Name" xml:space="preserve">
+    <value>Parameter Encoder</value>
+  </data>
+  <data name="ReceiverHandler.Name" xml:space="preserve">
+    <value>Receiver</value>
+  </data>
+  <data name="ReceiverHandler.ReceiverApiKey.Description" xml:space="preserve">
+    <value>The key that determines which TSChannel values will be taken from. Copy the API Key value from the "Receiver" of the corresponding channel in your account on signal.tslab.pro</value>
+  </data>
+  <data name="ReceiverHandler.ReceiverApiKey.Name" xml:space="preserve">
+    <value>Api Key</value>
+  </data>
+  <data name="ValueReceiverHandler.Name" xml:space="preserve">
+    <value>Value Decoder</value>
+  </data>
+  <data name="ValueReceiverHandler.Value.Description" xml:space="preserve">
+    <value>Extracts the value corresponding to the desired key from the received data packet and makes it available for further calculations.</value>
+  </data>
+  <data name="ValueReceiverHandler.Value.Name" xml:space="preserve">
+    <value>Value</value>
+  </data>
+  <data name="ValueSenderHandler.Name" xml:space="preserve">
+    <value>Value Encoder</value>
+  </data>
+<data name="BoolReceiverHandler.Name" xml:space="preserve">
+    <value>Boolean Decoder</value>
+  </data>
+<data name="BoolReceiverHandler.Value.Description" xml:space="preserve">
+    <value>Extracts the value corresponding to the desired key from the received data packet and makes it available for further calculations.</value>
+  </data>
+<data name="BoolReceiverHandler.Value.Name" xml:space="preserve">
+    <value>Value</value>
+  </data>
+  <data name="AddPositionHandler.Name" xml:space="preserve">
+    <value>Add position in cycle</value>
+  </data>
+  <data name="AddPositionHandler.UseVirtualClosing.Name" xml:space="preserve">
+    <value>Use "Virtual Closing"</value>
+  </data>
+  <data name="AddPositionHandler.Description" xml:space="preserve">
+    <value>A pass on the bar is performed for all iteration cycles. During the passage, the positions that need to be opened are calculated. As many positions is added, as many iterations returned the result true.</value>
+  </data>
+  <data name="AddPositionHandler.UseVirtualClosing.Description" xml:space="preserve">
+    <value>This parameter is necessary for cases when the position closing signal is missed, so that there are no new gaps. It says that the position signal was issued by the script, but the real application has not yet passed. For example, auto-closing is expected. If the option is enabled, the Cycle will move to the next free iteration, if it is disabled, there will be no new position openings.</value>
+  </data>
+  <data name="CycleAndHandler.Description" xml:space="preserve">
+    <value>If the Boolean values take the value true on all iterations, then, at the output of the block, the value true is returned on the bar (on recalculation). If one of the Logical Values takes the value false, the value false is returned at the output of the block.</value>
+  </data>
+  <data name="CycleAndHandler.Name" xml:space="preserve">
+    <value>Cycle End</value>
+  </data>
+  <data name="CycleBoolResultHandler.Description" xml:space="preserve">
+    <value>Outputs a logical value from the loop to the bar by the iteration number.</value>
+  </data>
+  <data name="CycleBoolResultHandler.Index.Description" xml:space="preserve">
+    <value>a logical result based on the iteration number of the cycle</value>
+  </data>
+  <data name="CycleBoolResultHandler.Index.Name" xml:space="preserve">
+    <value>Index</value>
+  </data>
+  <data name="CycleBoolResultHandler.Name" xml:space="preserve">
+    <value>Cycle logic result</value>
+  </data>
+  <data name="CycleBoolResultHandler.UseLastIndex.Description" xml:space="preserve">
+    <value>always use the last iteration number of the cycle</value>
+  </data>
+  <data name="CycleBoolResultHandler.UseLastIndex.Name" xml:space="preserve">
+    <value>Use last index</value>
+  </data>
+  <data name="CycleBoolResultsHandler.Description" xml:space="preserve">
+    <value>Can be displayed on the chart. The chart will display all the iterations of the cycle. The block results can be passed to another Cycle, with the same number of iterations supported. Nested cycles are not supported.</value>
+  </data>
+  <data name="CycleBoolResultsHandler.Name" xml:space="preserve">
+    <value>Cycle logic results</value>
+  </data>
+  <data name="CycleHandler.Description" xml:space="preserve">
+    <value>At the top of the Cycle block there is a service connector for communication with the blocks of opening positions or updated values (simple and updatable cycle value). Thus, the entry into the cycle is indicated (the beginning of the calculation of the cycle). If this connector is not connected to anything, then the first formula (or logical formula) for which the output from the Cycle block is submitted and in which there is an appeal to the Cycle block by its name is considered to be the beginning of the calculation of the cycle.[br]All the blocks that are connected between the beginning of the cycle and the end of the cycle participate in the calculation of the results of the cycle. All the blocks that are connected between the beginning of the cycle and the end of the cycle participate in the calculation of the results of the cycle and they can't be tied to another cycle.</value>
+  </data>
+  <data name="CycleHandler.MaxCount.Description" xml:space="preserve">
+    <value>specifies the maximum number of iterations.</value>
+  </data>
+  <data name="CycleHandler.MaxCount.Name" xml:space="preserve">
+    <value>Maximum number</value>
+  </data>
+  <data name="CycleHandler.Name" xml:space="preserve">
+    <value>Cycle</value>
+  </data>
+  <data name="CycleOrHandler.Description" xml:space="preserve">
+    <value>If in one of the iterations the logical value takes the value true, then the block output returns the value true on the bar (on recalculation), otherwise the value false is returned. At the input, the results of the logical values of the cycle work, for example, a logical formula.</value>
+  </data>
+  <data name="CycleOrHandler.Name" xml:space="preserve">
+    <value>Cycle Or</value>
+  </data>
+  <data name="CycleDoubleResultHandler.Description" xml:space="preserve">
+    <value>Returns the value by the iteration number, and outputs the value to the bar.</value>
+  </data>
+  <data name="CycleDoubleResultHandler.Index.Description" xml:space="preserve">
+    <value>indicates from which iteration it is necessary to copy the real value to output it to the bar.</value>
+  </data>
+  <data name="CycleDoubleResultHandler.Index.Name" xml:space="preserve">
+    <value>Index</value>
+  </data>
+  <data name="CycleDoubleResultHandler.Name" xml:space="preserve">
+    <value>Cycle result</value>
+  </data>
+  <data name="CycleDoubleResultHandler.UseLastIndex.Name" xml:space="preserve">
+    <value>Use latest index</value>
+  </data>
+  <data name="CycleDoubleResultsHandler.Description" xml:space="preserve">
+    <value>Can be displayed on a chart. It can be passed to another cycle, with the same number of iterations supported. Nested cycles are not supported. A service connector for displaying the parameter to the control panel.</value>
+  </data>
+  <data name="CycleDoubleResultsHandler.Name" xml:space="preserve">
+    <value>Cycle results</value>
+  </data>
+  <data name="CycleDoubleSumHandler.Description" xml:space="preserve">
+    <value>The result is the sum of the values of all iterations of the cycle.</value>
+  </data>
+  <data name="CycleDoubleSumHandler.Name" xml:space="preserve">
+    <value>Cycle Sum</value>
+  </data>
+  <data name="CycleValueUpdaterHandler.Description" xml:space="preserve">
+    <value>The usual updated value in the cycle moves from the old iteration to the value of the new iteration. The updated cycle value works with an array of iteration values. The output is a list of real values. For each iteration of the cycle, its own separate, independently updated value is maintained.</value>
+  </data>
+  <data name="CycleValueUpdaterHandler.ExecutionOrder.Description" xml:space="preserve">
+    <value>Determines the queue for calculating the Updated value in the algorithm, in the general order (by default), at the end of the algorithm (in the queue of this calculation branch) or after leaving the position.</value>
+  </data>
+  <data name="CycleValueUpdaterHandler.ExecutionOrder.Name" xml:space="preserve">
+    <value>Execution order</value>
+  </data>
+  <data name="CycleValueUpdaterHandler.Name" xml:space="preserve">
+    <value>Cycle updatable value</value>
+  </data>
+  <data name="CycleValueUpdaterHandler.StartFrom.Description" xml:space="preserve">
+    <value>The initial value of the block.</value>
+  </data>
+  <data name="CycleValueUpdaterHandler.StartFrom.Name" xml:space="preserve">
+    <value>Initial</value>
+  </data>
+  <data name="ExportValuesHandler.Description" xml:space="preserve">
+    <value>Passes the value by the identifier set by the user.</value>
+  </data>
+  <data name="ExportValuesHandler.Id.Name" xml:space="preserve">
+    <value>Identifier</value>
+  </data>
+  <data name="ImportBoolValuesHandler.Description" xml:space="preserve">
+    <value>Returns a Boolean value, according to the identifier set in the Export values block.</value>
+  </data>
+  <data name="ImportBoolValuesHandler.Id.Name" xml:space="preserve">
+    <value>Identifier</value>
+  </data>
+  <data name="ImportDoubleValuesHandler.Description" xml:space="preserve">
+    <value>Returns a Double value, according to the identifier set in the Export values block.</value>
+  </data>
+  <data name="ImportDoubleValuesHandler.Id.Name" xml:space="preserve">
+    <value>Identifier</value>
+  </data>
+  <data name="ImportIntValuesHandler.Description" xml:space="preserve">
+    <value>Returns an integer, according to the Identifier set in the Export values block.</value>
+  </data>
+  <data name="ImportIntValuesHandler.Id.Name" xml:space="preserve">
+    <value>Identifier</value>
+  </data>
+  <data name="TimestampHandler.Description" xml:space="preserve">
+    <value>Time in Unix Time Stamp format with milliseconds. [br]Feature: the block returns a number without conversions, regardless of the "Local Time" settings in the data provider. The block gives the corresponding UTC time/date in the UTS format on the bar.</value>
+  </data>
+  <data name="ChannelHandler.Description" xml:space="preserve">
+    <value>Transmits all the “key: value” pairs formed by packer blocks to the TSChannel server. The transfer of a batch of values occurs at the time of recalculation of the script.</value>
+  </data>
+  <data name="ParameterSenderHandler.Description" xml:space="preserve">
+    <value>Generates a “Key/Value” pair based on a parameter of another block, for example, an indicator. [br]Block’s Name defines the key (name) of the value passed to the channel. When it is received in another script, it will be possible to identify the value by this name.</value>
+  </data>
+  <data name="ReceiverHandler.Description" xml:space="preserve">
+    <value>Receives data packets from the TSChannel. A new data packet is received when the script is being recalculated.</value>
+  </data>
+  <data name="ValueReceiverHandler.Description" xml:space="preserve">
+    <value>Receives data packets from the TSChannel. A new data packet is received when the script is being recalculated.</value>
+  </data>
+  <data name="ValueSenderHandler.Description" xml:space="preserve">
+    <value>Generates a “Key/Value” pair based on the value calculated in the script. [br]Block’s Name defines the key (name) of the value passed to the channel. When it is received in another script, it will be possible to identify the value by this name.</value>
+  </data>
+  <data name="LotSize.Name" xml:space="preserve">
+    <value>Lot size</value>
+  </data>
+  <data name="LotSize.Description" xml:space="preserve">
+    <value>Lot size of a security. The block returns the number of shares in one lot. This value is shown also in 'Quotes' table.</value>
   </data>
 </root>

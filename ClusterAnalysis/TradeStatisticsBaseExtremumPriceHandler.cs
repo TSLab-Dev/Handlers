@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
 using TSLab.Script.Handlers.Options;
 
+// ReSharper disable once CheckNamespace
 namespace TSLab.Script.Handlers
 {
     //[HandlerCategory(HandlerCategories.ClusterAnalysis)]
@@ -44,9 +46,21 @@ namespace TSLab.Script.Handlers
         [HandlerParameter(true, nameof(ExtremumPriceMode.Minimum))]
         public ExtremumPriceMode PriceMode { get; set; }
 
+        [HelperName("Min Bar, %", Constants.En)]
+        [HelperName("Минимальный бар, %", Constants.Ru)]
+        [HandlerParameter(true, "0", Min = "0", Max = "100", Step = "1", EditorMin = "0")]
+        public double MinBarPct { get; set; }
+
+        [HelperName("Max Bar, %", Constants.En)]
+        [HelperName("максимальный бар, %", Constants.Ru)]
+        [HandlerParameter(true, "100", Min = "0", Max = "100", Step = "1", EditorMin = "0")]
+        public double MaxBarPct { get; set; } = 100;
+
         public abstract IList<double> Execute(IBaseTradeStatisticsWithKind tradeStatistics);
 
-        protected Extremum GetExtremum(IBaseTradeStatisticsWithKind tradeStatistics, IAggregatedHistogramBarsProvider aggregatedHistogramBarsProvider, int barIndex, ref double lastPrice)
+        protected Extremum GetExtremum(IBaseTradeStatisticsWithKind tradeStatistics,
+                                       IAggregatedHistogramBarsProvider aggregatedHistogramBarsProvider, int barIndex,
+                                       ref double lastPrice)
         {
             var bars = aggregatedHistogramBarsProvider.GetAggregatedHistogramBars(barIndex);
             if (bars.Count == 0)
@@ -57,36 +71,35 @@ namespace TSLab.Script.Handlers
                 var bar = bars[0];
                 return new Extremum(bar, Math.Abs(tradeStatistics.GetValue(bar)), lastPrice = bar.AveragePrice);
             }
-            IEnumerable<ITradeHistogramBar> orderedBars;
-            switch (PriceMode)
-            {
-                case ExtremumPriceMode.Minimum:
-                    orderedBars = bars;
-                    break;
-                case ExtremumPriceMode.Maximum:
-                    orderedBars = bars.Reverse();
-                    break;
-                default:
-                    throw new InvalidEnumArgumentException(nameof(PriceMode), (int)PriceMode, PriceMode.GetType());
-            }
-            var extremumBar = orderedBars.First();
+
+            var minBar = (int)(bars.Count * MinBarPct / 100.0);
+            var maxBar = (int)(bars.Count * MaxBarPct / 100.0);
+            var count = maxBar - minBar;
+
+            var reverse = PriceMode == ExtremumPriceMode.Maximum;
+            var start = reverse ? bars.Count - minBar - 1 : minBar;
+            var step = reverse ? -1 : 1;
+
+            var extremumBar = bars[start];
             var extremumValue = Math.Abs(tradeStatistics.GetValue(extremumBar));
 
-            foreach (var bar in orderedBars.Skip(1))
+            for (int i = start, k = 0; k++ < count - 1;)
             {
+                var bar = bars[i += step];
                 var value = Math.Abs(tradeStatistics.GetValue(bar));
-                if (extremumValue < value)
-                {
-                    extremumBar = bar;
-                    extremumValue = value;
-                }
+                if (extremumValue >= value)
+                    continue;
+                extremumBar = bar;
+                extremumValue = value;
             }
+
             return new Extremum(extremumBar, extremumValue, lastPrice = extremumBar.AveragePrice);
         }
 
         protected virtual string GetParametersStateId()
         {
-            return PriceMode.ToString();
+            return string.Join(".", PriceMode.ToString(), MinBarPct.ToString(CultureInfo.InvariantCulture),
+                MaxBarPct.ToString(CultureInfo.InvariantCulture));
         }
     }
 }

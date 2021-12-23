@@ -11,8 +11,10 @@ namespace TSLab.Script.Handlers
     [InputsCount(0)]
     [Description("Блок без входов. Содержит редактируемый строковый параметр, который будет возвращаться из блока в качестве результата его работы.")]
     [HelperDescription("This block has no entries. It has an editable text parameter which returns as a result of its work.", Constants.En)]
-    public sealed class TextHandler : IValuesHandler, IStringReturns, ICustomListValues
+    public sealed class TextHandler : ConstGenBase<string>, IStreamHandler, IStringReturns, ICustomListValues, IContextUses
     {
+        public IContext Context { get; set; }
+
         /// <summary>
         /// \~english Text (string)
         /// \~russian Текст (строка)
@@ -24,9 +26,10 @@ namespace TSLab.Script.Handlers
         [HandlerParameter(Default = "*")]
         public string Text { get; set; }
 
-        public string Execute()
+        public IList<string> Execute()
         {
-            return Text;
+            MakeList(Context.BarsCount, Text);
+            return this;
         }
 
         public IEnumerable<string> GetValuesForParameter(string paramName)

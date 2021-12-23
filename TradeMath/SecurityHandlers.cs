@@ -413,6 +413,32 @@ namespace TSLab.Script.Handlers
         }
     }
 
+    // Категория и описание входов/выходов идет через базовый класс.
+    [HelperName("Number of purchases", Language = Constants.En)]
+    [HelperName("СумСпрос", Language = Constants.Ru)]
+    [Description("Суммарное текущее количество заявок на покупку. Эта же величина показывается в таблице 'Котировки'.")]
+    [HelperDescription("Shows the number of purchases (bids). This value is shown also in 'Quotes' table.", Constants.En)]
+    public sealed class BuyCount : SecurityBase
+    {
+        protected override double GetData(IDataBar bar)
+        {
+            return bar is IBar bar1 ? bar1.BuyCount : 0;
+        }
+    }
+
+    // Категория и описание входов/выходов идет через базовый класс.
+    [HelperName("Number of sales", Language = Constants.En)]
+    [HelperName("СумПредл", Language = Constants.Ru)]
+    [Description("Суммарное текущее количество заявок на продажу. Эта же величина показывается в таблице 'Котировки'.")]
+    [HelperDescription("Shows the number of sales (asks). This value is shown also in 'Quotes' table.", Constants.En)]
+    public sealed class SellCount : SecurityBase
+    {
+        protected override double GetData(IDataBar bar)
+        {
+            return bar is IBar bar1 ? bar1.SellCount : 0;
+        }
+    }
+
     // TODO: Что-то у меня сомнения в точности описания. Может быть, не "Обрезает High и Low", а "округляет цены бара до указанного количества знаков после запятой"?
     [HandlerCategory(HandlerCategories.TradeMath)]
     [HelperName("Cut off", Language = Constants.En)]
@@ -456,6 +482,8 @@ namespace TSLab.Script.Handlers
                         Bid = Math.Ceiling(bar.Bid * coef) / coef,
                         AskQty = bar.AskQty,
                         BidQty = bar.BidQty,
+                        BuyCount = bar.BuyCount,
+                        SellCount = bar.SellCount,
                         StepPrice = bar.StepPrice,
                         Volatility = bar.Volatility,
                         TheoreticalPrice = bar.TheoreticalPrice,
@@ -516,6 +544,8 @@ namespace TSLab.Script.Handlers
                         Bid = Math.Ceiling(bar.Bid * Coef),
                         AskQty = bar.AskQty,
                         BidQty = bar.BidQty,
+                        BuyCount = bar.BuyCount,
+                        SellCount = bar.SellCount,
                         StepPrice = bar.StepPrice,
                         Volatility = bar.Volatility,
                         TheoreticalPrice = bar.TheoreticalPrice,
@@ -590,6 +620,8 @@ namespace TSLab.Script.Handlers
                         Bid = Math.Ceiling(bar.Bid * coef) / dcf,
                         AskQty = bar.AskQty,
                         BidQty = bar.BidQty,
+                        BuyCount = bar.BuyCount,
+                        SellCount = bar.SellCount,
                         StepPrice = bar.StepPrice,
                         Volatility = bar.Volatility,
                         TheoreticalPrice = bar.TheoreticalPrice,
@@ -664,6 +696,8 @@ namespace TSLab.Script.Handlers
                         Bid = Math.Ceiling(bar.Bid * coef) / dcf,
                         AskQty = bar.AskQty,
                         BidQty = bar.BidQty,
+                        BuyCount = bar.BuyCount,
+                        SellCount = bar.SellCount,
                         StepPrice = bar.StepPrice,
                         Volatility = bar.Volatility,
                         TheoreticalPrice = bar.TheoreticalPrice,

@@ -5,6 +5,7 @@ using System.Linq;
 using TSLab.Script.Handlers.Options;
 using TSLab.Utils;
 
+// ReSharper disable once CheckNamespace
 namespace TSLab.Script.Handlers
 {
     public enum EventKind
@@ -62,7 +63,7 @@ namespace TSLab.Script.Handlers
             var strEventKind = s_eventKindToNameMap[EventKind];
             var sourceSecurityDescriptionId = source.SecurityDescription.Id;
             var result = Context.Runtime.LastRecalcReasons.Any(item => item.Name == strEventKind && item.DataSourceSecurity.Id == sourceSecurityDescriptionId);
-            return new ConstList<bool>(0, result);
+            return new ConstList<bool>(source.Bars.Count, result);
         }
     }
 }

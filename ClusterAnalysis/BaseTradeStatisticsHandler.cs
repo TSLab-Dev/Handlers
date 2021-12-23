@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using TSLab.Script.Handlers.Options;
 
@@ -51,9 +52,19 @@ namespace TSLab.Script.Handlers
         {
             if (security == null)
                 throw new ArgumentNullException(nameof(security));
-
-            var decompressedSecurity = Context.Runtime.Securities.First(item => item.SecurityDescription.Id == security.SecurityDescription.Id);
-            return InternalExecute(decompressedSecurity);
+            var sw = Stopwatch.StartNew();
+            try
+            {
+                var decompressedSecurity = Context.Runtime.Securities.First(
+                    item => item.SecurityDescription.Id == security.SecurityDescription.Id
+                            && item.SecurityDescription.DSName == security.SecurityDescription.DSName);
+                return InternalExecute(decompressedSecurity);
+            }
+            finally
+            {
+                if (sw.Elapsed.TotalSeconds > 5)
+                    Context?.Log($"Time elapsed {this.GetType().Name}: {sw.Elapsed}", MessageType.Debug);
+            }
         }
 
         protected abstract TTradeStatisticsWithKind InternalExecute(ISecurity security);

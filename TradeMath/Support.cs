@@ -192,4 +192,79 @@ namespace TSLab.Script.Handlers
             get { return Context.BarsCount <= Period; }
         }
     }
+
+    [HandlerCategory(HandlerCategories.TradeMath)]
+    [HelperName("Previous value", Language = Constants.En)]
+    [HelperName("Предыдущее значение", Language = Constants.Ru)]
+    [InputsCount(1)]
+    [Input(0, TemplateTypes.DOUBLE)]
+    [OutputsCount(1)]
+    [OutputType(TemplateTypes.DOUBLE)]
+    [Description("Возвращает предыдущее значение на N шагов назад.")]
+    [HelperDescription("Returns the previous value N steps back.", Constants.En)]
+    public sealed class PrevValue : DoubleStreamAndValuesHandlerWithPeriod
+    {
+        private double m_firstValue;
+        private List<double> m_listUnique;
+
+        public override bool IsGapTolerant
+        {
+            get { return true; }
+        }
+
+        public override IList<double> Execute(IList<double> source)
+        {
+            var result = Series.PrevValue(source, Period, Context);
+            return result;
+        }
+
+        protected override void ClearExecuteContext()
+        {
+            m_firstValue = 0;
+            m_listUnique = null;
+        }
+
+        protected override void InitExecuteContext()
+        {
+            if (IsSimple)
+                m_firstValue = m_executeContext.Source;
+            else
+            {
+                m_listUnique = new List<double>();
+                m_listUnique.Add(m_executeContext.Source);
+            }
+        }
+
+        protected override double Execute()
+        {
+            if (IsSimple)
+                return m_firstValue;
+
+            if (m_executeContext.Source != m_executeContext.LastSource)
+                m_listUnique.Add(m_executeContext.Source);
+            var result = m_listUnique.Count > Period ? m_listUnique[m_listUnique.Count - Period - 1] : m_listUnique[0];
+            return result;
+        }
+
+        protected override bool IsSimple
+        {
+            get { return Context.BarsCount <= Period; }
+        }
+
+        protected override void InitForGap()
+        {
+            if (IsSimple)
+                return;
+            
+            var firstIndex = Math.Max(m_executeContext.LastIndex + 1, m_executeContext.Index - Period);
+            var last = m_executeContext.LastSource;
+            for (var i = firstIndex; i < m_executeContext.Index; i++)
+            {
+                var source = m_executeContext.GetSourceForGap(i);
+                if (source != last)
+                    m_listUnique.Add(source);
+                last = source;
+            }
+        }
+    }
 }

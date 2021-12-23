@@ -126,6 +126,10 @@ namespace TSLab.Script.Handlers.Service
                     var container = new NotClearableContainer(timerState);
                     Context.StoreObject(cashKey, container);
                 }
+                else if (timerState.RecalcTime != RecalcTime) // RecalcTime is modified (by a control pane for example)
+                {
+                    timerState.ChangeTime(RecalcTime);
+                }
             }
 
             int len = Context.BarsCount;
@@ -172,6 +176,8 @@ namespace TSLab.Script.Handlers.Service
 
             public ISecurityRt Security { get; }
 
+            public TimeSpan RecalcTime { get; private set; }
+
             /// <summary>
             /// Заполнить таймер сразу через конструктор не получится, но это нужно обязательно сделать сразу после его инициализации.
             /// </summary>
@@ -180,10 +186,18 @@ namespace TSLab.Script.Handlers.Service
             public static TimerInfo Create(IContext context, ISecurityRt security, TimeSpan recalcTime)
             {
                 var delayMs = GetInterval(recalcTime);
-                var timerInfo = new TimerInfo(context, security);
+                var timerInfo = new TimerInfo(context, security, recalcTime);
                 var timer = TimerFactory.CreateThreadingTimer(Recalculate, timerInfo, delayMs, new TimeSpan(24, 0, 0));
                 timerInfo.Timer = timer;
                 return timerInfo;
+            }
+
+            private TimerInfo(IContext context, ISecurityRt security, TimeSpan recalcTime)
+            {
+                Debug.Assert(context != null, "context==null");
+                CallContext = context;
+                Security = security;
+                RecalcTime = recalcTime;
             }
 
             private static TimeSpan GetInterval(TimeSpan time)
@@ -195,11 +209,11 @@ namespace TSLab.Script.Handlers.Service
                 return ts;
             }
 
-            private TimerInfo(IContext context, ISecurityRt security)
+            public void ChangeTime(TimeSpan recalcTime)
             {
-                Debug.Assert(context != null, "context==null");
-                CallContext = context;
-                Security = security;
+                Timer?.Dispose();
+                RecalcTime = recalcTime;
+                Timer = TimerFactory.CreateThreadingTimer(Recalculate, this, GetInterval(recalcTime), new TimeSpan(24, 0, 0));
             }
 
             public void Dispose()

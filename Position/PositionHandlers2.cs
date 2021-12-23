@@ -379,7 +379,6 @@ namespace TSLab.Script.Handlers
     }
 
     [HandlerCategory(HandlerCategories.Position)]
-    //[HandlerName("Last Exit Price")]
     [HelperName("Last exit price", Language = Constants.En)]
     [HelperName("Цена последнего выхода", Language = Constants.Ru)]
     [InputsCount(1)]
@@ -394,6 +393,79 @@ namespace TSLab.Script.Handlers
         {
             var pos = source.Positions.GetLastPositionClosed(barNum);
             return pos == null ? 0 : pos.ExitPrice;
+        }
+    }
+
+    [HandlerCategory(HandlerCategories.Position)]
+    [HelperName("Average exit price last position", Language = Constants.En)]
+    [HelperName("Средняя цена выхода последней позиции", Language = Constants.Ru)]
+    [InputsCount(1)]
+    [Input(0, TemplateTypes.SECURITY, Name = Constants.SecuritySource)]
+    [OutputsCount(1)]
+    [OutputType(TemplateTypes.DOUBLE)]
+    [Description("Средняя цена выхода последней позиции.")]
+    [HelperDescription("Average exit price last position.", Constants.En)]
+    public sealed class LastExitAvgPrice : IBar2ValueDoubleHandler
+    {
+        public double Execute(ISecurity source, int barNum)
+        {
+            var pos = source.Positions.GetLastPositionClosed(barNum);
+            if (pos == null) return 0;
+
+            var sum = 0.0;
+            var sumShares = 0.0;
+            foreach (var p in pos.ChangeInfos)
+            {
+                if (p.ExitPrice > 0)
+                {
+                    sum += p.ExitPrice * Math.Abs(p.SharesChange);
+                    sumShares += Math.Abs(p.SharesChange);
+                }
+            }
+            sum += pos.ExitPrice * Math.Abs(pos.Shares);
+            sumShares += Math.Abs(pos.Shares);
+            var res = sumShares == 0 ? 0 : sum / sumShares;
+            return res;
+        }
+    }
+
+    [HandlerCategory(HandlerCategories.Position)]
+    [HelperName("Average exit price last position by name", Language = Constants.En)]
+    [HelperName("Средняя цена выхода последней позиции по имени", Language = Constants.Ru)]
+    [InputsCount(1)]
+    [Input(0, TemplateTypes.SECURITY, Name = Constants.SecuritySource)]
+    [OutputsCount(1)]
+    [OutputType(TemplateTypes.DOUBLE)]
+    [Description("Средняя цена выхода последней позиции по имени.")]
+    [HelperDescription("Average exit price last position by name.", Constants.En)]
+    public sealed class LastClosedNamePositionAvgExitPrice : IBar2ValueDoubleHandler
+    {
+        [HelperName("Name", Constants.En)]
+        [HelperName("Имя", Constants.Ru)]
+        [Description("Имя сигнала закрытия")]
+        [HelperDescription("Close signal name", Constants.En)]
+        [HandlerParameter(true, NotOptimized = true)]
+        public string Name { get; set; }
+
+        public double Execute(ISecurity source, int barNum)
+        {
+            var pos = source.Positions.GetLastClosedForSignal(Name, barNum);
+            if (pos == null) return 0;
+
+            var sum = 0.0;
+            var sumShares = 0.0;
+            foreach (var p in pos.ChangeInfos)
+            {
+                if (p.ExitPrice > 0)
+                {
+                    sum += p.ExitPrice * Math.Abs(p.SharesChange);
+                    sumShares += Math.Abs(p.SharesChange);
+                }
+            }
+            sum += pos.ExitPrice * Math.Abs(pos.Shares);
+            sumShares += Math.Abs(pos.Shares);
+            var res = sumShares == 0 ? 0 : sum / sumShares;
+            return res;
         }
     }
 }

@@ -31,7 +31,11 @@ namespace TSLab.Script.Handlers
         {
             var runTime = Context.Runtime;
             var id = runTime != null ? string.Join(".", runTime.TradeName, runTime.IsAgentMode, VariableId) : VariableId;
-            var stateId = string.Join(".", security.Symbol, security.Interval, security.IsAligned, CombinePricesCount);
+            var descriptionId = security.SecurityDescription?.Id ?? security.Symbol;
+            var dsName = security.SecurityDescription?.DSName;
+            if (dsName != null)
+                descriptionId = $"{descriptionId}-{dsName}";
+            var stateId = string.Join(".", descriptionId, security.Interval, security.IsAligned, CombinePricesCount);
             var tradeStatistics = Context.GetTradeStatistics(stateId, () => TradeStatisticsCache.Instance.GetAllTimeTradeStatistics(id, stateId, GetTradeHistogramsCache(security)));
             return new AllTimeTradeStatisticsWithKind(tradeStatistics, Kind, WidthPercent);
         }

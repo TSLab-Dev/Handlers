@@ -452,7 +452,25 @@ namespace TSLab.Script.Handlers
         }
     }
 
-    //[HandlerName("ATR")]
+    [HandlerCategory(HandlerCategories.Indicators)]
+    [HelperName("ATR (Old)", Language = Constants.En)]
+    [HelperName("ATR (cтарый)", Language = Constants.Ru)]
+    [InputsCount(1)]
+    [Input(0, TemplateTypes.SECURITY, Name = Constants.SecuritySource)]
+    [OutputsCount(1)]
+    [OutputType(TemplateTypes.DOUBLE)]
+    [Description("Нестандартный (старый) расчет среднего истинного диапазона (Average True Range - ATR). Представляет собой экспоненциально сглаженное среднее значение истинного диапазона (TR).")]
+    [HelperDescription("Old algo to calculate ATR. This indicator shows a exponentially moving average value of the True Range values (TR).", Constants.En)]
+    public sealed class AverageTrueRange : BasePeriodIndicatorHandler, IBar2DoubleHandler, IContextUses
+    {
+        public IContext Context { get; set; }
+
+        public IList<double> Execute(ISecurity source)
+        {
+            return Series.AverageTrueRange(source.Bars, Period, Context);
+        }
+    }
+
     [HandlerCategory(HandlerCategories.Indicators)]
     [HelperName("ATR", Language = Constants.En)]
     [HelperName("ATR", Language = Constants.Ru)]
@@ -462,13 +480,13 @@ namespace TSLab.Script.Handlers
     [OutputType(TemplateTypes.DOUBLE)]
     [Description("Индикатор среднего истинного диапазона (Average True Range - ATR). Представляет собой скользящее среднее значений истинного диапазона (TR).")]
     [HelperDescription("The average True Range (ATR). This indicator shows a moving average value of the True Range values (TR).", Constants.En)]
-    public sealed class AverageTrueRange : BasePeriodIndicatorHandler, IBar2DoubleHandler, IContextUses
+    public sealed class AverageTrueRangeNew : BasePeriodIndicatorHandler, IBar2DoubleHandler, IContextUses
     {
         public IContext Context { get; set; }
 
         public IList<double> Execute(ISecurity source)
         {
-            return Series.AverageTrueRange(source.Bars, Period, Context);
+            return Series.AverageTrueRangeNew(source.Bars, Period, Context);
         }
     }
 

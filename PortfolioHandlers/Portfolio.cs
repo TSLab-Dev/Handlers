@@ -1,7 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-
+using TSLab.DataSource;
 using TSLab.Script.Handlers.Options;
 using TSLab.Script.Realtime;
 using TSLab.Utils;
@@ -109,6 +110,185 @@ namespace TSLab.Script.Handlers
             var activePos = source.Positions.GetActiveForBar(barNum);
             return activePos.Sum(pos => pos.Shares * (pos.IsLong ? 1 : -1));
         }
+    }
+
+    [HandlerCategory(HandlerCategories.Portfolio)]
+    [HelperName("Position by name", Language = Constants.En)]
+    [HelperName("Позиция по имени", Language = Constants.Ru)]
+    [InputsCount(1)]
+    [Input(0, TemplateTypes.SECURITY, Name = "SECURITYSource")]
+    [OutputsCount(1)]
+    [OutputType(TemplateTypes.DOUBLE)]
+    [Description("Получить значение позиции из таблицы Позиции.")]
+    [HelperDescription("Get the position value from the Positions table.", Constants.En)]
+    public class PositionByName : IStreamHandler, ICustomListValues
+    {
+        [HelperName("Symbol", Constants.En)]
+        [HelperName("Название инструмента", Constants.Ru)]
+        [Description("Название инструмента из таблицы Позиции.")]
+        [HelperDescription("Symbol from the position table.", Constants.En)]
+        [HandlerParameter(true)]
+        public string Symbol { get; set; }
+
+        [HelperName("Account", Constants.En)]
+        [HelperName("Счет", Constants.Ru)]
+        [Description("Название счета (необязательно).")]
+        [HelperDescription("Account name (optional).", Constants.En)]
+        [HandlerParameter(true)]
+        public string Account { get; set; }
+
+        [HelperName("Position field", Constants.En)]
+        [HelperName("Поле позиции", Constants.Ru)]
+        [Description("Выводимое поле позиции.")]
+        [HelperDescription("Output position field.", Constants.En)]
+        [HandlerParameter(true, nameof(PositionField.RealRest), Name = "Поле позиции")]
+        public PositionField PositionField { get; set; }
+
+        public IList<double> Execute(ISecurity source)
+        {
+            var value = 0.0;
+            var ds = source?.SecurityDescription?.TradePlace?.DataSource;
+            if (!string.IsNullOrEmpty(Symbol) && ds != null && ds is IPortfolioSourceBase portfolio)
+            {
+                foreach (var account in portfolio.Accounts)
+                {
+                    if (string.IsNullOrWhiteSpace(Account) || Account.Equals(account.Id, StringComparison.OrdinalIgnoreCase))
+                    {
+                        var balances = portfolio.GetBalances(account.Id);
+                        var balance = balances.FirstOrDefault(x =>
+                            string.Equals(x.SecurityName, Symbol, StringComparison.OrdinalIgnoreCase) ||
+                            string.Equals(x.SecurityFullName, Symbol, StringComparison.OrdinalIgnoreCase));
+                        if (balance != null)
+                        {
+                            value = GetValue(balance);
+                            break;
+                        }
+                    }
+                }
+
+            }
+            return Enumerable.Repeat(value, source.Bars.Count).ToList();
+        }
+
+        public IEnumerable<string> GetValuesForParameter(string paramName)
+        {
+            if (paramName.Equals("Symbol", StringComparison.InvariantCultureIgnoreCase))
+                return new[] { Symbol ?? "" };
+
+            if (paramName.Equals("Account", StringComparison.InvariantCultureIgnoreCase))
+                return new[] { Account ?? "" };
+
+            return new[] { "" };
+        }
+
+        private double GetValue(BalanceInfo balance)
+        {
+            switch (PositionField)
+            {
+                case PositionField.RealRest:
+                    return balance.RealRest ?? 0;
+                case PositionField.IncomeRest:
+                    return balance.IncomeRest ?? 0;
+                case PositionField.PlanRest:
+                    return balance.PlanRest ?? 0;
+                case PositionField.BalancePrice:
+                    return balance.BalancePrice ?? 0;
+                case PositionField.AssessedPrice:
+                    return balance.AssessedPrice ?? 0;
+                case PositionField.Commission:
+                    return balance.Commission ?? 0;
+                case PositionField.Balance:
+                    return balance.Balance ?? 0;
+                case PositionField.BalForwardVolume:
+                    return balance.BalForwardVolume ?? 0;
+                case PositionField.ProfitVolume:
+                    return balance.ProfitVolume ?? 0;
+                case PositionField.DailyPl:
+                    return balance.DailyPl ?? 0;
+                case PositionField.VarMargin:
+                    return balance.VarMargin ?? 0;
+            }
+            return 0;
+        }
+    }
+
+    [HandlerCategory(HandlerCategories.Portfolio)]
+    [HelperName("Net value by account", Language = Constants.En)]
+    [HelperName("Чистая стоимость по счету", Language = Constants.Ru)]
+    [InputsCount(1)]
+    [Input(0, TemplateTypes.SECURITY, Name = "SECURITYSource")]
+    [OutputsCount(1)]
+    [OutputType(TemplateTypes.DOUBLE)]
+    [Description("Получить суммарное значение чистой стоимости по счету. " +
+        "Если счет не указан, то берется название счета из агента (только в режиме агента).")]
+    [HelperDescription("Get the total net value of the account. " +
+        "If the account is not specified, the account name is taken from the agent (only in agent mode).", Constants.En)]
+    public class NetValueByAccount : IStreamHandler, ICustomListValues
+    {
+        [HelperName("Account", Constants.En)]
+        [HelperName("Счет", Constants.Ru)]
+        [Description("Название счета (необязательно).")]
+        [HelperDescription("Account name (optional).", Constants.En)]
+        [HandlerParameter(true)]
+        public string Account { get; set; }
+
+        public IList<double> Execute(ISecurity source)
+        {
+            var value = 0.0;
+            var ds = source?.SecurityDescription?.TradePlace?.DataSource;
+            var accountName = Account;
+            if (string.IsNullOrEmpty(accountName))
+                accountName = (source as ISecurityRt)?.PortfolioName ?? "";
+
+            if (!string.IsNullOrEmpty(accountName) && ds is IPortfolioSourceBase portfolio)
+            {
+                foreach (var account in portfolio.Accounts)
+                {
+                    if (accountName.Equals(account.Id, StringComparison.OrdinalIgnoreCase))
+                    {
+                        var balances = portfolio.GetBalances(account.Id);
+                        value = balances.Sum(x => x.Balance ?? 0);
+                        break;
+                    }
+                }
+
+            }
+            return Enumerable.Repeat(value, source.Bars.Count).ToList();
+        }
+
+        public IEnumerable<string> GetValuesForParameter(string paramName)
+        {
+            if (paramName.Equals("Account", StringComparison.InvariantCultureIgnoreCase))
+                return new[] { Account ?? "" };
+
+            return new[] { "" };
+        }
+    }
+
+    public enum PositionField
+    {
+        [LocalizeDescription("PositionField.RealRest")] // Текущая
+        RealRest,
+        [LocalizeDescription("PositionField.IncomeRest")] // Входящая
+        IncomeRest,
+        [LocalizeDescription("PositionField.PlanRest")] // Плановая
+        PlanRest,
+        [LocalizeDescription("PositionField.BalancePrice")] // Учетная цена
+        BalancePrice,
+        [LocalizeDescription("PositionField.AssessedPrice")] // Оценочная цена
+        AssessedPrice,
+        [LocalizeDescription("PositionField.Commission")] // Комиссия
+        Commission,
+        [LocalizeDescription("PositionField.Balance")] // Чистая стоимость
+        Balance,
+        [LocalizeDescription("PositionField.BalForwardVolume")] // Учетная стоимость
+        BalForwardVolume,
+        [LocalizeDescription("PositionField.ProfitVolume")] // НП/У
+        ProfitVolume,
+        [LocalizeDescription("PositionField.DailyPl")] // П/У (дн)
+        DailyPl,
+        [LocalizeDescription("PositionField.VarMargin")] // Вар.маржа
+        VarMargin, 
     }
 
     public enum ProfitKind

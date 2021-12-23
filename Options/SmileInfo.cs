@@ -15,7 +15,7 @@ namespace TSLab.Script.Handlers.Options
     /// Важно, что здесь же содержится непрерывная функция, описывающая текущую улыбку.
     /// </summary>
     [Serializable]
-    public class SmileInfo
+    public class SmileInfo : DisposeHelper
     {
         public double F;
         public double dT;
@@ -269,6 +269,13 @@ namespace TSLab.Script.Handlers.Options
             #endregion PROD-2402 - Парсим дополнительные параметры улыбки
 
             return res;
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (!disposing) return;
+            if (ContinuousFunction is IDisposable ds) ds.Dispose();
+            if (ContinuousFunctionD1 is IDisposable ds1) ds1.Dispose();
         }
     }
 }

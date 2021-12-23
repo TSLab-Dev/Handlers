@@ -16,7 +16,7 @@ namespace TSLab.Script.Handlers
     [OutputType(TemplateTypes.DOUBLE)]
     [Description("Умножение каждого элемента входной серии на заданный коэффициент.")]
     [HelperDescription("Multiplies each item of input by a constant factor.", Constants.En)]
-    public sealed class Multiply : IDouble2DoubleHandler, IValuesHandlerWithNumber
+    public sealed class Multiply : IDouble2DoubleHandler, IValuesHandlerWithNumber, IContextUses
     {
         /// <summary>
         /// \~english Every item of input is multiplied by this coefficient ( Mult*x )
@@ -38,10 +38,14 @@ namespace TSLab.Script.Handlers
         /// </summary>
         public IList<double> Execute(IList<double> bars)
         {
-            IList<double> list = new List<double>(bars.Count);
-            foreach (double t in bars)
-                list.Add(t * Coef);
-            return list;
+            var count = bars.Count;
+            var res = Context?.GetArray<double>(count) ?? new double[count];
+            for (var index = 0; index < bars.Count; index++)
+            {
+                res[index] = bars[index] * Coef;
+            }
+
+            return res;
         }
 
         /// <summary>
@@ -49,8 +53,10 @@ namespace TSLab.Script.Handlers
         /// </summary>
         public double Execute(double barVal, int barNum)
         {
-            double res = barVal * Coef;
+            var res = barVal * Coef;
             return res;
         }
+
+        public IContext Context { get; set; }
     }
 }

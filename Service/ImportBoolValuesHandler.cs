@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
+// ReSharper disable once CheckNamespace
 namespace TSLab.Script.Handlers
 {
     public sealed class ImportBoolValuesHandler : ImportValuesHandler<bool>, IBooleanReturns

@@ -46,8 +46,10 @@ namespace TSLab.Script.Handlers.Options
             OptionUtils.GetDtWithoutWeekendsSlow(s_yearEnd, s_yearBeg).TotalDays;
         internal static readonly double DaysInYearPlainCalendarWithoutHolidays =
             OptionUtils.GetDtWithoutHolidaysSlow(s_yearEnd, s_yearBeg).TotalDays;
+        // TODO: Постараться избавиться от этого поля. Для этого нужно переписать функцию вычисления теты.
+        //[Obsolete("Постараться избавиться от этого поля. Для этого нужно переписать функцию вычисления теты.")]
         internal static readonly double DaysInYearRts =
-            OptionUtils.GetDtRtsTradingTime(s_yearEnd, s_yearBeg).TotalDays;
+            OptionUtils.GetDtRtsTradingTime21(s_yearEnd, s_yearBeg).DtDays;
         internal static readonly double DaysInYearLiquidProRts =
             OptionUtils.GetLiquidProRtsTradingDaysInYear(s_yearBeg.Year);
 
@@ -381,7 +383,8 @@ namespace TSLab.Script.Handlers.Options
                         if ((ds != null) && ds.IsConnected)
                         {
                             serverNow = ds.ServerTime;
-                            if (serverNow > lastBarNow)
+                            if ((serverNow > lastBarNow) &&
+                                (serverNow.Date == lastBarNow.Date)) // [2021-02-25] Эта проверка нужна, чтобы не менять время последнего бара в прошедшем дне
                                 now = serverNow;
                         }
                     }
@@ -607,13 +610,20 @@ namespace TSLab.Script.Handlers.Options
 
                 case TimeRemainMode.RtsTradingTime:
                     {
-                        TimeSpan ts = OptionUtils.GetDtRtsTradingTime(expiry, now);
-                        days = ts.TotalDays;
+                        var tti = OptionUtils.GetDtRtsTradingTime21(expiry, now);
+                        //days = ts.TotalDays;
 
-                        partOfDayForTrading = ((double)OptionUtils.TradingMinutesInDayRts) / (double)OptionUtils.MinutesInDay;
-                        daysInYear = DaysInYearRts;
+                        //partOfDayForTrading = ((double)OptionUtils.TradingMinutesInDayRts) / (double)OptionUtils.MinutesInDay;
+                        //daysInYear = DaysInYearRts;
+
+                        timeAsDays = tti.DtDays;
+                        timeAsYears = tti.DtYears;
+                        if (returnDays)
+                            return timeAsDays;
+                        else
+                            return timeAsYears;
                     }
-                    break;
+                    //break;
 
                 case TimeRemainMode.LiquidProRtsTradingTime:
                     {

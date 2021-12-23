@@ -4,12 +4,16 @@ using System.Collections.Generic;
 using System.ComponentModel;
 
 using TSLab.Script.Handlers.Options;
+// ReSharper disable CommentTypo
+// ReSharper disable ArrangeAccessorOwnerBody
+// ReSharper disable StringLiteralTypo
 
 // ReSharper disable UnusedMember.Global
 // ReSharper disable MemberCanBePrivate.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 // ReSharper disable ClassNeverInstantiated.Global
 
+// ReSharper disable once CheckNamespace
 namespace TSLab.Script.Handlers
 {
     //[HandlerName("Constant")]
@@ -30,10 +34,6 @@ namespace TSLab.Script.Handlers
         /// \~english A value to return as output of a handler
         /// \~russian Значение на выходе блока
         /// </summary>
-        [HelperName("Value", Constants.En)]
-        [HelperName("Значение", Constants.Ru)]
-        [Description("Значение на выходе блока")]
-        [HelperDescription("A value to return as output of a handler", Constants.En)]
         [HandlerParameter]
         public double Value { get; set; }
 
@@ -61,22 +61,41 @@ namespace TSLab.Script.Handlers
         }
     }
 
-    //[HandlerName("Bool Constant")]
-    [HandlerCategory(HandlerCategories.TradeMath, "BoolConst", true)]
-    [HelperName("Boolean Constant", Language = Constants.En)]
-    [HelperName("Логическая константа", Language = Constants.Ru)]
-    [Description("По аналогии с константой выдает фиксированное логическое значение на каждый бар.")]
-    [HelperDescription("This block sets a fixed boolean value for every bar.", Constants.En)]
+    [HandlerCategory(HandlerCategories.TradeMath, "Const", true)]
+    public class StringConst : ConstGenBase<string>, IOneSourceHandler, IStringReturns, IStreamHandler, ISecurityInputs, ICustomListValues
+    {
+        /// <summary>
+        /// \~english A value to return as output of a handler
+        /// \~russian Значение на выходе блока
+        /// </summary>
+        [HandlerParameter(Default = "")]
+        public string Value { get; set; } = "";
+
+        public IList<string> Execute(IContext context)
+        {
+            MakeList(context.BarsCount, Value);
+            return this;
+        }
+
+        public IList<string> Execute(ISecurity source)
+        {
+            MakeList(source.Bars.Count, Value);
+            return this;
+        }
+
+        public IEnumerable<string> GetValuesForParameter(string paramName)
+        {
+            return new[] { Value }; 
+        }
+    }
+
+    [HandlerCategory(HandlerCategories.TradeMath, "Const", true)]
     public class BoolConst : ConstGenBase<bool>, IBar2BoolsHandler
     {
         /// <summary>
         /// \~english A value to return as output of a handler
         /// \~russian Значение на выходе блока
         /// </summary>
-        [HelperName("Value", Constants.En)]
-        [HelperName("Значение", Constants.Ru)]
-        [Description("Значение на выходе блока")]
-        [HelperDescription("A value to return as output of a handler", Constants.En)]
         [HandlerParameter]
         public bool Value { get; set; }
 
@@ -97,10 +116,6 @@ namespace TSLab.Script.Handlers
 
     //[HandlerName("Bool Breaker")]
     [HandlerCategory(HandlerCategories.TradeMath, "BoolConst", true)]
-    [HelperName("Boolean Breaker", Language = Constants.En)]
-    [HelperName("Логический разделитель", Language = Constants.Ru)]
-    [Description("Используется совместно с блоком 'Контрольная панель' для осуществления ручного управления кнопками на ней (режим полуавтоматической торговли). При нажатии на кнопку будет выдан true только для текущей свечи, что гарантирует, что сигнал будет выдан всегда на текущей свече.")]
-    [HelperDescription("Sets a FALSE value at every candle except the last one. For the last value sets a selected TRUE/FALSE value. This block is used together with the control pane buttons.", Constants.En)]
     public sealed class BoolBreaker : BoolConst
     {
         public override IEnumerator<bool> GetEnumerator()
@@ -133,7 +148,7 @@ namespace TSLab.Script.Handlers
     /// В качестве всех 'элементов списка' выступает одно значение, переданное в конструкторе.
     /// </summary>
     public class ConstGenBase<T> : IList<T>
-        where T : struct, IComparable
+        where T : IComparable
     {
         protected int m_count = int.MaxValue;
 
@@ -183,7 +198,7 @@ namespace TSLab.Script.Handlers
 
         public bool Contains(T item)
         {
-            return item.Equals(m_value);
+            return item?.Equals(m_value) ?? false;
         }
 
         public void CopyTo(T[] array, int arrayIndex)

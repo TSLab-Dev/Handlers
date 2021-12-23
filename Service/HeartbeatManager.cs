@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using TSLab.Utils.Profiling;
 
+// ReSharper disable once CheckNamespace
 namespace TSLab.Script.Handlers
 {
     internal sealed class HeartbeatManager
