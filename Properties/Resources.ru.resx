@@ -3493,7 +3493,7 @@
     <value>Удерживалось баров</value>
   </data>
   <data name="BOOL.Name" xml:space="preserve">
-    <value>Источник (логический)</value>
+    <value>Источник (логический, потоковый)</value>
   </data>
   <data name="BooleanExpression.Name" xml:space="preserve">
     <value>Логическая формула</value>
@@ -3597,6 +3597,9 @@
   </data>
   <data name="DrowdownCount.Name" xml:space="preserve">
     <value>Убытков подряд</value>
+  </data>
+  <data name="ProfitsCount.Name" xml:space="preserve">
+    <value>Прибыльных подряд</value>
   </data>
   <data name="EntryDate.Name" xml:space="preserve">
     <value>Дата входа</value>
@@ -4131,7 +4134,7 @@
   <data name="BoolConst.Name" xml:space="preserve">
     <value>Логическая константа</value>
   </data>
-<data name="StringConst.Name" xml:space="preserve">
+  <data name="StringConst.Name" xml:space="preserve">
     <value>Строковая константа</value>
   </data>
   <data name="OpenInterest.Name" xml:space="preserve">
@@ -4177,10 +4180,10 @@
     <value>Aroon+</value>
   </data>
   <data name="BollingerBands1.Name" xml:space="preserve">
-    <value>Полоса Болинжера (+)</value>
+    <value>Полоса Боллинджера (+)</value>
   </data>
   <data name="BollingerBands2.Name" xml:space="preserve">
-    <value>Полоса Болинжера (-)</value>
+    <value>Полоса Боллинджера (-)</value>
   </data>
   <data name="CCI.Name" xml:space="preserve">
     <value>CCI</value>
@@ -4593,6 +4596,18 @@
   <data name="BalancedPrice.Name" xml:space="preserve">
     <value>Средняя цена входа</value>
   </data>
+  <data name="BalancedPriceBySecurity.Name" xml:space="preserve">
+    <value>Средняя цена входа (по инструменту)</value>
+  </data>
+  <data name="BalancedPriceBySecurity.Description" xml:space="preserve">
+    <value>Средняя цена входа и изменения всех активных позиций скрипта по инструменту.</value>
+  </data>
+  <data name="BalancedPriceBySecurity.PositionSide.Name" xml:space="preserve">
+    <value>Направление позиции</value>
+  </data>
+  <data name="AverageExitPrice.Name" xml:space="preserve">
+    <value>Средняя цена выхода</value>
+  </data>
   <data name="PositionsManager.CheckSecurityTime.Name" xml:space="preserve">
     <value>Проверять время инструмента</value>
   </data>
@@ -4630,7 +4645,7 @@
     <value>Номер бара входа в позицию</value>
   </data>
   <data name="PositionExitBarNumber.Name" xml:space="preserve">
-    <value>Номер бара выхода из позиции</value>
+    <value>Номер текущего бара при входе в позицию</value>
   </data>
   <data name="PositionChangeEntryPrice.Name" xml:space="preserve">
     <value>Цена входа в измененную позицию</value>
@@ -4648,10 +4663,10 @@
     <value>Просадка (кривой) прибыли</value>
   </data>
   <data name="BuyCount.Name" xml:space="preserve">
-    <value>СумСпрос</value>
+    <value>Количество заявок на покупку</value>
   </data>
   <data name="SellCount.Name" xml:space="preserve">
-    <value>СумПредл</value>
+    <value>Количество заявок на продажу</value>
   </data>
   <data name="BuyDeposit.Name" xml:space="preserve">
     <value>Гарантийные обеспечения покупателя</value>
@@ -4679,6 +4694,18 @@
   </data>
   <data name="SessionOpen.Name" xml:space="preserve">
     <value>Открытие сессии</value>
+  </data>
+  <data name="HighBid.Name" xml:space="preserve">
+    <value>Наибольшая цена спроса</value>
+  </data>
+  <data name="LowOffer.Name" xml:space="preserve">
+    <value>Наименьшая цена предложения</value>
+  </data>
+  <data name="PriceMin.Name" xml:space="preserve">
+    <value>Нижний лимит</value>
+  </data>
+  <data name="PriceMax.Name" xml:space="preserve">
+    <value>Верхний лимит</value>
   </data>
   <data name="HoldSignalForNBars.NBars.Name" xml:space="preserve">
     <value>Количество баров</value>
@@ -4801,7 +4828,7 @@
     <value>Сообщение</value>
   </data>
   <data name="SaveToGlobalCache.Name" xml:space="preserve">
-    <value>Сохранить в Глобальный Кеш</value>
+    <value>Сохранить в Глобальный Кеш (старый)</value>
     <comment>Save to Global Cache</comment>
   </data>
   <data name="SaveToGlobalCache.Description" xml:space="preserve">
@@ -4839,7 +4866,7 @@
     <comment>Unique indicator name to be used to store values in Global Cache</comment>
   </data>
   <data name="LoadFromGlobalCache.Name" xml:space="preserve">
-    <value>Загрузить из Глобального Кеша</value>
+    <value>Загрузить из Глобального Кеша (старый)</value>
     <comment>Load from Global Cache</comment>
   </data>
   <data name="LoadFromGlobalCache.Description" xml:space="preserve">
@@ -5010,7 +5037,7 @@
     <value>При true будет показывать узлы на отображаемой линии</value>
   </data>
   <data name="Add.Description" xml:space="preserve">
-    <value>Сложить несколько чисел (от 2 до 30 входов)</value>
+    <value>Сложить несколько чисел (от 2 до 10 входов)</value>
   </data>
   <data name="And.Description" xml:space="preserve">
     <value>Операция логическое 'И' нескольких значений (от 2 до 6 входов). На выходе true, только если все входы одновременно имеют значение true.</value>
@@ -5043,7 +5070,7 @@
     <value>По аналогии с константой выдает фиксированное логическое значение на каждый бар.</value>
   </data>
   <data name="BuyCount.Description" xml:space="preserve">
-    <value>Суммарное текущее количество заявок на покупку. Эта же величина показывается в таблице 'Котировки'.</value>
+    <value>Суммарное текущее количество заявок на покупку в очереди заявок. В котировках соответствует полю "ЗаявПок". Не кэшируется.</value>
   </data>
   <data name="Close.Description" xml:space="preserve">
     <value>Цена закрытия бара.</value>
@@ -5087,10 +5114,10 @@
   <data name="ValueReceiverHandler.DefaultValue.Description" xml:space="preserve">
     <value>Значение на выходе блока, если не удалось получить с сервера</value>
   </data>
-<data name="BoolReceiverHandler.DefaultValue.Name" xml:space="preserve">
+  <data name="BoolReceiverHandler.DefaultValue.Name" xml:space="preserve">
     <value>Значение по умолчанию</value>
   </data>
-<data name="BoolReceiverHandler.DefaultValue.Description" xml:space="preserve">
+  <data name="BoolReceiverHandler.DefaultValue.Description" xml:space="preserve">
     <value>Значение на выходе блока, если не удалось получить с сервера</value>
   </data>
   <data name="CrossOver.Description" xml:space="preserve">
@@ -5241,7 +5268,7 @@
     <value>Количество десятичных знаков после запятой при округлении чисел вверх</value>
   </data>
   <data name="SellCount.Description" xml:space="preserve">
-    <value>Суммарное текущее количество заявок на продажу. Эта же величина показывается в таблице 'Котировки'.</value>
+    <value>Суммарное текущее количество заявок на продажу в очереди заявок. В котировках соответствует полю "ЗаявПрод". Не кэшируется</value>
   </data>
   <data name="SessionClose.Description" xml:space="preserve">
     <value>Цена закрытия торговой сессии.</value>
@@ -5820,7 +5847,7 @@
     <value>Период индикатора (окно расчетов)</value>
   </data>
   <data name="BollingerBands1.Description" xml:space="preserve">
-    <value>Верхняя граница коридора Болинжера.</value>
+    <value>Верхняя граница коридора Боллинджера.</value>
   </data>
   <data name="BollingerBands1.Coef.Name" xml:space="preserve">
     <value>Ширина</value>
@@ -5835,7 +5862,7 @@
     <value>Период индикатора (окно расчетов)</value>
   </data>
   <data name="BollingerBands2.Description" xml:space="preserve">
-    <value>Нижняя граница коридора Болинжера.</value>
+    <value>Нижняя граница коридора Боллинджера.</value>
   </data>
   <data name="BollingerBands2.Coef.Name" xml:space="preserve">
     <value>Ширина</value>
@@ -6299,6 +6326,9 @@
   <data name="DrowdownCount.Description" xml:space="preserve">
     <value>Подсчет количества убыточных позиций подряд.</value>
   </data>
+  <data name="ProfitsCount.Description" xml:space="preserve">
+    <value>Подсчет количества прибыльных позиций подряд.</value>
+  </data>
   <data name="EntryDate.Description" xml:space="preserve">
     <value>Дата входа в позицию, представленная как число в формате ГГММДД.</value>
   </data>
@@ -6428,7 +6458,7 @@
     <value>Показывает порядковый номер бара в момент входа в позицию.</value>
   </data>
   <data name="PositionExitBarNumber.Description" xml:space="preserve">
-    <value>Показывает порядковый номер бара в момент выхода из позиции.</value>
+    <value>Отдает номер текущего бара, при открытии позиций в истории всех открытий позиции</value>
   </data>
   <data name="PositionIsVirtualClosedHandler.Description" xml:space="preserve">
     <value>Позиция закрыта виртуально (рассчетно, сделок еще не было)?</value>
@@ -7222,11 +7252,26 @@
   <data name="PositionByName.Account.Description" xml:space="preserve">
     <value>Название счета (необязательно).</value>
   </data>
+  <data name="PositionByName.Currency.Name" xml:space="preserve">
+    <value>Валюта</value>
+  </data>
+  <data name="PositionByName.Currency.Description" xml:space="preserve">
+    <value>Название валюты (необязательно).</value>
+  </data>
   <data name="PositionByName.PositionField.Name" xml:space="preserve">
     <value>Поле позиции</value>
   </data>
   <data name="PositionByName.PositionField.Description" xml:space="preserve">
     <value>Выводимое поле позиции.</value>
+  </data>
+  <data name="QuoteByName.Name" xml:space="preserve">
+    <value>Котировка по имени</value>
+  </data>
+  <data name="QuoteByName.Description" xml:space="preserve">
+    <value>Получить значение из таблицы Котировки.</value>
+  </data>
+  <data name="QuoteByName.Quote.Name" xml:space="preserve">
+    <value>Котировка</value>
   </data>
   <data name="NetValueByAccount.Name" xml:space="preserve">
     <value>Чистая стоимость по счету</value>
@@ -7237,7 +7282,7 @@
   <data name="NetValueByAccount.Account.Name" xml:space="preserve">
     <value>Счет</value>
   </data>
-    <data name="NetValueByAccount.Account.Description" xml:space="preserve">
+  <data name="NetValueByAccount.Account.Description" xml:space="preserve">
     <value>Название счета (необязательно).</value>
   </data>
   <data name="LastExitAvgPrice.Name" xml:space="preserve">
@@ -7279,6 +7324,15 @@
   <data name="ReceiverHandler.ReceiverApiKey.Name" xml:space="preserve">
     <value>Api Key</value>
   </data>
+  <data name="ReceiverHandler.ChannelApiKey.Name" xml:space="preserve">
+    <value>Api Key Канала</value>
+  </data>
+  <data name="ReceiverHandler.ChannelApiKey.Description" xml:space="preserve">
+    <value>Ключ канала для проверки доступа к каналу</value>
+  </data>
+  <data name="IsReceiverOnline.Name" xml:space="preserve">
+    <value>Приемник на связи</value>
+  </data>
   <data name="ValueReceiverHandler.Name" xml:space="preserve">
     <value>Распаковщик значения</value>
   </data>
@@ -7291,13 +7345,13 @@
   <data name="ValueSenderHandler.Name" xml:space="preserve">
     <value>Упаковщик значения</value>
   </data>
-<data name="BoolReceiverHandler.Name" xml:space="preserve">
+  <data name="BoolReceiverHandler.Name" xml:space="preserve">
     <value>Распаковщик логического значения</value>
   </data>
-<data name="BoolReceiverHandler.Value.Description" xml:space="preserve">
+  <data name="BoolReceiverHandler.Value.Description" xml:space="preserve">
     <value>Принятое значение для связи с параметрами других блоков.</value>
   </data>
-<data name="BoolReceiverHandler.Value.Name" xml:space="preserve">
+  <data name="BoolReceiverHandler.Value.Name" xml:space="preserve">
     <value>Значение</value>
   </data>
   <data name="AddPositionHandler.Name" xml:space="preserve">
@@ -7457,5 +7511,122 @@
   </data>
   <data name="LotSize.Description" xml:space="preserve">
     <value>Размер лота инструмента. Блок возвращает количество акций в одном лоте. Эта же величина показывается в таблице 'Котировки'.</value>
+  </data>
+  <data name="PriceMax.Description" xml:space="preserve">
+    <value>Блок возвращает верхний лимит инструмента из котировок. Максимально возможная цена по данному инструменту для данной сессии.</value>
+  </data>
+  <data name="PriceMin.Description" xml:space="preserve">
+    <value>Блок возвращает нижний лимит инструмента из котировок. Минимально возможная цена по данному инструменту для данной сессии.</value>
+  </data>
+  <data name="SaveToGlobalCache2.Name" xml:space="preserve">
+    <value>Сохранить в Глобальный Кеш</value>
+  </data>
+  <data name="SaveToGlobalCache2.Description" xml:space="preserve">
+    <value>Сохранить значение любого индикатора в Глобальный Кеш. Записывается последнее значение. Записанные данные можно посмотреть в файле Temp\GlobalCache_'name'.txt.</value>
+  </data>
+  <data name="SaveToGlobalCache2.Name.Name" xml:space="preserve">
+    <value>Название</value>
+  </data>
+  <data name="SaveToGlobalCache2.Name.Description" xml:space="preserve">
+    <value>Уникальное название в Глобальном Кеше</value>
+  </data>
+  <data name="SaveToGlobalCache2.SaveToStorage.Name" xml:space="preserve">
+    <value>Сохранять на диск</value>
+  </data>
+  <data name="SaveToGlobalCache2.SaveToStorage.Description" xml:space="preserve">
+    <value>Сохранять значения в файл на диске для повторного использования между перезапусками программы</value>
+  </data>
+  <data name="SaveToGlobalCache2.SaveToNextBar.Name" xml:space="preserve">
+    <value>Сохранять на следующий бар</value>
+  </data>
+  <data name="SaveToGlobalCache2.SaveToNextBar.Description" xml:space="preserve">
+    <value>Сохранять новое значение на следующий бар. Если выключено, то будет сохранять на текущий бар.</value>
+  </data>
+  <data name="SaveToGlobalCache2.MaxValues.Name" xml:space="preserve">
+    <value>Максимальное количество</value>
+  </data>
+  <data name="SaveToGlobalCache2.MaxValues.Description" xml:space="preserve">
+    <value>Максимальное количество сохраняемых значений. Если 0, то будет ограничиваться количеством баров</value>
+  </data>
+  <data name="LoadFromGlobalCache2.Name" xml:space="preserve">
+    <value>Загрузить из Глобального Кеша</value>
+  </data>
+  <data name="LoadFromGlobalCache2.Description" xml:space="preserve">
+    <value>Загрузить значение индикатора из Глобального Кеша</value>
+  </data>
+  <data name="LoadFromGlobalCache2.Name.Name" xml:space="preserve">
+    <value>Название</value>
+  </data>
+  <data name="LoadFromGlobalCache2.Name.Description" xml:space="preserve">
+    <value>Уникальное название в Глобальном Кеше</value>
+  </data>
+  <data name="LoadFromGlobalCache2.LoadFromStorage.Name" xml:space="preserve">
+    <value>Загружать с диска</value>
+  </data>
+  <data name="LoadFromGlobalCache2.LoadFromStorage.Description" xml:space="preserve">
+    <value>Загружать значения из файла на диске для повторного использования между перезапусками программы</value>
+  </data>
+  <data name="InstrumentByName.Name" xml:space="preserve">
+    <value>Инструмент по имени</value>
+  </data>
+  <data name="InstrumentByName.Description" xml:space="preserve">
+    <value>Найти инструмент по имени в мульти-источнике. Если инструмент не найден по имени, то возвращает первый по списку.</value>
+  </data>
+  <data name="InstrumentByName.Name.Name" xml:space="preserve">
+    <value>Название</value>
+  </data>
+  <data name="InstrumentByNumber.Name" xml:space="preserve">
+    <value>Инструмент по номеру</value>
+  </data>
+  <data name="InstrumentByNumber.Description" xml:space="preserve">
+    <value>Найти инструмент по номеру в мульти-источнике.</value>
+  </data>
+  <data name="InstrumentByNumber.Number.Name" xml:space="preserve">
+    <value>Номер</value>
+  </data>
+  <data name="WeightedAveragePrice.Name" xml:space="preserve">
+    <value>Средневзвешенная цена бара</value>
+  </data>
+  <data name="WeightedAveragePrice.Description" xml:space="preserve">
+    <value>Блок считает средневзвешенную цену бара, основываясь на сделках по инструменту. Для правильной работы используйте секундный график. 1 мин = 60 сек.</value>
+  </data>
+  <data name="WeightedAveragePrice.Direction.Name" xml:space="preserve">
+    <value>Направление сделок</value>
+  </data>
+  <data name="BarsTickDataHandler.Name" xml:space="preserve">
+    <value>Бары котировочных данных</value>
+  </data>
+  <data name="BarsTickDataHandler.Description" xml:space="preserve">
+    <value>Предназначен для работы с кешируемыми данными из котировок. Строит бары с интервалом источника. Для работы используйте секундный интервал источника. Например, 60 секунд.</value>
+  </data>
+  <data name="BarsTickDataHandler.Field.Name" xml:space="preserve">
+    <value>Данные котировок</value>
+  </data>
+  <data name="CycleDoubleMaxHandler.Description" xml:space="preserve">
+    <value>Проходит по всем итерациям цикла и находит максимальное значение.</value>
+  </data>
+  <data name="CycleDoubleMaxHandler.Name" xml:space="preserve">
+    <value>Максимум цикла</value>
+  </data>
+  <data name="CycleDoubleMinHandler.Description" xml:space="preserve">
+    <value>Проходит по всем итерациям цикла и находит минимальное значение.</value>
+  </data>
+  <data name="CycleDoubleMinHandler.Name" xml:space="preserve">
+    <value>Минимум цикла</value>
+  </data>
+  <data name="InitialDeposit.Description" xml:space="preserve">
+    <value>Начальный депозит из настроек скрипта</value>
+  </data>
+  <data name="InitialDeposit.Name" xml:space="preserve">
+    <value>Начальный депозит</value>
+  </data>
+  <data name="IsPortfolioReady.Description" xml:space="preserve">
+    <value>Портфель готов к торговле (поставщик соединился и получил нужные данные)</value>
+  </data>
+  <data name="IsPortfolioReady.Name" xml:space="preserve">
+    <value>Портфель готов</value>
+  </data>
+  <data name="AverageExitPrice.Description" xml:space="preserve">
+    <value>Средняя цена выхода из позиции. Если выход был один, то равна цене выхода, если были изменения позиции, то выдает средневзвешенную цену выхода (с учетом количеств).</value>
   </data>
 </root>

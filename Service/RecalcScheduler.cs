@@ -2,14 +2,13 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
-using System.Diagnostics.Contracts;
 using System.Threading;
 using TSLab.DataSource;
+using TSLab.Diagnostics;
 using TSLab.Script.Handlers.Options;
 using TSLab.Script.Options;
 using TSLab.Script.Realtime;
-using TSLab.Utils.Profiling;
+using TSLab.Utils;
 
 namespace TSLab.Script.Handlers.Service
 {
@@ -109,7 +108,7 @@ namespace TSLab.Script.Handlers.Service
                 if (problemCounter > 3)
                 {
                     // Если проблема систематически повторяется -- выбрасываю ассерт для дальнейшего анализа ситуации
-                    Contract.Assert(timerState.Timer != null, msg);
+                    Check.Assert(timerState.Timer != null, msg);
                 }
             }
             else
@@ -181,7 +180,7 @@ namespace TSLab.Script.Handlers.Service
             /// <summary>
             /// Заполнить таймер сразу через конструктор не получится, но это нужно обязательно сделать сразу после его инициализации.
             /// </summary>
-            public IThreadingTimerProfiler Timer { get; private set; }
+            public Timer Timer { get; private set; }
 
             public static TimerInfo Create(IContext context, ISecurityRt security, TimeSpan recalcTime)
             {
@@ -194,7 +193,7 @@ namespace TSLab.Script.Handlers.Service
 
             private TimerInfo(IContext context, ISecurityRt security, TimeSpan recalcTime)
             {
-                Debug.Assert(context != null, "context==null");
+                Check.Assert(context != null, "context==null");
                 CallContext = context;
                 Security = security;
                 RecalcTime = recalcTime;

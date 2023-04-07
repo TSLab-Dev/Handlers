@@ -11,8 +11,8 @@ using TSLab.Utils;
 namespace TSLab.Script.Handlers.Options
 {
     [HandlerCategory(HandlerCategories.OptionsIndicators)]
-    [HelperName("Load from Global Cache", Language = Constants.En)]
-    [HelperName("Загрузить из Глобального Кеша", Language = Constants.Ru)]
+    [HelperName("Load from Global Cache (old)", Language = Constants.En)]
+    [HelperName("Загрузить из Глобального Кеша (старый)", Language = Constants.Ru)]
     [HandlerAlwaysKeep]
     [InputsCount(1)]
     [Input(0, TemplateTypes.SECURITY | TemplateTypes.OPTION_SERIES | TemplateTypes.OPTION, Name = Constants.AnyOption)]

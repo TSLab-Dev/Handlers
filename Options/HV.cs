@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Diagnostics.Contracts;
 using System.Globalization;
 
 using TSLab.DataSource;
+using TSLab.Diagnostics;
 using TSLab.Script.Options;
 using TSLab.Utils;
 
@@ -290,7 +290,7 @@ namespace TSLab.Script.Handlers.Options
                 double v = bar.Close;
                 double ln = Math.Log(v);
 
-                Contract.Assert(logs != null, "Каким образом переменная logs оказалась null?");
+                Check.Assert(logs != null, "Каким образом переменная logs оказалась null?");
                 logs.AddLast(new KeyValuePair<DateTime, double>(t, ln));
 
                 double hv;

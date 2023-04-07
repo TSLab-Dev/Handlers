@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Diagnostics.Contracts;
 using System.Globalization;
 using System.Linq;
-
+using TSLab.Diagnostics;
 using TSLab.Script.CanvasPane;
 using TSLab.Script.Options;
 using TSLab.Utils;
@@ -1019,7 +1018,7 @@ namespace TSLab.Script.Handlers.Options
                             // Нижняя волатильность на-деньгах
                             double testLowIvAtm = lowSmileFunc.Value(smile.F);
                             // Поскольку применен алгоритм ShiftingSmile, волатильность на-деньгах должна остаться прежней
-                            Contract.Assert(DoubleUtil.AreClose(testLowIvAtm, newIvAtm), "#01: Начальная вола на-деньгах должна быть равна требуемой");
+                            Check.Assert(DoubleUtil.AreClose(testLowIvAtm, newIvAtm), "#01: Начальная вола на-деньгах должна быть равна требуемой");
 
                             var lowSmileInfo = new SmileInfo();
                             lowSmileInfo.F = smile.F;
@@ -1043,7 +1042,7 @@ namespace TSLab.Script.Handlers.Options
                             testLowIvAtm = lowSmileInfo.ContinuousFunction.Value(smile.F);
 
                             // Поскольку применен алгоритм ShiftingSmile, волатильность на-деньгах должна остаться прежней
-                            Contract.Assert(lowSmileInfo.IsValidSmileParams, "#05: Преобразование улыбки должно заполнять все нужные поля!");
+                            Check.Assert(lowSmileInfo.IsValidSmileParams, "#05: Преобразование улыбки должно заполнять все нужные поля!");
 
                             res = lowSmileInfo;
                             break;

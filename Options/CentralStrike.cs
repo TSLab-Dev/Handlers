@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Diagnostics.Contracts;
 using System.Globalization;
 using System.Linq;
-
+using TSLab.Diagnostics;
 using TSLab.Script.Optimization;
 using TSLab.Script.Options;
 using TSLab.Utils;
@@ -311,8 +310,8 @@ namespace TSLab.Script.Handlers.Options
         // ReSharper disable once MemberCanBePrivate.Global        
         public static ReadOnlyCollection<double> GetStrikeSteps(double dK)
         {
-            Contract.Assert(DoubleUtil.IsPositive(dK), "Что делать с отрицательным шагом стрйков? dK: " + dK);
-            Contract.Assert(s_stepMultipliers.Count > 0, "Мало мультипликаторов? s_stepMultipliers.Count: " + s_stepMultipliers.Count);
+            Check.Assert(DoubleUtil.IsPositive(dK), "Что делать с отрицательным шагом стрйков? dK: " + dK);
+            Check.Assert(s_stepMultipliers.Count > 0, "Мало мультипликаторов? s_stepMultipliers.Count: " + s_stepMultipliers.Count);
 
             // Если беда, просто возвращаем 0
             if ((!DoubleUtil.IsPositive(dK)) || (s_stepMultipliers.Count <= 0))

@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
-
+using TSLab.Diagnostics;
 using TSLab.Script.Handlers.Options;
 using TSLab.Script.Helpers;
 
@@ -22,7 +21,7 @@ namespace TSLab.Script.Handlers
             var trueRange = Series.TrueRange(bars, context);
             var atr = Series.EMA(trueRange, period, context);
             context?.ReleaseArray((Array)trueRange);
-            Debug.Assert(atr != null, "atr != null");
+            Check.Assert(atr != null, "atr != null");
             IList<double> diP1 = context?.GetArray<double>(count) ?? new double[count];
 
             for (int i = 1; i < count; i++)

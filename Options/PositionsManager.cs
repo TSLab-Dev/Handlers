@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Diagnostics.Contracts;
 using System.Globalization;
 using System.Linq;
 
 using TSLab.DataSource;
+using TSLab.Diagnostics;
 using TSLab.Script.CanvasPane;
 using TSLab.Script.Options;
 using TSLab.Script.Realtime;
@@ -1527,7 +1527,7 @@ namespace TSLab.Script.Handlers.Options
                             //virtPos.VirtualChange(len - VirtPosShift, avgPx, Math.Abs(virtPos.Shares) + Math.Abs(qty), signalName, notes);
                             virtPos.VirtualChange(len - VirtPosShift, px, Math.Abs(virtPos.Shares) + Math.Abs(qty), signalName, notes);
 
-                            System.Diagnostics.Debug.Assert(DoubleUtil.AreClose(avgPx, virtPos.AverageEntryPrice),
+                            Check.Assert(DoubleUtil.AreClose(avgPx, virtPos.AverageEntryPrice),
                                 "ActualPx:" + virtPos.AverageEntryPrice + "; Expected:" + avgPx);
 
                             // Сохраняем обновленное состояние позиции.
@@ -1842,7 +1842,7 @@ namespace TSLab.Script.Handlers.Options
                             //virtPos.VirtualChange(len - VirtPosShift, avgPx, -Math.Abs(virtPos.Shares) - Math.Abs(qty), signalName, notes);
                             virtPos.VirtualChange(len - VirtPosShift, px, -Math.Abs(virtPos.Shares) - Math.Abs(qty), signalName, notes);
 
-                            System.Diagnostics.Debug.Assert(DoubleUtil.AreClose(avgPx, virtPos.AverageEntryPrice),
+                            Check.Assert(DoubleUtil.AreClose(avgPx, virtPos.AverageEntryPrice),
                                 "ActualPx:" + virtPos.AverageEntryPrice + "; Expected:" + avgPx);
 
                             // Сохраняем обновленное состояние позиции.
@@ -2864,7 +2864,7 @@ namespace TSLab.Script.Handlers.Options
             bool ok = SingleSeriesProfile.TryGetOptionsPnl(originalSmileInfo, strikes, optPositions, lastBarIndex, futPx, dT, out cash, out pnl);
             if (!ok)
             {
-                Contract.Assert(false, "Почему не смогли рассчитать прибыль???");
+                Check.Assert(false, "Почему не смогли рассчитать прибыль???");
                 return false;
             }
 
@@ -2889,14 +2889,14 @@ namespace TSLab.Script.Handlers.Options
             if (!okShort)
             {
                 // TODO: залоггировать аварийную ситуацию?
-                Contract.Assert(false, "Почему не смогли рассчитать прибыль???");
+                Check.Assert(false, "Почему не смогли рассчитать прибыль???");
                 return false;
             }
             bool okLong = SingleSeriesProfile.TryGetOptionsPnl(actualLongSmile, strikes, longPositions, lastBarIndex, futPx, dT, out cashLong, out pnlLong);
             if (!okLong)
             {
                 // TODO: залоггировать аварийную ситуацию?
-                Contract.Assert(false, "Почему не смогли рассчитать прибыль???");
+                Check.Assert(false, "Почему не смогли рассчитать прибыль???");
                 return false;
             }
 
@@ -2927,7 +2927,7 @@ namespace TSLab.Script.Handlers.Options
             //    else
             //    {
             //        string exMsg = $"Как получился отрицательный сдвиг totaldSigma:{totaldSigma}?";
-            //        Contract.Assert(false, exMsg);
+            //        Check.Assert(false, exMsg);
             //        throw new InvalidOperationException(exMsg);
             //    }
 
@@ -2946,7 +2946,7 @@ namespace TSLab.Script.Handlers.Options
             //        double testLowIvAtm = lowSmileFunc.Value(futPx);
 
             //        // Поскольку применен алгоритм ShiftingSmile, волатильность на-деньгах должна остаться прежней
-            //        Contract.Assert(DoubleUtil.AreClose(testLowIvAtm, lowIvAtm / 2), "#01: Начальная вола на-деньгах должна быть равна требуемой");
+            //        Check.Assert(DoubleUtil.AreClose(testLowIvAtm, lowIvAtm / 2), "#01: Начальная вола на-деньгах должна быть равна требуемой");
 
             //        // Улыбка построена правильно, запоминаем уровень айви
             //        lowIvAtm = lowIvAtm / 2;
@@ -2968,8 +2968,8 @@ namespace TSLab.Script.Handlers.Options
             //        testLowIvAtm = lowSmileInfo.ContinuousFunction.Value(futPx);
 
             //        // Поскольку применен алгоритм ShiftingSmile, волатильность на-деньгах должна остаться прежней
-            //        Contract.Assert(DoubleUtil.AreClose(testLowIvAtm, lowIvAtm), "#03: Начальная вола на-деньгах должна быть равна требуемой");
-            //        Contract.Assert(lowSmileInfo.IsValidSmileParams, "#05: Преобразование улыбки должно заполнять все нужные поля!");
+            //        Check.Assert(DoubleUtil.AreClose(testLowIvAtm, lowIvAtm), "#03: Начальная вола на-деньгах должна быть равна требуемой");
+            //        Check.Assert(lowSmileInfo.IsValidSmileParams, "#05: Преобразование улыбки должно заполнять все нужные поля!");
             //    }
             //    else
             //    {
@@ -2980,7 +2980,7 @@ namespace TSLab.Script.Handlers.Options
             //while (lowIvAtm >= dSigma);
             #endregion 1. Ищу нижнюю оценку позиции по волатильности
 
-            //Contract.Assert(DoubleUtil.IsPositive(lowIvAtm), $"Айви должен быть строго положительным! lowIvAtm:{lowIvAtm}");
+            //Check.Assert(DoubleUtil.IsPositive(lowIvAtm), $"Айви должен быть строго положительным! lowIvAtm:{lowIvAtm}");
 
             //// Если НЕ нашли нижнюю границу -- тогда досвидос
             //if (lowIvAtm < dSigma)
@@ -3046,7 +3046,7 @@ namespace TSLab.Script.Handlers.Options
                 else // Зажали нуль между двумя точками
                 {
                     profit = fullSum;
-                    Contract.Assert(!DoubleUtil.IsNaN(prevTotalDSigma), $"Мы не должны выходить на первом же шаге! prevTotalDSigma:{prevTotalDSigma}");
+                    Check.Assert(!DoubleUtil.IsNaN(prevTotalDSigma), $"Мы не должны выходить на первом же шаге! prevTotalDSigma:{prevTotalDSigma}");
                     break;
                 }
 

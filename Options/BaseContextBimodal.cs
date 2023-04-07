@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
+using TSLab.Diagnostics;
 
 namespace TSLab.Script.Handlers.Options
 {
@@ -36,13 +36,13 @@ namespace TSLab.Script.Handlers.Options
             {
                 results.RemoveRange(len, results.Count - len);
 
-                Debug.Assert(results.Count == len, "(results.Count != len). It is a mistake #1.");
+                Check.Assert(results.Count == len, "(results.Count != len). It is a mistake #1.");
             }
             else if (results.Count < len)
             {
                 results.AddRange(new T[len - results.Count]);
 
-                Debug.Assert(results.Count == len, "(results.Count != len). It is a mistake #2.");
+                Check.Assert(results.Count == len, "(results.Count != len). It is a mistake #2.");
             }
 
             // 5. Пошел главный цикл

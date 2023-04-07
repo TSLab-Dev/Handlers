@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 
 using TSLab.DataSource;
+using TSLab.Diagnostics;
 using TSLab.Script.Options;
 using TSLab.Utils;
 
@@ -257,8 +257,8 @@ namespace TSLab.Script.Handlers.Options
                 #endregion Ветка с нарастающим количеством баров
             }
 
-            Debug.Assert(res != null, "How is it possible (res == null)?");
-            Debug.Assert(res.Count == len, String.Format("Wrong res.Count. res.Count:{0}; expected len:{1}; IsFixedBarsCount:{2}",
+            Check.Assert(res != null, "How is it possible (res == null)?");
+            Check.Assert(res.Count == len, String.Format("Wrong res.Count. res.Count:{0}; expected len:{1}; IsFixedBarsCount:{2}",
                 res.Count, len, m_context.IsFixedBarsCount));
 
             FinInfo baseFinInfo = optSer.UnderlyingAsset.FinInfo;
@@ -426,7 +426,7 @@ namespace TSLab.Script.Handlers.Options
                     continue;
 
                 // TODO: вернуть ассерт потом
-                //System.Diagnostics.Debug.Assert(
+                //System.Diagnostics.Check.Assert(
                 //    DoubleUtil.AreClose(sInfo.PutFinInfo.Volatility.Value, sInfo.CallFinInfo.Volatility.Value),
                 //    "Exchange volas on the same strike MUST be equal! PutVola:" + sInfo.PutFinInfo.Volatility.Value +
                 //    "; CallVola:" + sInfo.CallFinInfo.Volatility.Value);

@@ -2,11 +2,10 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Diagnostics.Contracts;
 using System.Globalization;
 using System.Linq;
 using System.Windows;
-
+using TSLab.Diagnostics;
 using TSLab.Script.CanvasPane;
 using TSLab.Script.Options;
 using TSLab.Utils;
@@ -264,7 +263,7 @@ namespace TSLab.Script.Handlers.Options
                     // PROD-5746 -- Убираю использование старого неэффективного кода
                     pnlIsCorrect1 = false;
 
-                    Contract.Assert(pnlIsCorrect1, $"[{nameof(OptionsBoardNumericalDelta)}.{nameof(TryEstimateDelta)}] #1 Каким образом получили неподготовленную улыбку? (sInfo == null)");
+                    Check.Assert(pnlIsCorrect1, $"[{nameof(OptionsBoardNumericalDelta)}.{nameof(TryEstimateDelta)}] #1 Каким образом получили неподготовленную улыбку? (sInfo == null)");
 
                     //InteractiveSeries actualSmile = SingleSeriesProfile.GetActualSmile(smile, greekAlgo, f - dF);
 
@@ -293,7 +292,7 @@ namespace TSLab.Script.Handlers.Options
                     // PROD-5746 -- Убираю использование старого неэффективного кода
                     pnlIsCorrect2 = false;
 
-                    Contract.Assert(pnlIsCorrect2, $"[{nameof(OptionsBoardNumericalDelta)}.{nameof(TryEstimateDelta)}] #2 Каким образом получили неподготовленную улыбку? (sInfo == null)");
+                    Check.Assert(pnlIsCorrect2, $"[{nameof(OptionsBoardNumericalDelta)}.{nameof(TryEstimateDelta)}] #2 Каким образом получили неподготовленную улыбку? (sInfo == null)");
 
                     //InteractiveSeries actualSmile = SingleSeriesProfile.GetActualSmile(smile, greekAlgo, f + dF);
 

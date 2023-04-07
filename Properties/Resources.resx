@@ -3497,7 +3497,7 @@
     <comment>Удерживалось баров</comment>
   </data>
   <data name="BOOL.Name" xml:space="preserve">
-    <value>Source (boolean)</value>
+    <value>Source (boolean, stream)</value>
     <comment>ok Источник данных (логический)</comment>
   </data>
   <data name="BooleanExpression.Name" xml:space="preserve">
@@ -3629,6 +3629,9 @@
   <data name="DrowdownCount.Name" xml:space="preserve">
     <value>Losses running</value>
     <comment>Убытков подряд</comment>
+  </data>
+  <data name="ProfitsCount.Name" xml:space="preserve">
+    <value>Profits running</value>
   </data>
   <data name="EntryDate.Name" xml:space="preserve">
     <value>Entry date</value>
@@ -4286,7 +4289,7 @@
   <data name="BoolConst.Name" xml:space="preserve">
     <value>Boolean Constant</value>
   </data>
-<data name="StringConst.Name" xml:space="preserve">
+  <data name="StringConst.Name" xml:space="preserve">
     <value>String Constant</value>
   </data>
   <data name="MomentumOsc.Name" xml:space="preserve">
@@ -4728,6 +4731,18 @@
     <value>Average entry price</value>
     <comment>средняя цена входа</comment>
   </data>
+  <data name="BalancedPriceBySecurity.Name" xml:space="preserve">
+    <value>Average entry price (by security)</value>
+  </data>
+  <data name="BalancedPriceBySecurity.Description" xml:space="preserve">
+    <value>An average position exit price.</value>
+  </data>
+  <data name="BalancedPriceBySecurity.PositionSide.Name" xml:space="preserve">
+    <value>Position side</value>
+  </data>
+  <data name="AverageExitPrice.Name" xml:space="preserve">
+    <value>Average exit price</value>
+  </data>
   <data name="PositionsManager.CheckSecurityTime.Name" xml:space="preserve">
     <value>Check security time</value>
   </data>
@@ -4765,7 +4780,7 @@
     <value>Position Entry Bar Number</value>
   </data>
   <data name="PositionExitBarNumber.Name" xml:space="preserve">
-    <value>Position Exit Bar Number</value>
+    <value>Position Entry Сurrent Bar Number</value>
   </data>
   <data name="PositionChangeEntryPrice.Name" xml:space="preserve">
     <value>Changed Position Entry Price</value>
@@ -4783,10 +4798,11 @@
     <value>Equity Drawdown</value>
   </data>
   <data name="BuyCount.Name" xml:space="preserve">
-    <value>Number of purchases</value>
+    <value>Number of purchase requests</value>
+    <comment>Количество заявок на покупку</comment>
   </data>
   <data name="SellCount.Name" xml:space="preserve">
-    <value>Number of sales</value>
+    <value>Number of requests for sale</value>
   </data>
   <data name="BuyDeposit.Name" xml:space="preserve">
     <value>Buy Deposit</value>
@@ -4814,6 +4830,18 @@
   </data>
   <data name="SessionOpen.Name" xml:space="preserve">
     <value>Session open</value>
+  </data>
+  <data name="HighBid.Name" xml:space="preserve">
+    <value>High bid</value>
+  </data>
+  <data name="LowOffer.Name" xml:space="preserve">
+    <value>Low offer</value>
+  </data>
+  <data name="PriceMin.Name" xml:space="preserve">
+    <value>Low limit</value>
+  </data>
+  <data name="PriceMax.Name" xml:space="preserve">
+    <value>High limit</value>
   </data>
   <data name="HoldSignalForNBars.NBars.Name" xml:space="preserve">
     <value>Bars count</value>
@@ -4936,7 +4964,7 @@
     <value>Message</value>
   </data>
   <data name="SaveToGlobalCache.Name" xml:space="preserve">
-    <value>Save to Global Cache</value>
+    <value>Save to Global Cache (old)</value>
     <comment>Сохранить в Глобальный Кеш</comment>
   </data>
   <data name="SaveToGlobalCache.Description" xml:space="preserve">
@@ -4974,7 +5002,7 @@
     <comment>Уникальное название индикатора для целей сохранения в Глобальный Кеш</comment>
   </data>
   <data name="LoadFromGlobalCache.Name" xml:space="preserve">
-    <value>Load from Global Cache</value>
+    <value>Load from Global Cache (old)</value>
     <comment>Загрузить из Глобального Кеша</comment>
   </data>
   <data name="LoadFromGlobalCache.Description" xml:space="preserve">
@@ -5178,7 +5206,7 @@
     <value>This block sets a fixed string value for every bar.</value>
   </data>
   <data name="BuyCount.Description" xml:space="preserve">
-    <value>Shows the number of purchases (bids). This value is shown also in 'Quotes' table.</value>
+    <value>The total current number of purchase orders in the order queue. In quotes, it corresponds to the "Orders to buy" field. Not cached.</value>
   </data>
   <data name="Close.Description" xml:space="preserve">
     <value>Closing price of the bar.</value>
@@ -5222,10 +5250,10 @@
   <data name="ValueReceiverHandler.DefaultValue.Description" xml:space="preserve">
     <value>A value to return as output of a handler when can't load from server</value>
   </data>
-<data name="BoolReceiverHandler.DefaultValue.Name" xml:space="preserve">
+  <data name="BoolReceiverHandler.DefaultValue.Name" xml:space="preserve">
     <value>Default value</value>
   </data>
-<data name="BoolReceiverHandler.DefaultValue.Description" xml:space="preserve">
+  <data name="BoolReceiverHandler.DefaultValue.Description" xml:space="preserve">
     <value>A value to return as output of a handler when can't load from server</value>
   </data>
   <data name="CrossOver.Description" xml:space="preserve">
@@ -5376,7 +5404,7 @@
     <value>Decimals for ceiling</value>
   </data>
   <data name="SellCount.Description" xml:space="preserve">
-    <value>Shows the number of sales (asks). This value is shown also in 'Quotes' table.</value>
+    <value>The total current number of sell orders in the order queue. In quotes, it corresponds to the "Orders to sell" field. Not cached</value>
   </data>
   <data name="SessionClose.Description" xml:space="preserve">
     <value>Shows a session close trade price.</value>
@@ -6431,6 +6459,9 @@
   <data name="DrowdownCount.Description" xml:space="preserve">
     <value>Calculates the number of consecutive loss positions.</value>
   </data>
+  <data name="ProfitsCount.Description" xml:space="preserve">
+    <value>Calculates the number of consecutive profit positions.</value>
+  </data>
   <data name="EntryDate.Description" xml:space="preserve">
     <value>A date of position entry presented as number in YYMMDD format.</value>
   </data>
@@ -6560,7 +6591,7 @@ If the transaction prices are unknown, the price is taken from the order. If the
     <value>Shows a complex position entry bar number.</value>
   </data>
   <data name="PositionExitBarNumber.Description" xml:space="preserve">
-    <value>Shows a complex position exit bar number.</value>
+    <value>Returns the number of the current bar when opening positions (in the history of all position openings)</value>
   </data>
   <data name="PositionIsVirtualClosedHandler.Description" xml:space="preserve">
     <value>Is position has virtual close (calculated only)?</value>
@@ -7349,11 +7380,26 @@ If the transaction prices are unknown, the price is taken from the order. If the
   <data name="PositionByName.Account.Description" xml:space="preserve">
     <value>Account name (optional).</value>
   </data>
+  <data name="PositionByName.Currency.Name" xml:space="preserve">
+    <value>Currency</value>
+  </data>
+  <data name="PositionByName.Currency.Description" xml:space="preserve">
+    <value>Currency name (optional).</value>
+  </data>
   <data name="PositionByName.PositionField.Name" xml:space="preserve">
     <value>Position field</value>
   </data>
   <data name="PositionByName.PositionField.Description" xml:space="preserve">
     <value>Output position field.</value>
+  </data>
+  <data name="QuoteByName.Name" xml:space="preserve">
+    <value>Quote by name</value>
+  </data>
+  <data name="QuoteByName.Description" xml:space="preserve">
+    <value>Get the value from the Quote table.</value>
+  </data>
+  <data name="QuoteByName.Quote.Name" xml:space="preserve">
+    <value>Quote</value>
   </data>
   <data name="NetValueByAccount.Name" xml:space="preserve">
     <value>Net value by account</value>
@@ -7364,7 +7410,7 @@ If the transaction prices are unknown, the price is taken from the order. If the
   <data name="NetValueByAccount.Account.Name" xml:space="preserve">
     <value>Account</value>
   </data>
-    <data name="NetValueByAccount.Account.Description" xml:space="preserve">
+  <data name="NetValueByAccount.Account.Description" xml:space="preserve">
     <value>Account name (optional).</value>
   </data>
   <data name="LastExitAvgPrice.Name" xml:space="preserve">
@@ -7406,6 +7452,15 @@ If the transaction prices are unknown, the price is taken from the order. If the
   <data name="ReceiverHandler.ReceiverApiKey.Name" xml:space="preserve">
     <value>Api Key</value>
   </data>
+  <data name="ReceiverHandler.ChannelApiKey.Name" xml:space="preserve">
+    <value>Channel Api Key</value>
+  </data>
+  <data name="ReceiverHandler.ChannelApiKey.Description" xml:space="preserve">
+    <value>Channel Api Key to test access for channel</value>
+  </data>
+  <data name="IsReceiverOnline.Name" xml:space="preserve">
+    <value>Is Receiver Online</value>
+  </data>
   <data name="ValueReceiverHandler.Name" xml:space="preserve">
     <value>Value Decoder</value>
   </data>
@@ -7418,13 +7473,13 @@ If the transaction prices are unknown, the price is taken from the order. If the
   <data name="ValueSenderHandler.Name" xml:space="preserve">
     <value>Value Encoder</value>
   </data>
-<data name="BoolReceiverHandler.Name" xml:space="preserve">
+  <data name="BoolReceiverHandler.Name" xml:space="preserve">
     <value>Boolean Decoder</value>
   </data>
-<data name="BoolReceiverHandler.Value.Description" xml:space="preserve">
+  <data name="BoolReceiverHandler.Value.Description" xml:space="preserve">
     <value>Extracts the value corresponding to the desired key from the received data packet and makes it available for further calculations.</value>
   </data>
-<data name="BoolReceiverHandler.Value.Name" xml:space="preserve">
+  <data name="BoolReceiverHandler.Value.Name" xml:space="preserve">
     <value>Value</value>
   </data>
   <data name="AddPositionHandler.Name" xml:space="preserve">
@@ -7579,5 +7634,122 @@ If the transaction prices are unknown, the price is taken from the order. If the
   </data>
   <data name="LotSize.Description" xml:space="preserve">
     <value>Lot size of a security. The block returns the number of shares in one lot. This value is shown also in 'Quotes' table.</value>
+  </data>
+  <data name="PriceMax.Description" xml:space="preserve">
+    <value>The block returns the upper limit of the instrument from quotes. The maximum possible price for this instrument for this session.</value>
+  </data>
+  <data name="PriceMin.Description" xml:space="preserve">
+    <value>The block returns the lower limit of the instrument from quotes. The minimum possible price for this instrument for this session.</value>
+  </data>
+  <data name="SaveToGlobalCache2.Name" xml:space="preserve">
+    <value>Save to Global Cache</value>
+  </data>
+  <data name="SaveToGlobalCache2.Description" xml:space="preserve">
+    <value>Save any indicator to Global Cache. The last value is recorded. The recorded data can be viewed in the file Temp\GlobalCache_'name'.txt.</value>
+  </data>
+  <data name="SaveToGlobalCache2.Name.Name" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="SaveToGlobalCache2.Name.Description" xml:space="preserve">
+    <value>Unique name in the Global Cache</value>
+  </data>
+  <data name="SaveToGlobalCache2.SaveToStorage.Name" xml:space="preserve">
+    <value>Save to disk</value>
+  </data>
+  <data name="SaveToGlobalCache2.SaveToStorage.Description" xml:space="preserve">
+    <value>Save to HDD to use indicator values across different program sessions</value>
+  </data>
+  <data name="SaveToGlobalCache2.SaveToNextBar.Name" xml:space="preserve">
+    <value>Save to next bar</value>
+  </data>
+  <data name="SaveToGlobalCache2.SaveToNextBar.Description" xml:space="preserve">
+    <value>Save the new value to the next bar. If disabled, it will save to the current bar.</value>
+  </data>
+  <data name="SaveToGlobalCache2.MaxValues.Name" xml:space="preserve">
+    <value>Maximum numbers</value>
+  </data>
+  <data name="SaveToGlobalCache2.MaxValues.Description" xml:space="preserve">
+    <value>The maximum number of values. If 0, then it will be limited by the number of bars</value>
+  </data>
+  <data name="LoadFromGlobalCache2.Name" xml:space="preserve">
+    <value>Load from Global Cache</value>
+  </data>
+  <data name="LoadFromGlobalCache2.Description" xml:space="preserve">
+    <value>Load indicator from Global Cache</value>
+  </data>
+  <data name="LoadFromGlobalCache2.Name.Name" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="LoadFromGlobalCache2.Name.Description" xml:space="preserve">
+    <value>Unique name in the Global Cache</value>
+  </data>
+  <data name="LoadFromGlobalCache2.LoadFromStorage.Name" xml:space="preserve">
+    <value>Load from disk</value>
+  </data>
+  <data name="LoadFromGlobalCache2.LoadFromStorage.Description" xml:space="preserve">
+    <value>Load from HDD to use indicator values across different program sessions</value>
+  </data>
+  <data name="InstrumentByName.Name" xml:space="preserve">
+    <value>Instrument by name</value>
+  </data>
+	<data name="InstrumentByName.Description" xml:space="preserve">
+    <value>Find the instrument by name in the List of instruments. If the instrument is not found by name, it returns the first one in the list.</value>
+  </data>
+  <data name="InstrumentByName.Name.Name" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="InstrumentByNumber.Name" xml:space="preserve">
+    <value>Instrument by number</value>
+  </data>
+  <data name="InstrumentByNumber.Description" xml:space="preserve">
+    <value>Find the instrument by number in the List of instruments.</value>
+  </data>
+  <data name="InstrumentByNumber.Number.Name" xml:space="preserve">
+    <value>Number</value>
+  </data>
+  <data name="WeightedAveragePrice.Name" xml:space="preserve">
+    <value>Weighted average bar price</value>
+  </data>
+  <data name="WeightedAveragePrice.Description" xml:space="preserve">
+    <value>The block contains the weighted average price of a bar, about on trades on the instrument. For correct work, use the second chart. 1 min = 60 sec.</value>
+  </data>
+  <data name="WeightedAveragePrice.Direction.Name" xml:space="preserve">
+    <value>Direction trades</value>
+  </data>
+  <data name="BarsTickDataHandler.Name" xml:space="preserve">
+    <value>Bars tick data</value>
+  </data>
+  <data name="BarsTickDataHandler.Description" xml:space="preserve">
+    <value>Designed to work with cached data from quotes. Builds bars with the source interval. To work, use the second interval of the source. For example, 60 seconds.</value>
+  </data>
+  <data name="BarsTickDataHandler.Field.Name" xml:space="preserve">
+    <value>Data quotes</value>
+  </data>
+  <data name="CycleDoubleMaxHandler.Description" xml:space="preserve">
+    <value>Goes through all iterations of the loop and finds the maximum value.</value>
+  </data>
+  <data name="CycleDoubleMaxHandler.Name" xml:space="preserve">
+    <value>Cycle Max</value>
+  </data>
+  <data name="CycleDoubleMinHandler.Description" xml:space="preserve">
+    <value>Goes through all iterations of the loop and finds the minimum value.</value>
+  </data>
+  <data name="CycleDoubleMinHandler.Name" xml:space="preserve">
+    <value>Cycle Min</value>
+  </data>
+  <data name="InitialDeposit.Description" xml:space="preserve">
+    <value>The initial trading deposit from the script setting</value>
+  </data>
+  <data name="InitialDeposit.Name" xml:space="preserve">
+    <value>Initial Deposit</value>
+  </data>
+  <data name="IsPortfolioReady.Description" xml:space="preserve">
+    <value>The portfolio is ready to trade (The data source is connected and the data is loaded)</value>
+  </data>
+  <data name="IsPortfolioReady.Name" xml:space="preserve">
+    <value>Portfolio is ready</value>
+  </data>
+  <data name="AverageExitPrice.Description" xml:space="preserve">
+    <value>The average exit price of a position. If there was only one exit, then it is equal to the exit price. If there have been position changes, it returns the weighted average exit price (taking into account the quantities).</value>
   </data>
 </root>

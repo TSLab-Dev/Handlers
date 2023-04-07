@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Xml;
 using System.Xml.Linq;
 using TSLab.Script.CanvasPane;
 using TSLab.Script.Options;
@@ -436,7 +437,7 @@ namespace TSLab.Script.Handlers.Options
                             XElement xel = globInfo.ToXElement();
                             string xelStr =
 @"<?xml version=""1.0""?>
-" + xel.AsString();
+" + AsString(xel);
                             // PROD-5987 - Отключаю работу с клипбордом. Только пишу в tslab.log
                             //Thread thread = ThreadProfiler.Create(() => System.Windows.Clipboard.SetText(xelStr));
                             //thread.SetApartmentState(ApartmentState.STA); //Set the thread to STA
@@ -644,6 +645,20 @@ namespace TSLab.Script.Handlers.Options
             }
 
             m_context.Recalc(RecalcReasons.EditTemplateSmile, null);
+        }
+
+        public static string AsString(XElement element)
+        {
+            var sb = new StringBuilder();
+            var xws = new XmlWriterSettings { Indent = false, OmitXmlDeclaration = true };
+            using (XmlWriter writer = XmlWriter.Create(sb, xws))
+            {
+                // ReSharper disable AssignNullToNotNullAttribute
+                element.Save(writer);
+                // ReSharper restore AssignNullToNotNullAttribute
+            }
+            string result = sb.ToString();
+            return result;
         }
 
         public void Dispose()

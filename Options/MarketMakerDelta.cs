@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics.Contracts;
 using System.Linq;
-
+using TSLab.Diagnostics;
 using TSLab.Script.CanvasPane;
 using TSLab.Script.Options;
 using TSLab.Utils;
@@ -438,7 +437,7 @@ namespace TSLab.Script.Handlers.Options
                         if (!cDf.TryGetValue(strike, out cd))
                         {
                             // Этого не может быть по правилу отбора страйков!
-                            Contract.Assert(false, "Почему мы не смогли вычислить дельту кола???");
+                            Check.Assert(false, "Почему мы не смогли вычислить дельту кола???");
                             continue;
                         }
 

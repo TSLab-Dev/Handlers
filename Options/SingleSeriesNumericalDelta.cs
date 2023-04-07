@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Diagnostics.Contracts;
 using System.Globalization;
 using System.Linq;
-
+using TSLab.Diagnostics;
 using TSLab.Script.CanvasPane;
 using TSLab.Script.Options;
 using TSLab.Utils;
@@ -182,7 +181,7 @@ namespace TSLab.Script.Handlers.Options
             SmileInfo sInfo = smile.GetTag<SmileInfo>();
             if (sInfo == null)
             {
-                Contract.Assert(false, $"[{nameof(SingleSeriesNumericalDelta)}.{nameof(TryEstimateDelta)}] #1 Каким образом получили неподготовленную улыбку? (sInfo == null)");
+                Check.Assert(false, $"[{nameof(SingleSeriesNumericalDelta)}.{nameof(TryEstimateDelta)}] #1 Каким образом получили неподготовленную улыбку? (sInfo == null)");
 
                 return false;
             }

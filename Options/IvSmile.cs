@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -339,7 +338,7 @@ namespace TSLab.Script.Handlers.Options
 //                            if (!check)
 //                                s_conflictDate[sec.Security.SecurityDescription.FullName] = ask.LastUpdate;
 
-//                            Debug.Assert(check,
+//                            Check.Assert(check,
 //                                String.Format("Expected security: {0}; actual security: {1}",
 //                                    sec.Security.SecurityDescription.FullName, ask.Security.FullName));
 //                        }
@@ -404,7 +403,7 @@ namespace TSLab.Script.Handlers.Options
 //                            if (!check)
 //                                s_conflictDate[sec.Security.SecurityDescription.FullName] = bid.LastUpdate;
 
-//                            Debug.Assert(check,
+//                            Check.Assert(check,
 //                                String.Format("Expected security: {0}; actual security: {1}",
 //                                    sec.Security.SecurityDescription.FullName, bid.Security.FullName));
 //                        }
@@ -504,7 +503,7 @@ namespace TSLab.Script.Handlers.Options
 //                            if (!check)
 //                                s_conflictDate[sec.Security.SecurityDescription.FullName] = ask.LastUpdate;
 
-//                            Debug.Assert(check,
+//                            Check.Assert(check,
 //                                String.Format("Expected security: {0}; actual security: {1}",
 //                                    sec.Security.SecurityDescription.FullName, ask.Security.FullName));
 //                        }
@@ -527,7 +526,7 @@ namespace TSLab.Script.Handlers.Options
 //                            if (!check)
 //                                s_conflictDate[sec.Security.SecurityDescription.FullName] = bid.LastUpdate;
 
-//                            Debug.Assert(check,
+//                            Check.Assert(check,
 //                                String.Format("Expected security: {0}; actual security: {1}",
 //                                    sec.Security.SecurityDescription.FullName, bid.Security.FullName));
 //                        }

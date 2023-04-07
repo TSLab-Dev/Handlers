@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using TSLab.Utils.Profiling;
+using TSLab.Utils;
 
 // ReSharper disable once CheckNamespace
 namespace TSLab.Script.Handlers
@@ -77,7 +77,7 @@ namespace TSLab.Script.Handlers
                             {
                                 context.CheckTime = utcNow;
                                 context.IsBusy = true;
-                                Task.Factory.StartNewEx(() => Execute(context));
+                                Task.Factory.StartNew(() => Execute(context));
                             }
                         }
                     }

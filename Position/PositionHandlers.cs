@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using TSLab.DataSource;
@@ -73,6 +74,128 @@ namespace TSLab.Script.Handlers
                 return 0;
             }
             return pos.GetBalancePrice(barNum);
+        }
+    }
+
+    [HandlerCategory(HandlerCategories.Position)]
+    [HelperName("Average entry price (by security)", Language = Constants.En)]
+    [HelperName("Средняя цена входа (по инструменту)", Language = Constants.Ru)]
+    [InputsCount(1)]
+    [Input(0, TemplateTypes.SECURITY, Name = Constants.SecuritySource)]
+    [OutputsCount(1)]
+    [OutputType(TemplateTypes.DOUBLE)]
+    [Description("Средняя цена входа и изменения всех активных позиций скрипта по инструменту.")]
+    [HelperDescription("An average position entry price and changes in all active script positions for the instrument.", Constants.En)]
+    public class BalancedPriceBySecurity : IValuesHandlerWithNumber
+    {
+        [HelperName("Position side", Constants.En)]
+        [HelperName("Направление позиции", Constants.Ru)]
+        [HandlerParameter(true, nameof(BalancePositionSide.Long))]
+        public BalancePositionSide PositionSide { get; set; }
+
+        private readonly BalancedPrice m_balancedPrice = new BalancedPrice();
+
+        public double Execute(ISecurity sec, int barNum)
+        {
+            switch (PositionSide)
+            {
+                case BalancePositionSide.Long:
+                    return Calc(sec.Positions.Where(x => x.IsLong), out _);
+                case BalancePositionSide.Short:
+                    return Calc(sec.Positions.Where(x => x.IsShort), out _);
+                case BalancePositionSide.Common:
+                    var sumLong = Calc(sec.Positions.Where(x => x.IsLong), out var sharesLong);
+                    var sumShort = Calc(sec.Positions.Where(x => x.IsShort), out var sharesShort);
+                    return sharesLong >= sharesShort ? sumLong : sumShort;
+            }
+            return default;
+
+            double Calc(IEnumerable<IPosition> positions, out double sumShares)
+            {
+                sumShares = 0.0;
+                var sum = 0.0;
+                var res = 0.0;
+                foreach (var pos in positions)
+                {
+                    var shares = Math.Abs(pos.GetShares(barNum));
+                    sum += m_balancedPrice.Execute(pos, barNum) * shares;
+                    sumShares += shares;
+                }
+                if  (sumShares > 0)
+                    res = sum / sumShares;
+                return res;
+            }
+        }
+    }
+
+    public enum BalancePositionSide
+    {
+        Long,
+        Short,
+        Common,
+    }
+
+    [HandlerCategory(HandlerCategories.Position)]
+    [HelperName("Average exit price", Language = Constants.En)]
+    [HelperName("Средняя цена выхода", Language = Constants.Ru)]
+    [InputsCount(1)]
+    [Input(0, TemplateTypes.POSITION, Name = Constants.PositionSource)]
+    [OutputsCount(1)]
+    [OutputType(TemplateTypes.DOUBLE)]
+    [Description("Средняя цена выхода из позиции. Если выход был один, то равна цене выхода, если были изменения позиции, то выдает средневзвешенную цену выхода (с учетом количеств).")]
+    [HelperDescription("An average position exit price.", Constants.En)]
+    public class AverageExitPrice : IPosition2Double
+    {
+        private IPosition m_lastPosition;
+        public double Execute(IPosition pos, int barNum)
+        {
+            try
+            {
+                if (pos == null)
+                {
+                    if (m_lastPosition == null)
+                        return 0;
+                    return GetAvgExit(m_lastPosition, barNum);
+                }
+
+                return GetAvgExit(pos, barNum);
+            }
+            finally
+            {
+                if (pos != null)
+                    m_lastPosition = pos;
+            }
+
+            double GetAvgExit(IPosition p, int bar)
+            {
+                if (p.ChangeInfos.Count == 0 && p.ExitBarNum <= bar)
+                    return p.ExitPrice;
+
+                if (p.ChangeInfos.Count > 0)
+                {
+                    var sum = 0.0;
+                    var sumShares = 0.0;
+                    foreach (var ch in p.ChangeInfos)
+                    {
+                        if (ch.ExitBarNum >= 0 && ch.ExitBarNum <= bar)
+                        {
+                            sum += ch.ExitPrice * Math.Abs(ch.SharesChange);
+                            sumShares += Math.Abs(ch.SharesChange);
+                        }
+                    }
+
+                    if (p.ExitBarNum <= bar)
+                    {
+                        sum += p.ExitPrice * Math.Abs(p.Shares);
+                        sumShares += Math.Abs(p.Shares);
+                    }
+
+                    var res = sumShares == 0 ? 0 : p.Security.RoundPrice(sum / sumShares);
+                    return res;
+                }
+
+                return 0.0;
+            }
         }
     }
 
@@ -823,7 +946,7 @@ namespace TSLab.Script.Handlers
             for (var i = changeInfos.Count - 1; i >= 0; i--)
             {
                 var changeInfo = changeInfos[i];
-                if (changeInfo.EntryBarNum >= 0)
+                if (changeInfo.EntryBarNum >= 0 && changeInfo.EntryBarNum <= barNum)
                     return changeInfo.EntryPrice;
             }
             return position.EntryPrice;
@@ -850,7 +973,7 @@ namespace TSLab.Script.Handlers
             for (var i = changeInfos.Count - 1; i >= 0; i--)
             {
                 var changeInfo = changeInfos[i];
-                if (changeInfo.ExitBarNum >= 0)
+                if (changeInfo.ExitBarNum >= 0 && changeInfo.ExitBarNum <= barNum)
                     return changeInfo.ExitPrice;
             }
             return position.ExitPrice;
@@ -911,11 +1034,17 @@ namespace TSLab.Script.Handlers
         private double m_lastProfit;
         private double m_lastMaxProfit;
 
+        private WholeProfitState m_state = null;
+
         public double Execute(ISecurity source, int barNum)
         {
+            if (m_state == null)
+                m_state = new WholeProfitState(source.Positions);
+            m_state.ProcessBar(barNum);
+
             if (barNum - m_lastBarNum == 1)
             {
-                m_lastProfit = source.GetProfit(barNum);
+                m_lastProfit = m_state.GetProfit(barNum);
                 if (m_lastMaxProfit < m_lastProfit)
                     m_lastMaxProfit = m_lastProfit;
             }
@@ -924,7 +1053,7 @@ namespace TSLab.Script.Handlers
                 double profit = 0, maxProfit = double.NegativeInfinity;
                 for (var i = 0; i <= barNum; i++)
                 {
-                    profit = source.GetProfit(i);
+                    profit = m_state.GetProfit(i);
                     if (maxProfit < profit)
                         maxProfit = profit;
                 }

@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Globalization;
-
+using TSLab.Diagnostics;
 using TSLab.Utils;
 
 namespace TSLab.Script.Handlers
@@ -608,7 +607,7 @@ namespace TSLab.Script.Handlers
             double testPx = FinMath.GetOptionPrice(basePrice, strike, newT, newSigma, newPctRate, isCall);
             string msg = String.Format(CultureInfo.InvariantCulture,
                 "Условие равенства цен опционов не выполнено. optPx: {0}; testPx:{1}", optPx, testPx);
-            Debug.Assert(Math.Abs(testPx - optPx) < 1e-3, msg);
+            Check.Assert(Math.Abs(testPx - optPx) < 1e-3, msg);
 #endif
 
             return true;

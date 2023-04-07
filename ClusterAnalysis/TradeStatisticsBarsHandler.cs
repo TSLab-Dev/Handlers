@@ -40,6 +40,16 @@ namespace TSLab.Script.Handlers
         [HandlerParameter(true, nameof(ComparisonMode.GreaterOrEqual))]
         public ComparisonMode TrimComparisonMode { get; set; }
 
+        [HelperName("Min Bar, %", Constants.En)]
+        [HelperName("Минимальный бар, %", Constants.Ru)]
+        [HandlerParameter(true, "0", Min = "0", Max = "100", Step = "1", EditorMin = "0")]
+        public double MinBarPct { get; set; }
+
+        [HelperName("Max Bar, %", Constants.En)]
+        [HelperName("максимальный бар, %", Constants.Ru)]
+        [HandlerParameter(true, "100", Min = "0", Max = "100", Step = "1", EditorMin = "0")]
+        public double MaxBarPct { get; set; } = 100;
+
         public IList<double> Execute(IBaseTradeStatisticsWithKind tradeStatistics)
         {
             var histograms = tradeStatistics.GetHistograms();
@@ -61,7 +71,7 @@ namespace TSLab.Script.Handlers
             if (canBeCached)
             {
                 id = string.Join(".", runtime.TradeName, runtime.IsAgentMode, VariableId);
-                stateId = string.Join(".", TrimValue, TrimComparisonMode, tradeStatistics.StateId);
+                stateId = string.Join(".", TrimValue, TrimComparisonMode, MinBarPct, MaxBarPct, tradeStatistics.StateId);
                 context = DerivativeTradeStatisticsCache.Instance.GetContext(id, stateId, tradeHistogramsCache);
 
                 if (context != null)
@@ -90,6 +100,13 @@ namespace TSLab.Script.Handlers
             for (var i = Math.Max(cachedCount, firstBarIndex); i <= lastBarIndex; i++)
             {
                 var bars = aggregatedHistogramBarsProvider.GetAggregatedHistogramBars(i);
+                if (MinBarPct > 0 || MaxBarPct < 100)
+                {
+                    var minBar = (int)(bars.Count * MinBarPct / 100.0);
+                    var maxBar = (int)(bars.Count * MaxBarPct / 100.0);
+                    bars = bars.Skip(minBar).Take(maxBar - minBar).ToList();
+                }
+
                 results[i] = GetResult(tradeStatistics, bars.Where(item => isInRangeFunc(tradeStatistics, item)));
             }
             for (var i = Math.Max(cachedCount, lastBarIndex + 1); i < barsCount; i++)

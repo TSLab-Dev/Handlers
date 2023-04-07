@@ -1,8 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Diagnostics.Contracts;
 using System.Linq;
-
+using TSLab.Diagnostics;
 using TSLab.Script.CanvasPane;
 using TSLab.Script.Options;
 using TSLab.Utils;
@@ -299,7 +298,7 @@ namespace TSLab.Script.Handlers.Options
                                     select p).ToArray();
                 }
 
-                Contract.Assert(m_strikeAmount >= 0, "Как получился отрицательный m_strikeAmount??? m_strikeAmount: " + m_strikeAmount);
+                Check.Assert(m_strikeAmount >= 0, "Как получился отрицательный m_strikeAmount??? m_strikeAmount: " + m_strikeAmount);
                 // Защита от дурака? Или не надо париться?
                 m_strikeAmount = Math.Max(0, m_strikeAmount);
 

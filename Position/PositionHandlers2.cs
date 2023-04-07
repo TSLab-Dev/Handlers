@@ -53,6 +53,23 @@ namespace TSLab.Script.Handlers
         }
     }
 
+    [HandlerCategory(HandlerCategories.Position)]
+    [HelperName("Profits running", Language = Constants.En)]
+    [HelperName("Прибыльных подряд", Language = Constants.Ru)]
+    [InputsCount(1)]
+    [Input(0, TemplateTypes.SECURITY, Name = Constants.SecuritySource)]
+    [OutputsCount(1)]
+    [OutputType(TemplateTypes.DOUBLE)]
+    [Description("Подсчет количества прибыльных позиций подряд.")]
+    [HelperDescription("Calculates the number of consecutive profit positions.", Constants.En)]
+    public sealed class ProfitsCount : ClosedPositionCache, IBar2ValueDoubleHandler
+    {
+        public double Execute(ISecurity source, int barNum)
+        {
+            return GetClosedPositions(source, barNum).TakeWhile(pos => pos.Profit() > 0).Count();
+        }
+    }
+
     // TODO: удачно ли для слова '2 убытка ПОДРЯД' использовать термин 'successively'?
     [HandlerCategory(HandlerCategories.Position)]
     [HelperName("2 losses successively", Language = Constants.En)]

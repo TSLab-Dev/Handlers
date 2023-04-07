@@ -2,12 +2,12 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Threading;
 using TSLab.DataSource;
+using TSLab.Diagnostics;
 using TSLab.Script.Options;
-using TSLab.Utils.Profiling;
+using TSLab.Utils;
 
 namespace TSLab.Script.Handlers.Options
 {
@@ -176,12 +176,12 @@ namespace TSLab.Script.Handlers.Options
                 if (problemCounter > 3)
                 {
                     // Если проблема систематически повторяется -- выбрасываю ассерт для дальнейшего анализа ситуации
-                    Contract.Assert(timerState.Timer != null, msg);
+                    Check.Assert(timerState.Timer != null, msg);
                 }
             }
             else
             {
-                //Contract.Assert(timerState.Timer != null, "Почему вдруг (timerState.Timer==null) ??");
+                //Check.Assert(timerState.Timer != null, "Почему вдруг (timerState.Timer==null) ??");
 
                 // Если при изменении скрипта пересоздается агент, то контекст становится невалидным?
                 if (Object.ReferenceEquals(Context, timerState.CallContext))
@@ -312,7 +312,7 @@ namespace TSLab.Script.Handlers.Options
             /// <summary>
             /// Заполнить таймер сразу через конструктор не получится, но это нужно обязательно сделать сразу после его инициализации.
             /// </summary>
-            public IThreadingTimerProfiler Timer;
+            public Timer Timer;
 
             /// <summary>
             /// Пересчет скрипта будет происходить только во время торгов?
@@ -321,8 +321,8 @@ namespace TSLab.Script.Handlers.Options
 
             public CallState(long id, IContext context, IDataSourceSecurity dataSourceSecurity, bool onlyAtTradingSession)
             {
-                Contract.Assert(context != null, "Почему вдруг (context==null) ??");
-                Contract.Assert(dataSourceSecurity != null, "Почему вдруг (dataSourceSecurity==null) ??");
+                Check.Assert(context != null, "Почему вдруг (context==null) ??");
+                Check.Assert(dataSourceSecurity != null, "Почему вдруг (dataSourceSecurity==null) ??");
 
                 CallId = id;
                 CallContext = context;

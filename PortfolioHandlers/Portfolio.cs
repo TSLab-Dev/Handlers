@@ -14,6 +14,38 @@ using TSLab.Utils;
 namespace TSLab.Script.Handlers
 {
     [HandlerCategory(HandlerCategories.Portfolio)]
+    [InputsCount(1)]
+    [Input(0, TemplateTypes.SECURITY, Name = Constants.SecuritySource)]
+    [OutputsCount(1)]
+    [OutputType(TemplateTypes.BOOL)]
+    public class IsPortfolioReady : ConstGenBase<bool>, IBar2BoolHandler, IBar2BoolsHandler
+    {
+        public IList<bool> Execute(ISecurity source)
+        {
+            MakeList(source.Bars.Count, source.IsPortfolioReady);
+            return this;
+        }
+
+        public bool Execute(ISecurity source, int barNum)
+        {
+            return source.IsPortfolioReady;
+        }
+    }
+
+    [HandlerCategory(HandlerCategories.Portfolio)]
+    [InputsCount(1)]
+    [Input(0, TemplateTypes.SECURITY, Name = Constants.SecuritySource)]
+    [OutputsCount(1)]
+    [OutputType(TemplateTypes.DOUBLE)]
+    public class InitialDeposit : IBar2ValueDoubleHandler
+    {
+        public double Execute(ISecurity source, int barNum)
+        {
+            return source.InitDeposit;
+        }
+    }
+
+    [HandlerCategory(HandlerCategories.Portfolio)]
     [HelperName("Free money", Language = Constants.En)]
     [HelperName("Свободные деньги", Language = Constants.Ru)]
     [InputsCount(1)]
@@ -26,6 +58,8 @@ namespace TSLab.Script.Handlers
         "Free Money = money - (minus)positions - (minus)money blocked in orders.", Constants.En)]
     public class FreeMoney : IBar2ValueDoubleHandler
     {
+        private WholeProfitState m_state = null;
+
         public double Execute(ISecurity source, int barNum)
         {
             var srt = source as ISecurityRt;
@@ -33,19 +67,11 @@ namespace TSLab.Script.Handlers
             {
                 return srt.CurrencyBalance;
             }
-            double profit = source.InitDeposit;
-            foreach (var pos in source.Positions.GetClosedOrActiveForBar(barNum))
-            {
-                if (pos.IsActiveForBar(barNum))
-                {
-                    profit -= pos.EntryPrice * pos.Shares * source.LotSize;
-                }
-                else
-                {
-                    profit += pos.Profit();
-                }
-            }
-            return profit;
+            if (m_state == null)
+                m_state = new WholeProfitState(source.Positions);
+            m_state.ProcessBar(barNum);
+            var inPos = m_state.Active.Sum(pos => pos.EntryPrice * pos.Shares * source.LotSize);
+            return source.InitDeposit + m_state.ClosedProfitCache - inPos;
         }
     }
 
@@ -62,10 +88,15 @@ namespace TSLab.Script.Handlers
         "Portfolio Estimation = money + positions.", Constants.En)]
     public sealed class EstimatedMoney : IBar2ValueDoubleHandler
     {
+        private WholeProfitState m_state = null;
+
         public double Execute(ISecurity source, int barNum)
         {
+            if (m_state == null)
+                m_state = new WholeProfitState(source.Positions);
+            m_state.ProcessBar(barNum);
             var securityRt = source as ISecurityRt;
-            return securityRt?.EstimatedBalance ?? source.InitDeposit + source.GetProfit(barNum);
+            return securityRt?.EstimatedBalance ?? source.InitDeposit + m_state.GetProfit(barNum);
         }
     }
 
@@ -137,6 +168,13 @@ namespace TSLab.Script.Handlers
         [HandlerParameter(true)]
         public string Account { get; set; }
 
+        [HelperName("Currency", Constants.En)]
+        [HelperName("Валюта", Constants.Ru)]
+        [Description("Название валюты (необязательно).")]
+        [HelperDescription("Currency name (optional).", Constants.En)]
+        [HandlerParameter(true)]
+        public string Currency { get; set; }
+
         [HelperName("Position field", Constants.En)]
         [HelperName("Поле позиции", Constants.Ru)]
         [Description("Выводимое поле позиции.")]
@@ -155,12 +193,10 @@ namespace TSLab.Script.Handlers
                     if (string.IsNullOrWhiteSpace(Account) || Account.Equals(account.Id, StringComparison.OrdinalIgnoreCase))
                     {
                         var balances = portfolio.GetBalances(account.Id);
-                        var balance = balances.FirstOrDefault(x =>
-                            string.Equals(x.SecurityName, Symbol, StringComparison.OrdinalIgnoreCase) ||
-                            string.Equals(x.SecurityFullName, Symbol, StringComparison.OrdinalIgnoreCase));
+                        var balance = FindBalance(balances, Symbol, Currency);
                         if (balance != null)
                         {
-                            value = GetValue(balance);
+                            value = GetValue(balance, PositionField);
                             break;
                         }
                     }
@@ -170,20 +206,29 @@ namespace TSLab.Script.Handlers
             return Enumerable.Repeat(value, source.Bars.Count).ToList();
         }
 
-        public IEnumerable<string> GetValuesForParameter(string paramName)
+        private static BalanceInfo FindBalance(IEnumerable<BalanceInfo> balances, string symbol, string currency)
         {
-            if (paramName.Equals("Symbol", StringComparison.InvariantCultureIgnoreCase))
-                return new[] { Symbol ?? "" };
+            var request = balances.AsEnumerable();
 
-            if (paramName.Equals("Account", StringComparison.InvariantCultureIgnoreCase))
-                return new[] { Account ?? "" };
+            if (!string.IsNullOrEmpty(symbol))
+            {
+                request = request.Where(x => 
+                    symbol.Equals(x.SecurityName, StringComparison.OrdinalIgnoreCase) ||
+                    symbol.Equals(x.SecurityFullName, StringComparison.OrdinalIgnoreCase));
+            }
 
-            return new[] { "" };
+            if (!string.IsNullOrEmpty(currency))
+            {
+                request = request.Where(x => currency.Equals(x.Security?.Currency, StringComparison.OrdinalIgnoreCase));
+            }
+
+            var res = request.FirstOrDefault();
+            return res;
         }
 
-        private double GetValue(BalanceInfo balance)
+        private static double GetValue(BalanceInfo balance, PositionField positionField)
         {
-            switch (PositionField)
+            switch (positionField)
             {
                 case PositionField.RealRest:
                     return balance.RealRest ?? 0;
@@ -209,6 +254,20 @@ namespace TSLab.Script.Handlers
                     return balance.VarMargin ?? 0;
             }
             return 0;
+        }
+
+        public IEnumerable<string> GetValuesForParameter(string paramName)
+        {
+            if (paramName.Equals("Symbol", StringComparison.InvariantCultureIgnoreCase))
+                return new[] { Symbol ?? "" };
+
+            if (paramName.Equals("Account", StringComparison.InvariantCultureIgnoreCase))
+                return new[] { Account ?? "" };
+
+            if (paramName.Equals("Currency", StringComparison.InvariantCultureIgnoreCase))
+                return new[] { Currency ?? "" };
+
+            return new[] { "" };
         }
     }
 
@@ -327,14 +386,19 @@ namespace TSLab.Script.Handlers
     [HelperDescription("Calculates profit involving an instrument received in all trades of the whole period.", Constants.En)]
     public sealed class WholeTimeProfit : BaseProfitHandler
     {
+        private WholeProfitState m_state = null;
+
         public override double Execute(ISecurity source, int barNum)
         {
+            if (m_state == null)
+                m_state = new WholeProfitState(source.Positions);
+            m_state.ProcessBar(barNum);
             switch (ProfitKind)
             {
                 case ProfitKind.Unfixed:
-                    return source.GetProfit(barNum);
+                    return m_state.GetProfit(barNum);
                 case ProfitKind.Fixed:
-                    return source.GetAccumulatedProfit(barNum);
+                    return m_state.GetAccumulatedProfit(barNum);
                 default:
                     throw new InvalidEnumArgumentException(nameof(ProfitKind), (int)ProfitKind, ProfitKind.GetType());
             }

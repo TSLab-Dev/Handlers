@@ -46,6 +46,42 @@ namespace TSLab.Script.Handlers
         }
     }
 
+    // Наибольшая цена спроса в течение торговой сессии
+    public sealed class HighBid : FinInfoHandler
+    {
+        protected override double? GetValue(FinInfo finInfo)
+        {
+            return finInfo.HighBid;
+        }
+    }
+
+    // Наименьшая цена предложения в течение торговой сессии
+    public sealed class LowOffer : FinInfoHandler
+    {
+        protected override double? GetValue(FinInfo finInfo)
+        {
+            return finInfo.LowOffer;
+        }
+    }
+
+    // Нижний лимит цены
+    public sealed class PriceMin : FinInfoHandler
+    {
+        protected override double? GetValue(FinInfo finInfo)
+        {
+            return finInfo.PriceMin;
+        }
+    }
+
+    // Верхний лимит цены
+    public sealed class PriceMax : FinInfoHandler
+    {
+        protected override double? GetValue(FinInfo finInfo)
+        {
+            return finInfo.PriceMax;
+        }
+    }
+
     // Категория и описание входов/выходов идет через базовый класс.
     [HelperName("Price step", Language = Constants.En)]
     [HelperName("Шаг цены", Language = Constants.Ru)]

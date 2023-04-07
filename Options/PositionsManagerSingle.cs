@@ -6,6 +6,7 @@ using System.Globalization;
 using System.Linq;
 
 using TSLab.DataSource;
+using TSLab.Diagnostics;
 using TSLab.Script.CanvasPane;
 using TSLab.Script.Options;
 using TSLab.Script.Realtime;
@@ -1000,7 +1001,7 @@ namespace TSLab.Script.Handlers.Options
                             //virtPos.VirtualChange(len - VirtPosShift, avgPx, Math.Abs(virtPos.Shares) + Math.Abs(qty), signalName, notes);
                             virtPos.VirtualChange(len - VirtPosShift, px, Math.Abs(virtPos.Shares) + Math.Abs(qty), signalName, notes);
 
-                            System.Diagnostics.Debug.Assert(DoubleUtil.AreClose(avgPx, virtPos.AverageEntryPrice),
+                            Check.Assert(DoubleUtil.AreClose(avgPx, virtPos.AverageEntryPrice),
                                 "ActualPx:" + virtPos.AverageEntryPrice + "; Expected:" + avgPx);
 
                             // Сохраняем обновленное состояние позиции.
@@ -1292,7 +1293,7 @@ namespace TSLab.Script.Handlers.Options
                             //virtPos.VirtualChange(len - VirtPosShift, avgPx, -Math.Abs(virtPos.Shares) - Math.Abs(qty), signalName, notes);
                             virtPos.VirtualChange(len - VirtPosShift, px, -Math.Abs(virtPos.Shares) - Math.Abs(qty), signalName, notes);
 
-                            System.Diagnostics.Debug.Assert(DoubleUtil.AreClose(avgPx, virtPos.AverageEntryPrice),
+                            Check.Assert(DoubleUtil.AreClose(avgPx, virtPos.AverageEntryPrice),
                                 "ActualPx:" + virtPos.AverageEntryPrice + "; Expected:" + avgPx);
 
                             // Сохраняем обновленное состояние позиции.

@@ -7,8 +7,8 @@ using TSLab.Script.Options;
 namespace TSLab.Script.Handlers.Options
 {
     [HandlerCategory(HandlerCategories.OptionsIndicators)]
-    [HelperName("Save to Global Cache", Language = Constants.En)]
-    [HelperName("Сохранить в Глобальный Кеш", Language = Constants.Ru)]
+    [HelperName("Save to Global Cache (old)", Language = Constants.En)]
+    [HelperName("Сохранить в Глобальный Кеш (старый)", Language = Constants.Ru)]
     [HandlerAlwaysKeep]
     [InputsCount(2)]
     [Input(0, TemplateTypes.SECURITY | TemplateTypes.OPTION_SERIES | TemplateTypes.OPTION, Name = Constants.AnyOption)]

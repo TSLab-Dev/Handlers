@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Diagnostics.Contracts;
 using System.Globalization;
 using System.Linq;
-
+using TSLab.Diagnostics;
 using TSLab.Script.CanvasPane;
 using TSLab.Script.Optimization;
 using TSLab.Script.Options;
@@ -232,14 +231,14 @@ namespace TSLab.Script.Handlers.Options
                 }
             }
 
-            Contract.Assert(longPositions != null, "longPositions==null ???");
-            Contract.Assert(shortPositions != null, "shortPositions==null ???");
+            Check.Assert(longPositions != null, "longPositions==null ???");
+            Check.Assert(shortPositions != null, "shortPositions==null ???");
 
             double actualIv = ShowLongPositions ? effectiveLongIvAtm : effectiveShortIvAtm;
             double displayValue = FixedValue.ConvertToDisplayUnits(m_valueMode, actualIv);
             m_displayIv.Value = displayValue;
 
-            Contract.Assert(DoubleUtil.IsPositive(actualIv), $"Это вообще что-то странное. Почему плохой айви? actualIv:{actualIv}");
+            Check.Assert(DoubleUtil.IsPositive(actualIv), $"Это вообще что-то странное. Почему плохой айви? actualIv:{actualIv}");
 
             // Это вообще что-то странное. Как так?
             if (!DoubleUtil.IsPositive(actualIv))

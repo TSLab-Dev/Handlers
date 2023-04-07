@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Diagnostics.Contracts;
 using System.Globalization;
 using System.Linq;
-
+using TSLab.Diagnostics;
 using TSLab.Script.CanvasPane;
 using TSLab.Script.Options;
 using TSLab.Utils;
@@ -324,7 +323,7 @@ namespace TSLab.Script.Handlers.Options
                         isCall = (futPx <= pair.Strike);
 
                     StrikeType optionType = isCall ? StrikeType.Call : StrikeType.Put;
-                    Contract.Assert(pair.Tick < 1, $"#1 На тестовом контуре Дерибит присылает неправильный шаг цены! Tick:{pair.Tick}; Decimals:{pair.Put.Security.Decimals}");
+                    Check.Assert(pair.Tick < 1, $"#1 На тестовом контуре Дерибит присылает неправильный шаг цены! Tick:{pair.Tick}; Decimals:{pair.Put.Security.Decimals}");
                     double theorOptPxDollars = FinMath.GetOptionPrice(futPx, pair.Strike, dT, sigma, oldInfo.RiskFreeRate, isCall);
                     // Сразу(!!!) переводим котировку из баксов в битки
                     double theorOptPxBitcoins = theorOptPxDollars / scaleMult;
@@ -485,7 +484,7 @@ namespace TSLab.Script.Handlers.Options
                         isCall = (futPx <= pair.Strike); // Это аварийная ситуация?
 
                     StrikeType optionType = isCall ? StrikeType.Call : StrikeType.Put;
-                    Contract.Assert(pair.Tick < 1, $"#3 На тестовом контуре Дерибит присылает неправильный шаг цены! Tick:{pair.Tick}; Decimals:{pair.Put.Security.Decimals}");
+                    Check.Assert(pair.Tick < 1, $"#3 На тестовом контуре Дерибит присылает неправильный шаг цены! Tick:{pair.Tick}; Decimals:{pair.Put.Security.Decimals}");
                     double theorOptPxDollars = FinMath.GetOptionPrice(futPx, pair.Strike, dT, sigma, oldInfo.RiskFreeRate, isCall);
                     // Сразу(!!!) переводим котировку из баксов в битки
                     double theorOptPxBitcoins = theorOptPxDollars / scaleMult;

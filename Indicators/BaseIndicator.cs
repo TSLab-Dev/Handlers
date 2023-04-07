@@ -347,7 +347,6 @@ namespace TSLab.Script.Handlers
     [OutputType(TemplateTypes.DOUBLE)]
     [Description("Квадратичная вариация: вычисляется SMA(Period), вычисляется отклонение значений от среднего, разность возводится в квадрат. Затем вычисляется среднее значение этих отклонений. Корень НЕ ИЗВЛЕКАЕТСЯ.")]
     [HelperDescription("Variation: average of squared difference of values and corresponding SMA.", Constants.En)]
-    [HandlerInvisible]
     public sealed class Volatility : StDevVolatility
     {
         public override IList<double> Execute(IList<double> source)

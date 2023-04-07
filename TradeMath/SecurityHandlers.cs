@@ -5,6 +5,7 @@ using System.Linq;
 
 using TSLab.DataSource;
 using TSLab.Script.Handlers.Options;
+using TSLab.Utils;
 
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 // ReSharper disable MemberCanBePrivate.Global
@@ -862,6 +863,110 @@ namespace TSLab.Script.Handlers
             }
             return res;
         }
+    }
+
+    [HandlerCategory(HandlerCategories.TradeMath)]
+    [HelperName("Quote by name", Language = Constants.En)]
+    [HelperName("Котировка по имени", Language = Constants.Ru)]
+    [InputsCount(1)]
+    [Input(0, TemplateTypes.SECURITY, Name = "SECURITYSource")]
+    [OutputsCount(1)]
+    [OutputType(TemplateTypes.DOUBLE)]
+    [Description("Получить значение из таблицы Котировки.")]
+    [HelperDescription("Get the value from the Quote table.", Constants.En)]
+    public class QuoteByName : IStreamHandler
+    {
+        [HelperName("Quote", Constants.En)]
+        [HelperName("Котировка", Constants.Ru)]
+        [HandlerParameter(true, nameof(QuotationField.LastPrice))]
+        public QuotationField Quote { get; set; }
+
+        public IList<double> Execute(ISecurity sec)
+        {
+            var value = GetValue(sec, Quote);
+            return Enumerable.Repeat(value, sec.Bars.Count).ToList();
+        }
+
+        private static double GetValue(ISecurity sec, QuotationField positionField)
+        {
+            var name = positionField.ToString();
+            var prop = sec.FinInfo.GetType().GetProperties().FirstOrDefault(x => x.Name == name);
+            if (prop != null)
+                return prop.GetValue(sec.FinInfo) as double? ?? 0;
+            return 0;
+        }
+    }
+
+    public enum QuotationField
+    {
+        [LocalizeDescription("Quotation.Bid")]
+        Bid,
+        [LocalizeDescription("Quotation.Ask")]
+        Ask,
+        [LocalizeDescription("Quotation.BidSize")]
+        BidSize,
+        [LocalizeDescription("Quotation.AskSize")]
+        AskSize,
+        [LocalizeDescription("Quotation.OpenPrice")]
+        OpenPrice,
+        [LocalizeDescription("Quotation.LastPrice")]
+        LastPrice,
+        [LocalizeDescription("Quotation.LastSize")]
+        LastSize,
+        [LocalizeDescription("Quotation.AvgPrice")]
+        AvgPrice,
+        [LocalizeDescription("Quotation.ClosePrice")]
+        ClosePrice,
+        [LocalizeDescription("Quotation.Change")]
+        Change,
+        [LocalizeDescription("Quotation.ChangePercent")]
+        ChangePercent,
+        [LocalizeDescription("Quotation.MaxDeal")]
+        MaxDeal,
+        [LocalizeDescription("Quotation.MinDeal")]
+        MinDeal,
+        [LocalizeDescription("Quotation.SumQty")]
+        SumQty,
+        [LocalizeDescription("Quotation.SumVolume")]
+        SumVolume,
+        [LocalizeDescription("Quotation.NoDeal")]
+        NoDeal,
+        [LocalizeDescription("Quotation.PrevPrice")]
+        PrevPrice,
+        [LocalizeDescription("Quotation.Price2PrevAvg")]
+        Price2PrevAvg,
+        [LocalizeDescription("Quotation.BuySqty")]
+        BuySqty,
+        [LocalizeDescription("Quotation.BuyCount")]
+        BuyCount,
+        [LocalizeDescription("Quotation.SellSqty")]
+        SellSqty,
+        [LocalizeDescription("Quotation.SellCount")]
+        SellCount,
+        [LocalizeDescription("Quotation.BuyDeposit")]
+        BuyDeposit,
+        [LocalizeDescription("Quotation.SellDeposit")]
+        SellDeposit,
+        [LocalizeDescription("Quotation.PriceMax")]
+        PriceMax,
+        [LocalizeDescription("Quotation.PriceMin")]
+        PriceMin,
+        [LocalizeDescription("Quotation.StepPrice")]
+        StepPrice,
+        [LocalizeDescription("Quotation.Volatility")]
+        Volatility,
+        [LocalizeDescription("Quotation.TheoriticPrice")]
+        TheoreticalPrice,
+        [LocalizeDescription("Quotation.HighBid")]
+        HighBid,
+        [LocalizeDescription("Quotation.LowOffer")]
+        LowOffer,
+        [LocalizeDescription("Quotation.OpenInterest")]
+        OpenInterest,
+        [LocalizeDescription("Quotation.Tick")]
+        Tick,
+        [LocalizeDescription("Quotation.Strike")]
+        Strike,
     }
 }
 // ReSharper restore MemberCanBePrivate.Global

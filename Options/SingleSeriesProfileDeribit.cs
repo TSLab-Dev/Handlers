@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Diagnostics.Contracts;
 using System.Globalization;
 using System.Linq;
-
+using TSLab.Diagnostics;
 using TSLab.Script.CanvasPane;
 using TSLab.Script.Options;
 using TSLab.Utils;
@@ -632,7 +631,7 @@ namespace TSLab.Script.Handlers.Options
 
             {
                 var msg = $"Как получился отрицательный курс BTC/USD? btcUsdInd:{btcUsdInd}";
-                Contract.Assert(DoubleUtil.IsPositive(btcUsdInd), msg);
+                Check.Assert(DoubleUtil.IsPositive(btcUsdInd), msg);
                 if (!DoubleUtil.IsPositive(btcUsdInd))
                     throw new ArgumentException(msg, nameof(btcUsdInd));
             }
@@ -689,8 +688,8 @@ namespace TSLab.Script.Handlers.Options
 
             public CashPnlUsd(double cash, double pnl)
             {
-                Contract.Assert(!Double.IsNaN(cash),  $"Как получился NaN при вычислении кеша? cash:{cash}");
-                Contract.Assert(!Double.IsNaN(pnl), $"Как получился NaN при вычислении прибыли? pnl:{pnl}");
+                Check.Assert(!Double.IsNaN(cash),  $"Как получился NaN при вычислении кеша? cash:{cash}");
+                Check.Assert(!Double.IsNaN(pnl), $"Как получился NaN при вычислении прибыли? pnl:{pnl}");
 
                 CashUsd = cash;
                 PnlUsd = pnl;
@@ -714,8 +713,8 @@ namespace TSLab.Script.Handlers.Options
 
             public CashPnlBtc(double cash, double pnl)
             {
-                Contract.Assert(!Double.IsNaN(cash), $"Как получился NaN при вычислении кеша? cash:{cash}");
-                Contract.Assert(!Double.IsNaN(pnl), $"Как получился NaN при вычислении прибыли? pnl:{pnl}");
+                Check.Assert(!Double.IsNaN(cash), $"Как получился NaN при вычислении кеша? cash:{cash}");
+                Check.Assert(!Double.IsNaN(pnl), $"Как получился NaN при вычислении прибыли? pnl:{pnl}");
 
                 CashBtc = cash;
                 PnlBtc = pnl;

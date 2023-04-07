@@ -31,11 +31,10 @@ namespace TSLab.Script.Handlers.TSChannel
             if (receiver.Count == 0)
                 return Array.Empty<bool>();
 
-
-            var service = Locator.Current.GetInstance<ITSChannelService>();
-            double v = Convert.ToDouble(DefaultValue);
+            var v = Convert.ToDouble(DefaultValue);
             try
             {
+                var service = Locator.Current.GetInstance<ITSChannelService>();
                 var pfx = prefix == null ? "" : prefix[0];
                 var name = $"{pfx}{VariableVisual}";
                 v = service.GetValue(receiver[0], name, v);

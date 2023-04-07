@@ -31,9 +31,9 @@ namespace TSLab.Script.Handlers.TSChannel
             if (receiver.Count == 0)
                 return Array.Empty<double>();
 
-
             var service = Locator.Current.GetInstance<ITSChannelService>();
-            double v = DefaultValue;
+            var v = DefaultValue;
+
             try
             {
                 var pfx = prefix == null ? "" : prefix[0];
