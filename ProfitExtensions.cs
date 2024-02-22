@@ -1,28 +1,33 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace TSLab.Script.Handlers
 {
     internal class WholeProfitState
     {
-        private readonly IPositionsList m_list;
-
-        private int m_lastBar;
-
         public IList<IPosition> Active { get; private set; } = new List<IPosition>();
-
-        private int m_positionCount;
 
         public double ClosedProfitCache { get; private set; }
 
-        public WholeProfitState(IPositionsList list)
+        public TradeDirection2 Direction { get; }
+
+        private readonly IPositionsList m_list;
+        
+        private int m_lastBar;
+
+        private int m_positionsCount;
+
+        public WholeProfitState(IPositionsList list, TradeDirection2 direction = TradeDirection2.All)
         {
             m_list = list;
+            Direction = direction;
         }
 
         public void ProcessBar(int barNum)
         {
-            if (m_positionCount != m_list.PositionCount)
+            var currentPositionsCount = GetPositionsCount();
+            if (m_positionsCount != currentPositionsCount)
             {
                 m_lastBar = 0;
             }
@@ -45,11 +50,16 @@ namespace TSLab.Script.Handlers
             var closedCount = 0;
             foreach (var pos in m_list)
             {
-                if (pos.EntryBarNum > barNum)
+                if (Direction == TradeDirection2.Buys && !pos.IsLong)
                     continue;
-#pragma warning disable CS0612
+                if (Direction == TradeDirection2.Sells && !pos.IsShort)
+                    continue;
+                if (pos.EntryBarNum > barNum)
+                {
+                    currentPositionsCount--; //GLSP-3176
+                    continue;
+                }
                 if (pos.IsActive || pos.ExitBarNum > barNum)
-#pragma warning restore CS0612
                 {
                     Active.Add(pos);
                     continue;
@@ -59,8 +69,38 @@ namespace TSLab.Script.Handlers
                 ClosedProfitCache += pos.Profit();
             }
 
-            m_positionCount = m_list.PositionCount;
-            m_lastBar = Active.Count + closedCount == m_positionCount ? barNum : 0;
+            m_positionsCount = currentPositionsCount;
+            m_lastBar = Active.Count + (closedCount == m_positionsCount ? barNum : 0);
+        }
+
+        private int m_lastPositionsCount;
+        private int m_positionsCountByDirection;
+        private int GetPositionsCount()
+        {
+            switch (Direction)
+            {
+                case TradeDirection2.All:
+                    return m_list.PositionCount;
+
+                case TradeDirection2.Buys:
+                    if (m_lastPositionsCount != m_list.PositionCount)
+                    {
+                        m_positionsCountByDirection = m_list.Count(x => x.IsLong);
+                        m_lastPositionsCount = m_list.PositionCount;
+                    }
+                    return m_positionsCountByDirection;
+
+                case TradeDirection2.Sells:
+                    if (m_lastPositionsCount != m_list.PositionCount)
+                    {
+                        m_positionsCountByDirection = m_list.Count(x => x.IsShort);
+                        m_lastPositionsCount = m_list.PositionCount;
+                    }
+                    return m_positionsCountByDirection;
+
+                default:
+                    throw new NotImplementedException();
+            }
         }
     }
 
@@ -69,6 +109,12 @@ namespace TSLab.Script.Handlers
         public static double GetProfit(this WholeProfitState state, int barNum)
         {
             var result = state.Active.Sum(p => p.CurrentProfit(barNum)) + state.ClosedProfitCache;
+            return result;
+        }
+
+        public static double GetProfitMin(this WholeProfitState state, int barNum)
+        {
+            var result = state.Active.Sum(p => p.CurrentProfitMin(barNum)) + state.ClosedProfitCache;
             return result;
         }
 

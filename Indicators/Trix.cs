@@ -45,13 +45,16 @@ namespace TSLab.Script.Handlers
                 ema3 = Series.EMA(ema2, Period, Context);
                 Context?.ReleaseArray((Array)ema2);
             }
+
             var result = Context?.GetArray<double>(source.Count) ?? new double[source.Count];
             for (var i = 1; i < result.Length; i++)
             {
                 var lastEma3 = ema3[i - 1];
                 result[i] = lastEma3 != 0 ? (ema3[i] - lastEma3) / lastEma3 : 0;
             }
-            Context?.ReleaseArray((Array)ema3);
+
+            if (!IsSimple)
+                Context?.ReleaseArray((Array)ema3);
             return result;
         }
 

@@ -404,7 +404,7 @@ namespace TSLab.Script.Handlers
     [Input(0, TemplateTypes.SECURITY, Name = Constants.SecuritySource)]
     [OutputsCount(1)]
     [OutputType(TemplateTypes.DOUBLE)]
-    [Description("Суммарное предложение (количество асков), запомненное в конце каждого бара (если доступно)")]
+    [Description("Количество ценных бумаг во всех заявках на продажу (в лотах).\n Данные для блока берутся из Котировок. Если брокер или биржа данные не передают, то для работы блока необходимо открыть окно \"Очередь заявок\" и в нем выбрать нужный инструмент.")]
     [HelperDescription("Total offer size recorded at the end of every bar (if available)", Constants.En)]
     public class AskQty : SecurityBase
     {
@@ -735,7 +735,7 @@ namespace TSLab.Script.Handlers
         [HelperName("Комиссия", Constants.Ru)]
         [Description("Абсолютная комиссия на 1 лот инструмента")]
         [HelperDescription("Absolute comission per 1 lot of a security", Constants.En)]
-        [HandlerParameter(true, "0.0002", NotOptimized = true, Editor = "CommissionTemplate")]
+        [HandlerParameter(true, "0.0002", Min = "0.0002", Max = "0.01", Step = "0.0002")]
         public double Commission
         {
             get;
@@ -772,7 +772,7 @@ namespace TSLab.Script.Handlers
         [HelperName("Комиссия, %", Constants.Ru)]
         [Description("Комиссия в процентах от объема сделки")]
         [HelperDescription("Сomission as a percent of a volume", Constants.En)]
-        [HandlerParameter(true, "0.05", NotOptimized = true, Editor = "CommissionPctTemplate")]
+        [HandlerParameter(true, "0.05", Min = "0.05", Max = "0.1", Step = "0.01")]
         public double CommissionPct
         {
             get;
@@ -787,7 +787,7 @@ namespace TSLab.Script.Handlers
         [HelperName("Маржа, %", Constants.Ru)]
         [Description("Обеспечение (доля средств) для поддержания позиции (в процентах)")]
         [HelperDescription("Margin to open or to keep position (as percents)", Constants.En)]
-        [HandlerParameter(true, "10.0", NotOptimized = true)]
+        [HandlerParameter(true, "10.0", Min = "0.0", Max = "100", Step = "1.0")]
         public double MarginPct
         {
             get;
@@ -799,30 +799,29 @@ namespace TSLab.Script.Handlers
             source.Commission = CommissionDelegate;
         }
 
-        protected virtual double CommissionDelegate(IPosition pos, double price, double shares, bool isEntry, bool isPart)
+        protected virtual double CommissionDelegate(IPosition pos, double price, double shares, bool isEntry,
+                                                    bool isPart)
         {
             var comm = price * CommissionPct / 100.0 * shares;
-            if (!isEntry && !isPart)
+            if (isEntry || isPart)
+                return comm;
+            var days = (pos.ExitBar.Date - pos.EntryBar.Date).TotalDays;
+            var maxShares = pos.MaxShares;
+            if (pos.IsLong)
             {
-                var days = (pos.ExitBar.Date - pos.EntryBar.Date).TotalDays;
-                var mshares = pos.MaxShares;
-                if (pos.IsLong)
+                var sh = pos.SharesOrigin;
+                if (DoubleUtil.AreDiff(sh, 1.0))
                 {
-                    var sh = pos.SharesOrigin;
-                    if (sh <= 1)
-                    {
-                        mshares = 0;
-                    }
-                    else
-                    {
-                        mshares *= 1 - 1 / sh;
-                    }
+                    maxShares = 0;
                 }
-                if (shares > 0)
+                else
                 {
-                    comm += pos.AverageEntryPrice * MarginPct / 100 * days / 365 * mshares;
+                    maxShares *= 1 - 1 / sh;
                 }
             }
+
+            if (maxShares > 0)
+                comm += pos.AverageEntryPrice * MarginPct / 100 * days / 365 * maxShares;
             return comm;
         }
     }
@@ -846,7 +845,7 @@ namespace TSLab.Script.Handlers
         [HelperName("Минимальная комиссия", Constants.Ru)]
         [Description("Минимальная абсолютная комиссия за сделку")]
         [HelperDescription("Minimal absolute comission for a trade", Constants.En)]
-        [HandlerParameter(true, "30.0", NotOptimized = true)]
+        [HandlerParameter(true, "30.0", Min = "30.0", Max = "100", Step = "1.0")]
         public double MinimalCommission
         {
             get;

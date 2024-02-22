@@ -356,6 +356,8 @@ namespace TSLab.Script.Handlers
         Unfixed,
         [LocalizeDescription("ProfitKind.Fixed")]
         Fixed,
+        [LocalizeDescription("ProfitKind.MaxFixed")]
+        MaxFixed,
     }
 
     // Лучше не вешать категорию на базовые абстрактные классы. Это снижает гибкость дальнейшего управления ими.
@@ -386,22 +388,43 @@ namespace TSLab.Script.Handlers
     [HelperDescription("Calculates profit involving an instrument received in all trades of the whole period.", Constants.En)]
     public sealed class WholeTimeProfit : BaseProfitHandler
     {
+        [HelperName("Direction trades", Constants.En)]
+        [HelperName("Направление сделок", Constants.Ru)]
+        [HandlerParameter(true, nameof(TradeDirection2.All))]
+        public TradeDirection2 Direction { get; set; }
+
+        // Расчет нефиксированного профита по минимальной цене свечи (для long это low, для short это high).
+        // Не стал это выносить в enum ProfitKind чтобы не путать пользователей.
+        // Используется при расчете просадки.
+        public bool UnfixedByMin { get; set; }
+
         private WholeProfitState m_state = null;
 
         public override double Execute(ISecurity source, int barNum)
         {
             if (m_state == null)
-                m_state = new WholeProfitState(source.Positions);
+                m_state = new WholeProfitState(source.Positions, Direction);
             m_state.ProcessBar(barNum);
             switch (ProfitKind)
             {
                 case ProfitKind.Unfixed:
-                    return m_state.GetProfit(barNum);
+                    return UnfixedByMin ? m_state.GetProfitMin(barNum) : m_state.GetProfit(barNum);
                 case ProfitKind.Fixed:
                     return m_state.GetAccumulatedProfit(barNum);
+                case ProfitKind.MaxFixed:
+                    return GetMaxFixed(source, barNum);
                 default:
                     throw new InvalidEnumArgumentException(nameof(ProfitKind), (int)ProfitKind, ProfitKind.GetType());
             }
+        }
+
+        private double m_maxFixed;
+        private double GetMaxFixed(ISecurity source, int barNum)
+        {
+            if (barNum == 0)
+                m_maxFixed = 0;
+            m_maxFixed = Math.Max(m_maxFixed, m_state.GetAccumulatedProfit(barNum));
+            return m_maxFixed;
         }
     }
 

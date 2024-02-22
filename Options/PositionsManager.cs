@@ -2243,7 +2243,8 @@ namespace TSLab.Script.Handlers.Options
             // Все виртуальные позиции уже восстановлены?
             if (!m_executed)
             {
-                string msg = String.Format("[{0}] Not executed???", NiceTradeName(Context.Runtime.TradeName) + ":" + MsgId + ".GetClosedOrActiveForBar");
+                var msg =
+                    $"[{NiceTradeName(Context.Runtime.TradeName) + ":" + MsgId + ".GetClosedOrActiveForBar"}] Not executed???";
                 Context.Log(msg, MessageType.Error, true);
             }
 
@@ -2252,28 +2253,26 @@ namespace TSLab.Script.Handlers.Options
 
             if (sec.Positions.HavePositions)
             {
-                List<IPosition> positions;
+                IEnumerable<IPosition> positions;
                 if (profitAlgo == TotalProfitAlgo.AllPositions)
-                    positions = (from p in sec.Positions.GetActiveForBar(Context.BarsCount) select p).ToList();
+                    positions = (from p in sec.Positions.GetActiveForBar(Context.BarsCount) select p);
                 else if (profitAlgo == TotalProfitAlgo.RealPositions)
-                    positions = (from p in sec.Positions.GetActiveForBar(Context.BarsCount) where (!p.IsVirtual) select p).ToList();
+                    positions = (from p in sec.Positions.GetActiveForBar(Context.BarsCount) where (!p.IsVirtual) select p);
                 else if (profitAlgo == TotalProfitAlgo.VirtualPositions)
-                    positions = (from p in sec.Positions.GetActiveForBar(Context.BarsCount) where p.IsVirtual select p).ToList();
+                    positions = (from p in sec.Positions.GetActiveForBar(Context.BarsCount) where p.IsVirtual select p);
                 else
                 {
-                    string msg = String.Format("[{0}] Profit algo '{1}' is not implemented.", MsgId, profitAlgo);
+                    string msg = $"[{MsgId}] Profit algo '{profitAlgo}' is not implemented.";
                     throw new NotImplementedException(msg);
                 }
 
-                if (isLong != null)
-                    positions = (from p in positions where (p.IsLong == isLong.Value) select p).ToList();
+                if (isLong.HasValue)
+                    positions = positions.Where(p => p.IsLong == isLong);
 
-                return new ReadOnlyCollection<IPosition>(positions);
+                return new ReadOnlyCollection<IPosition>(positions.ToArray());
             }
-            else
-            {
-                return Constants.EmptyListPositions;
-            }
+
+            return Constants.EmptyListPositions;
         }
 
         public ReadOnlyCollection<IPosition> GetClosedOrActiveForBar(ISecurity sec, int barNum,
@@ -2282,8 +2281,8 @@ namespace TSLab.Script.Handlers.Options
             // Все виртуальные позиции уже восстановлены?
             if (!m_executed)
             {
-                string msg = String.Format("[{0}] Not executed??? barNum:{1}",
-                    NiceTradeName(Context.Runtime.TradeName) + ":" + MsgId + ".GetClosedOrActiveForBar", barNum);
+                var msg =
+                    $"[{NiceTradeName(Context.Runtime.TradeName) + ":" + MsgId + ".GetClosedOrActiveForBar"}] Not executed??? barNum:{barNum}";
                 Context.Log(msg, MessageType.Error, true);
             }
 
@@ -2292,28 +2291,26 @@ namespace TSLab.Script.Handlers.Options
 
             if (sec.Positions.HavePositions)
             {
-                List<IPosition> positions;
+                IEnumerable<IPosition> positions;
                 if (profitAlgo == TotalProfitAlgo.AllPositions)
-                    positions = (from p in sec.Positions.GetClosedOrActiveForBar(barNum) select p).ToList();
+                    positions = sec.Positions.GetClosedOrActiveForBar(barNum);
                 else if (profitAlgo == TotalProfitAlgo.RealPositions)
-                    positions = (from p in sec.Positions.GetClosedOrActiveForBar(barNum) where (!p.IsVirtual) select p).ToList();
+                    positions = sec.Positions.GetClosedOrActiveForBar(barNum).Where(p => !p.IsVirtual);
                 else if (profitAlgo == TotalProfitAlgo.VirtualPositions)
-                    positions = (from p in sec.Positions.GetClosedOrActiveForBar(barNum) where p.IsVirtual select p).ToList();
+                    positions = sec.Positions.GetClosedOrActiveForBar(barNum).Where(p => p.IsVirtual);
                 else
                 {
-                    string msg = String.Format("[{0}] Profit algo '{1}' is not implemented.", MsgId, profitAlgo);
+                    var msg = $"[{MsgId}] Profit algo '{profitAlgo}' is not implemented.";
                     throw new NotImplementedException(msg);
                 }
 
-                if (isLong != null)
-                    positions = (from p in positions where (p.IsLong == isLong.Value) select p).ToList();
+                if (isLong.HasValue)
+                    positions = positions.Where(p => p.IsLong == isLong);
 
-                return new ReadOnlyCollection<IPosition>(positions);
+                return new ReadOnlyCollection<IPosition>(positions.ToArray());
             }
-            else
-            {
-                return Constants.EmptyListPositions;
-            }
+
+            return Constants.EmptyListPositions;
         }
 
         public ReadOnlyCollection<IPosition> GetActiveForBar(ISecurity sec,
@@ -2322,7 +2319,8 @@ namespace TSLab.Script.Handlers.Options
             // Все виртуальные позиции уже восстановлены?
             if (!m_executed)
             {
-                string msg = String.Format("[{0}] Not executed???", NiceTradeName(Context.Runtime.TradeName) + ":" + MsgId + ".GetActiveForBar");
+                var msg =
+                    $"[{NiceTradeName(Context.Runtime.TradeName) + ":" + MsgId + ".GetActiveForBar"}] Not executed???";
                 Context.Log(msg, MessageType.Error, true);
             }
 
@@ -2331,20 +2329,20 @@ namespace TSLab.Script.Handlers.Options
 
             if (sec.Positions.HavePositions)
             {
-                List<IPosition> positions;
+                IEnumerable<IPosition> positions;
                 if (profitAlgo == TotalProfitAlgo.AllPositions)
-                    positions = (from p in sec.Positions.GetActiveForBar(Context.BarsCount) select p).ToList();
+                    positions = sec.Positions.GetActiveForBar(Context.BarsCount);
                 else if (profitAlgo == TotalProfitAlgo.RealPositions)
-                    positions = (from p in sec.Positions.GetActiveForBar(Context.BarsCount) where (!p.IsVirtual) select p).ToList();
+                    positions = sec.Positions.GetActiveForBar(Context.BarsCount).Where(p => !p.IsVirtual);
                 else if (profitAlgo == TotalProfitAlgo.VirtualPositions)
-                    positions = (from p in sec.Positions.GetActiveForBar(Context.BarsCount) where p.IsVirtual select p).ToList();
+                    positions = sec.Positions.GetActiveForBar(Context.BarsCount).Where(p => p.IsVirtual);
                 else
                 {
-                    string msg = String.Format("[{0}] Profit algo '{1}' is not implemented.", MsgId, profitAlgo);
+                    var msg = $"[{MsgId}] Profit algo '{profitAlgo}' is not implemented.";
                     throw new NotImplementedException(msg);
                 }
 
-                return new ReadOnlyCollection<IPosition>(positions);
+                return new ReadOnlyCollection<IPosition>(positions.ToArray());
             }
             else
             {
@@ -2375,23 +2373,23 @@ namespace TSLab.Script.Handlers.Options
 
             if (sec.Positions.HavePositions)
             {
-                List<IPosition> positions;
+                IEnumerable<IPosition> positions;
                 if (profitAlgo == TotalProfitAlgo.AllPositions)
-                    positions = (from p in sec.Positions.GetActiveForBar(barNum) select p).ToList();
+                    positions = sec.Positions.GetActiveForBar(barNum);
                 else if (profitAlgo == TotalProfitAlgo.RealPositions)
-                    positions = (from p in sec.Positions.GetActiveForBar(barNum) where (!p.IsVirtual) select p).ToList();
+                    positions = sec.Positions.GetActiveForBar(barNum).Where(p => !p.IsVirtual);
                 else if (profitAlgo == TotalProfitAlgo.VirtualPositions)
-                    positions = (from p in sec.Positions.GetActiveForBar(barNum) where p.IsVirtual select p).ToList();
+                    positions = sec.Positions.GetActiveForBar(barNum).Where(p => p.IsVirtual);
                 else
                 {
-                    string msg = String.Format("[{0}] Profit algo '{1}' is not implemented.", MsgId, profitAlgo);
+                    var msg = $"[{MsgId}] Profit algo '{profitAlgo}' is not implemented.";
                     throw new NotImplementedException(msg);
                 }
 
-                if (isLong != null)
-                    positions = (from p in positions where (p.IsLong == isLong.Value) select p).ToList();
+                if (isLong.HasValue)
+                    positions = positions.Where(p => p.IsLong == isLong);
 
-                return new ReadOnlyCollection<IPosition>(positions);
+                return new ReadOnlyCollection<IPosition>(positions.ToArray());
             }
             else
             {

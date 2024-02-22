@@ -57,6 +57,13 @@ namespace TSLab.Script.Handlers
         [HandlerParameter(true, "0")]
         public int MaxValues { get; set; }
 
+        [HelperName("Do not trim", Constants.En)]
+        [HelperName("Не ограничивать", Constants.Ru)]
+        [Description("При сохранении не ограничивать данные. При включении этой настройки не будет учитываться настройка 'Максимальное количество'")]
+        [HelperDescription("When saving, do not limit the data. When enabling this setting, the 'Maximum numbers' setting will not be taken into account", Language = Constants.En)]
+        [HandlerParameter(true, "false")]
+        public bool NotTrim { get; set; }
+
         public IContext Context { get; set; }
 
         private double[] m_tempValues;
@@ -74,7 +81,8 @@ namespace TSLab.Script.Handlers
                     var dt = sec.Bars[index].Date;
                     if (SaveToNextBar)
                         dt = sec.IntervalInstance.AddShift(dt);
-                    TrimData(data, MaxValues, sec.Bars.First().Date, dt);
+                    if (!NotTrim)
+                        TrimData(data, MaxValues, sec.Bars.First().Date, dt);
                     data[dt] = value;
                     SaveData(Context, data, Name, SaveToStorage);
                 }
@@ -101,6 +109,7 @@ namespace TSLab.Script.Handlers
             var key = string.Join("_", KeyPrefix, name);
             ctx.StoreGlobalObject(key, new NotClearableContainer(data), isStorage);
             TraceToFile(data, name);
+            ctx.Log($"GlobalCache: name='{name}' saved {data.Count} items", MessageType.Debug);
         }
 
         public static SortedList<DateTime, double> LoadData(IContext ctx, string name, bool isStorage)
@@ -125,6 +134,7 @@ namespace TSLab.Script.Handlers
                 if (res != null)
                     TraceToFile(res, name);
             }
+            ctx.Log($"GlobalCache: name='{name}' loaded {res?.Count} items", MessageType.Debug);
             return res;
         }
 
@@ -139,14 +149,13 @@ namespace TSLab.Script.Handlers
             lock (data)
             {
                 var dates = data.Keys.ToList();
-                var values = data.Values.ToList();
 
                 for (int i = 0; i < res.Length; i++)
                 {
                     var date = bars[i].Date;
                     var index = dates.FindLastIndex(x => x <= date);
                     if (index >= 0)
-                        res[i] = values[index];
+                        res[i] = data.Values[index];
                 }
             }
             return res;
@@ -171,14 +180,16 @@ namespace TSLab.Script.Handlers
         private static void TrimData(SortedList<DateTime, double> data, int maxLength, 
             DateTime firstDate = default, DateTime lastDate = default)
         {
-            foreach (var item in data.Keys.ToArray())
+            var toRemove = new List<DateTime>();
+            foreach (var item in data.Keys)
             {
                 if (firstDate != default && item < firstDate)
-                    data.Remove(item);
+                    toRemove.Add(item);
 
                 if (lastDate != default && item > lastDate)
-                    data.Remove(item);
+                    toRemove.Add(item);
             }
+            toRemove.ForEach(d => data.Remove(d));
             while (maxLength > 0 && data.Count > maxLength)
                 data.RemoveAt(0);
         }

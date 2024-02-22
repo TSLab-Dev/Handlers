@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using TSLab.DataSource;
+using TSLab.Utils;
 
 // ReSharper disable once CheckNamespace
 namespace TSLab.Script.Handlers
@@ -11,7 +12,7 @@ namespace TSLab.Script.Handlers
     {
         public IContext Context { get; set; }
 
-        [HandlerParameter(true, "", NotOptimized = true)]
+        [HandlerParameter(true, "")]
         public string Id { get; set; }
 
         public IList<T> Execute(ISecurity security)
@@ -61,5 +62,12 @@ namespace TSLab.Script.Handlers
         }
 
         protected abstract T GetValue(IReadOnlyList<T> values);
+
+        public IEnumerable<string> GetValuesForParameter(string paramName)
+        {
+            if (paramName.EqualsIgnoreCase(nameof(Id)))
+                return new[] { Id ?? "" };
+            return new[] { "" };
+        }
     }
 }

@@ -490,8 +490,8 @@ namespace TSLab.Script.Handlers
     }
 
     [HandlerCategory(HandlerCategories.Indicators)]
-    [HelperName("CCI", Language = Constants.En)]
-    [HelperName("CCI", Language = Constants.Ru)]
+    [HelperName("CCI (Old)", Language = Constants.En)]
+    [HelperName("CCI (cтарый)", Language = Constants.Ru)]
     #region Атрибуты с описанием и ссылками
     [InputsCount(1)]
     [Input(0, TemplateTypes.SECURITY, Name = Constants.SecuritySource)]
@@ -509,6 +509,29 @@ namespace TSLab.Script.Handlers
         public IList<double> Execute(ISecurity source)
         {
             return Series.CCI(source.Bars, Period, Context);
+        }
+    }
+
+    [HandlerCategory(HandlerCategories.Indicators)]
+    [HelperName("CCI", Language = Constants.En)]
+    [HelperName("CCI", Language = Constants.Ru)]
+    #region Атрибуты с описанием и ссылками
+    [InputsCount(1)]
+    [Input(0, TemplateTypes.SECURITY, Name = Constants.SecuritySource)]
+    [OutputsCount(1)]
+    [OutputType(TemplateTypes.DOUBLE)]
+    [Description("Индекс товарного канала (Commodity Channel Index - CCI). Измеряет отклонение цены инструмента от его среднестатистической цены.")]
+    [HelperDescription("The Commodity Channel Index (CCI) measures deviation of instrument price from its average price.", Constants.En)]
+    [HelperLink(@"http://www.tslab.ru/files/script/IndexTrade.xml", "Пример по ряду приемов проектирования и 2ум источникам данных", Constants.Ru)]
+    [HelperLink(@"http://www.tslab.ru/files/script/IndexTrade.xml", "Examples of some building strategies and using 2 sources", Constants.En)]
+    #endregion Атрибуты с описанием и ссылками
+    public sealed class CCINew : BasePeriodIndicatorHandler, IBar2DoubleHandler, IContextUses
+    {
+        public IContext Context { get; set; }
+
+        public IList<double> Execute(ISecurity source)
+        {
+            return Series.CCINew(source.Bars, Period, Context);
         }
     }
 

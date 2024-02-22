@@ -3832,6 +3832,9 @@
   <data name="TradableSecurity.Name" xml:space="preserve">
     <value>Торгуемый источник (инструмент)</value>
   </data>
+  <data name="CalcTradableSecurity.Name" xml:space="preserve">
+    <value>Торгуемый расчетный  источник (инструмент)</value>
+  </data>
   <data name="TrailEnable.Name" xml:space="preserve">
     <value>Вкл. трейл</value>
   </data>
@@ -3864,6 +3867,9 @@
   </data>
   <data name="WholeTimeProfit.Name" xml:space="preserve">
     <value>Доход (за все время)</value>
+  </data>
+  <data name="WholeTimeProfit.Direction.Name" xml:space="preserve">
+    <value>Направление сделок</value>
   </data>
   <data name="PositionsManager.AgregatePositions.Name" xml:space="preserve">
     <value>Агрегировать позиции</value>
@@ -4186,6 +4192,9 @@
     <value>Полоса Боллинджера (-)</value>
   </data>
   <data name="CCI.Name" xml:space="preserve">
+    <value>CCI (cтарый)</value>
+  </data>
+  <data name="CCINew.Name" xml:space="preserve">
     <value>CCI</value>
   </data>
   <data name="CuttlerRSI.Name" xml:space="preserve">
@@ -4237,7 +4246,7 @@
     <value>Последняя торговая статистика</value>
   </data>
   <data name="TradeStatisticsExtremumPriceHandler.Name" xml:space="preserve">
-    <value>Экстремальная цена торговой статистики</value>
+    <value>Экстремальная цена торговой статистики (POC)</value>
   </data>
   <data name="TradeStatisticsExtendedExtremumPriceHandler.Name" xml:space="preserve">
     <value>Расширенная экстремальная цена торговой статистики 1</value>
@@ -4255,10 +4264,10 @@
     <value>Сложенная Торговая статистика</value>
   </data>
   <data name="TradeStatisticsLowerEdgeHandler.Name" xml:space="preserve">
-    <value>Нижний уровень торговой статистики</value>
+    <value>Нижний уровень торговой статистики (VAL)</value>
   </data>
   <data name="TradeStatisticsUpperEdgeHandler.Name" xml:space="preserve">
-    <value>Верхний уровень торговой статистики</value>
+    <value>Верхний уровень торговой статистики (VAH)</value>
   </data>
   <data name="TradeStatisticsBarsCountHandler.Name" xml:space="preserve">
     <value>Количество строк торговой статистики</value>
@@ -4662,6 +4671,12 @@
   <data name="Median.Name" xml:space="preserve">
     <value>Просадка (кривой) прибыли</value>
   </data>
+  <data name="DrawdownHandler.Name" xml:space="preserve">
+    <value>Просадка</value>
+  </data>
+  <data name="DrawdownHandler.DrawdownKind.Name" xml:space="preserve">
+    <value>Тип просадки</value>
+  </data>
   <data name="BuyCount.Name" xml:space="preserve">
     <value>Количество заявок на покупку</value>
   </data>
@@ -5046,7 +5061,8 @@
     <value>Цена лучшей продажи, запомненная в конце каждого бара (если доступно).</value>
   </data>
   <data name="AskQty.Description" xml:space="preserve">
-    <value>Суммарное предложение (количество асков), запомненное в конце каждого бара (если доступно)</value>
+    <value>Количество ценных бумаг во всех заявках на продажу (в лотах).[br] 
+Данные для блока берутся из "Котировок". Если брокер или биржа данные не передают, то для работы блока необходимо открыть окно "Очередь заявок" и в нем выбрать нужный инструмент.</value>
   </data>
   <data name="BarNumber.Description" xml:space="preserve">
     <value>Индекс элемента в списке баров или числовых значений.</value>
@@ -5058,7 +5074,8 @@
     <value>Цена лучшей покупки, запомненная в конце каждого бара (если доступно).</value>
   </data>
   <data name="BidQty.Description" xml:space="preserve">
-    <value>Суммарный спрос (количество бидов), запомненное в конце каждого бара (если доступно)</value>
+    <value>Количество ценных бумаг во всех заявках на покупку (в лотах).[br] 
+Данные для блока берутся из "Котировок". Если брокер или биржа данные не передают, то для работы блока необходимо открыть окно "Очередь заявок" и в нем выбрать нужный инструмент.</value>
   </data>
   <data name="BoolBreaker.Description" xml:space="preserve">
     <value>Используется совместно с блоком 'Контрольная панель' для осуществления ручного управления кнопками на ней (режим полуавтоматической торговли). При нажатии на кнопку будет выдан true только для текущей свечи, что гарантирует, что сигнал будет выдан всегда на текущей свече.</value>
@@ -6305,6 +6322,46 @@
   <data name="MessageHandler.Description" xml:space="preserve">
     <value>При появлении на входе блока значения 'Истина' выводит в лог программы пользовательское сообщение.</value>
   </data>
+  <data name="FormatMessageHandler.Name" xml:space="preserve">
+    <value>Форматированное сообщение</value>
+  </data>
+  <data name="FormatMessageHandler.Description" xml:space="preserve">
+    <value>При появлении на входе блока значения 'Истина' выводит в лог программы форматированное сообщение.
+    Форматирование:
+    {Input3} - пользователькое значение на входе 3
+    ...
+    {Input30} - пользователькое значение на входе 30
+    {DateTime} - дата и время
+    {InitDeposit} - начальный депозит
+    {Symbol} - название инструмента
+    {Interval} - интервал
+    {LastPrice} - текущая цена
+    {EntryPrice} - цена входа последней позиции</value>
+  </data>
+  <data name="FormatMessageHandler.Message.Name" xml:space="preserve">
+    <value>Сообщение</value>
+  </data>
+  <data name="FormatMessageHandler.Message.Description" xml:space="preserve">
+    <value>Сообщение</value>
+  </data>
+  <data name="FormatMessageHandler.Tag.Name" xml:space="preserve">
+    <value>Метка</value>
+  </data>
+  <data name="FormatMessageHandler.Tag.Description" xml:space="preserve">
+    <value>Дополнительная пользовательская метка</value>
+  </data>
+  <data name="FormatMessageHandler.Type.Name" xml:space="preserve">
+    <value>Важность</value>
+  </data>
+  <data name="FormatMessageHandler.Type.Description" xml:space="preserve">
+    <value>Важность сообщения (Info, Warning, Error)</value>
+  </data>
+  <data name="FormatMessageHandler.WriteToLog.Name" xml:space="preserve">
+    <value>Выводить в лог</value>
+  </data>
+  <data name="FormatMessageHandler.WriteToLog.Description" xml:space="preserve">
+    <value>Выводить сообщение в лог</value>
+  </data>
   <data name="TestCanvasPaneHandler.Value.Name" xml:space="preserve">
     <value>Значение</value>
   </data>
@@ -6374,7 +6431,7 @@
     <value>Имя</value>
   </data>
   <data name="LastClosedNamePositionExitDate.Name.Description" xml:space="preserve">
-    <value>Имя сигнала закрытия</value>
+    <value>Имя сигнала открытия позиции</value>
   </data>
   <data name="LastClosedNamePositionExitTime.Description" xml:space="preserve">
     <value>Время выхода последней закрытой позиции по имени (число в формате ЧЧММСС).</value>
@@ -6383,7 +6440,7 @@
     <value>Имя</value>
   </data>
   <data name="LastClosedNamePositionExitTime.Name.Description" xml:space="preserve">
-    <value>Имя сигнала закрытия</value>
+    <value>Имя сигнала открытия позиции</value>
   </data>
   <data name="LastClosedNamePositionExitPrice.Description" xml:space="preserve">
     <value>Цена выхода последней закрытой позиции по имени.</value>
@@ -6392,7 +6449,7 @@
     <value>Имя</value>
   </data>
   <data name="LastClosedNamePositionExitPrice.Name.Description" xml:space="preserve">
-    <value>Имя сигнала закрытия</value>
+    <value>Имя сигнала открытия позиции</value>
   </data>
   <data name="LastClosedPositionDate.Description" xml:space="preserve">
     <value>Дата последней закрытой позиции (число в формате ГГММДД).</value>
@@ -7301,7 +7358,7 @@
     <value>Имя</value>
   </data>
   <data name="LastClosedNamePositionAvgExitPrice.Name.Description" xml:space="preserve">
-    <value>Имя сигнала закрытия</value>
+    <value>Имя сигнала открытия позиции</value>
   </data>
   <data name="ChannelHandler.ChannelApiKey.Description" xml:space="preserve">
     <value>Ключ, определяющий в какой канал TSChannel будут передаваться значения. Скопируйте значение API Key из "Передатчика" соответствующего канала в своем кабинете signal.tslab.pro</value>
@@ -7547,6 +7604,12 @@
   </data>
   <data name="SaveToGlobalCache2.MaxValues.Description" xml:space="preserve">
     <value>Максимальное количество сохраняемых значений. Если 0, то будет ограничиваться количеством баров</value>
+  </data>
+  <data name="SaveToGlobalCache2.NotTrim.Name" xml:space="preserve">
+    <value>Не ограничивать</value>
+  </data>
+  <data name="SaveToGlobalCache2.NotTrim.Description" xml:space="preserve">
+    <value>При сохранении не ограничивать данные. При включении этой настройки не будет учитываться настройка 'Максимальное количество'</value>
   </data>
   <data name="LoadFromGlobalCache2.Name" xml:space="preserve">
     <value>Загрузить из Глобального Кеша</value>

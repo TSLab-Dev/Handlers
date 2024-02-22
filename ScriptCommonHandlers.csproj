@@ -7,9 +7,7 @@
     <Authors>TSLab</Authors>
     <AssemblyName>TSLab.Script.Handlers</AssemblyName>
     <RootNamespace>TSLab.Script.Handlers</RootNamespace>
-    <AssemblyVersion>2.2.2.0</AssemblyVersion>
-    <FileVersion>2.2.2.0</FileVersion>
-    <Version>2.2.2</Version>
+    <Version>2.2.3</Version>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
   </PropertyGroup>
 
@@ -37,7 +35,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="TSLab.Script" Version="2.2.2" />
+    <PackageReference Include="TSLab.Script" Version="2.2.3" />
   </ItemGroup>
 
 </Project>

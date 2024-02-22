@@ -3934,6 +3934,9 @@
   <data name="TradableSecurity.Name" xml:space="preserve">
     <value>Tradable source (instrument)</value>
   </data>
+  <data name="CalcTradableSecurity.Name" xml:space="preserve">
+    <value>Calculates tradable source (instrument)</value>
+  </data>
   <data name="TrailEnable.Name" xml:space="preserve">
     <value>Enable the trail</value>
     <comment>Вкл. трейл</comment>
@@ -3977,6 +3980,10 @@
   <data name="WholeTimeProfit.Name" xml:space="preserve">
     <value>Profit (whole period)</value>
     <comment>Доход (за все время)</comment>
+  </data>
+  <data name="WholeTimeProfit.Direction.Name" xml:space="preserve">
+    <value>Direction trades</value>
+    <comment>Направление сделок</comment>
   </data>
   <data name="PositionsManager.AgregatePositions.Name" xml:space="preserve">
     <value>Agregate positions</value>
@@ -4260,6 +4267,9 @@
     <value>Bollinger Bands (-)</value>
   </data>
   <data name="CCI.Name" xml:space="preserve">
+    <value>CCI (Old)</value>
+  </data>
+  <data name="CCINew.Name" xml:space="preserve">
     <value>CCI</value>
   </data>
   <data name="CuttlerRSI.Name" xml:space="preserve">
@@ -4340,8 +4350,8 @@
     <comment>Последняя торговая статистика</comment>
   </data>
   <data name="TradeStatisticsExtremumPriceHandler.Name" xml:space="preserve">
-    <value>Trade Statistics Extremum Price</value>
-    <comment>Экстремальная цена торговой статистики</comment>
+    <value>Trade Statistics Extremum Price (POC)</value>
+    <comment>Экстремальная цена торговой статистики (POC)</comment>
   </data>
   <data name="TradeStatisticsExtendedExtremumPriceHandler.Name" xml:space="preserve">
     <value>Trade Statistics Extended Extremum Price 1</value>
@@ -4364,11 +4374,11 @@
     <comment>Сложенная Торговая статистика</comment>
   </data>
   <data name="TradeStatisticsLowerEdgeHandler.Name" xml:space="preserve">
-    <value>Trade Statistics Lower Level</value>
+    <value>Trade Statistics Lower Level (VAL)</value>
     <comment>Нижний уровень торговой статистики</comment>
   </data>
   <data name="TradeStatisticsUpperEdgeHandler.Name" xml:space="preserve">
-    <value>Trade Statistics Upper Level</value>
+    <value>Trade Statistics Upper Level (VAH)</value>
     <comment>Верхний уровень торговой статистики</comment>
   </data>
   <data name="TradeStatisticsBarsCountHandler.Name" xml:space="preserve">
@@ -4797,6 +4807,12 @@
   <data name="Median.Name" xml:space="preserve">
     <value>Equity Drawdown</value>
   </data>
+  <data name="DrawdownHandler.Name" xml:space="preserve">
+    <value>Drawdown</value>
+  </data>
+  <data name="DrawdownHandler.DrawdownKind.Name" xml:space="preserve">
+    <value>Drawdown kind</value>
+  </data>
   <data name="BuyCount.Name" xml:space="preserve">
     <value>Number of purchase requests</value>
     <comment>Количество заявок на покупку</comment>
@@ -5182,7 +5198,8 @@
     <value>Best sell price recorded at the end of every bar (if available).</value>
   </data>
   <data name="AskQty.Description" xml:space="preserve">
-    <value>Total offer size recorded at the end of every bar (if available)</value>
+    <value>Number of securities in all orders for sale (in lots). [br]
+The data for the block is taken from "Quotes". If the broker or exchange does not transmit data, then for the block to work, you need to open the "Depth of Market" window and select the required instrument in it.</value>
   </data>
   <data name="BarNumber.Description" xml:space="preserve">
     <value>An index of an element in a list of bars or numeric values.</value>
@@ -5194,7 +5211,8 @@
     <value>Best buy price recorded at the end of every bar (if available).</value>
   </data>
   <data name="BidQty.Description" xml:space="preserve">
-    <value>Total demand size recorded at the end of every bar (if available)</value>
+    <value>Number of securities in all purchase orders (in lots). [br]
+The data for the block is taken from "Quotes". If the broker or exchange does not transmit data, then for the block to work, you need to open the "Depth of Market" window and select the required instrument in it.</value>
   </data>
   <data name="BoolBreaker.Description" xml:space="preserve">
     <value>Sets a FALSE value at every candle except the last one. For the last value sets a selected TRUE/FALSE value. This block is used together with the control pane buttons.</value>
@@ -6438,6 +6456,46 @@
   <data name="MessageHandler.Description" xml:space="preserve">
     <value>When input becomes TRUE a handler sends user message to a TSLab log.</value>
   </data>
+  <data name="FormatMessageHandler.Name" xml:space="preserve">
+    <value>Format message</value>
+  </data>
+  <data name="FormatMessageHandler.Description" xml:space="preserve">
+    <value>When the value appears at the input of the block 'True' outputs a formatted message to the program log.
+    Formatting:
+    {Input3} - user input value 3
+    ...
+    {Input30} - user input value 30
+    {DateTime} - date and time
+    {InitDeposit} - initial deposit
+    {Symbol} - the name of the instrument
+    {Interval} - the interval
+    {lastPrice} - current price
+    {EntryPrice} - entry price of the last position</value>
+  </data>
+  <data name="FormatMessageHandler.Message.Name" xml:space="preserve">
+    <value>Message</value>
+  </data>
+  <data name="FormatMessageHandler.Message.Description" xml:space="preserve">
+    <value>Message</value>
+  </data>
+  <data name="FormatMessageHandler.Tag.Name" xml:space="preserve">
+    <value>Tag</value>
+  </data>
+  <data name="FormatMessageHandler.Tag.Description" xml:space="preserve">
+    <value>Additional user tag</value>
+  </data>
+  <data name="FormatMessageHandler.WriteToLog.Name" xml:space="preserve">
+    <value>Write to log</value>
+  </data>
+  <data name="FormatMessageHandler.WriteToLog.Description" xml:space="preserve">
+    <value>Write message to log</value>
+  </data>
+  <data name="FormatMessageHandler.Type.Name" xml:space="preserve">
+    <value>Importance</value>
+  </data>
+  <data name="FormatMessageHandler.Type.Description" xml:space="preserve">
+    <value>Message importance (Info, Warning, Error)</value>
+  </data>
   <data name="TestCanvasPaneHandler.Value.Name" xml:space="preserve">
     <value>Value</value>
   </data>
@@ -6507,7 +6565,7 @@ If the transaction prices are unknown, the price is taken from the order. If the
     <value>Name</value>
   </data>
   <data name="LastClosedNamePositionExitDate.Name.Description" xml:space="preserve">
-    <value>Close signal name</value>
+    <value>Position opening signal name</value>
   </data>
   <data name="LastClosedNamePositionExitTime.Description" xml:space="preserve">
     <value>The exit time of the latest closed named position (a number with format HHMMSS).</value>
@@ -6516,7 +6574,7 @@ If the transaction prices are unknown, the price is taken from the order. If the
     <value>Name</value>
   </data>
   <data name="LastClosedNamePositionExitTime.Name.Description" xml:space="preserve">
-    <value>Close signal name</value>
+    <value>Position opening signal name</value>
   </data>
   <data name="LastClosedNamePositionExitPrice.Description" xml:space="preserve">
     <value>The exit price of the latest closed named position.</value>
@@ -6525,7 +6583,7 @@ If the transaction prices are unknown, the price is taken from the order. If the
     <value>Name</value>
   </data>
   <data name="LastClosedNamePositionExitPrice.Name.Description" xml:space="preserve">
-    <value>Close signal name</value>
+    <value>Position opening signal name</value>
   </data>
   <data name="LastClosedPositionDate.Description" xml:space="preserve">
     <value>The date of the latest closed position (a number with format YYMMDD).</value>
@@ -7429,7 +7487,7 @@ If the transaction prices are unknown, the price is taken from the order. If the
     <value>Name</value>
   </data>
   <data name="LastClosedNamePositionAvgExitPrice.Name.Description" xml:space="preserve">
-    <value>Close signal name</value>
+    <value>Position opening signal name</value>
   </data>
   <data name="ChannelHandler.ChannelApiKey.Description" xml:space="preserve">
     <value>The key that determines which TSChannel the values will be transmitted to. Copy the API Key value from the "Transmitter" of the corresponding channel in your account on signal.tslab.pro</value>
@@ -7671,6 +7729,12 @@ If the transaction prices are unknown, the price is taken from the order. If the
   <data name="SaveToGlobalCache2.MaxValues.Description" xml:space="preserve">
     <value>The maximum number of values. If 0, then it will be limited by the number of bars</value>
   </data>
+  <data name="SaveToGlobalCache2.NotTrim.Name" xml:space="preserve">
+    <value>Do not trim</value>
+  </data>
+  <data name="SaveToGlobalCache2.NotTrim.Description" xml:space="preserve">
+    <value>When saving, do not limit the data. When enabling this setting, the 'Maximum numbers' setting will not be taken into account</value>
+  </data>
   <data name="LoadFromGlobalCache2.Name" xml:space="preserve">
     <value>Load from Global Cache</value>
   </data>
@@ -7692,7 +7756,7 @@ If the transaction prices are unknown, the price is taken from the order. If the
   <data name="InstrumentByName.Name" xml:space="preserve">
     <value>Instrument by name</value>
   </data>
-	<data name="InstrumentByName.Description" xml:space="preserve">
+  <data name="InstrumentByName.Description" xml:space="preserve">
     <value>Find the instrument by name in the List of instruments. If the instrument is not found by name, it returns the first one in the list.</value>
   </data>
   <data name="InstrumentByName.Name.Name" xml:space="preserve">

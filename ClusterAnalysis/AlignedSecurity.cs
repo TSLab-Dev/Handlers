@@ -365,9 +365,9 @@ namespace TSLab.Script.Handlers
             throw new NotSupportedException();
         }
 
-        public void ConnectSecurityList(IGraphListBase list)
+        public void ConnectSecurityList(IGraphListBase iList)
         {
-            m_security.ConnectSecurityList(list);
+            m_security.ConnectSecurityList(iList);
         }
 
         public void ConnectDoubleList(IGraphListBase list, IDoubleHandlerWithUpdate handler)

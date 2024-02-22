@@ -5,6 +5,7 @@ using System.Linq;
 using TSLab.DataSource;
 using TSLab.Script.Handlers.Options;
 using TSLab.Script.Realtime;
+using TSLab.Utils;
 
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 // ReSharper disable MemberCanBePrivate.Global
@@ -1063,6 +1064,112 @@ namespace TSLab.Script.Handlers
             m_lastBarNum = barNum;
             return m_lastMaxProfit - m_lastProfit;
         }
+    }
+
+    [HandlerCategory(HandlerCategories.Position)]
+    [HelperName("Drawdown", Language = Constants.En)]
+    [HelperName("Просадка", Language = Constants.Ru)]
+    [InputsCount(1)]
+    [Input(0, TemplateTypes.SECURITY, Name = Constants.SecuritySource)]
+    [OutputsCount(1)]
+    [OutputType(TemplateTypes.DOUBLE)]
+    [Description("Расчеты:\r\n" +
+        "Просадка = Профит - МаксФиксПрофит\r\n" +
+        "Просадка% = Просадка / НачальныйДепозит * 100\r\n" +
+        "Длительность просадки (дней) = Профит < МаксФиксПрофит ? Длительность++ : 0\r\n" +
+        "ФиксПросадка = ФиксПрофит - МаксФиксПрофит\r\n" +
+        "ФиксПросадка% = ФиксПросадка / НачальныйДепозит * 100")]
+    [HelperDescription("Calculations:\r\n" +
+        "Drawdown = Profit - MaxFixProfit\r\n" +
+        "Drawdown% = Drawdown / InitialDeposit * 100\r\n" +
+        "Drawdown duration (days) = Profit < MaxFixProfit ? Duration++ : 0\r\n" +
+        "FixDrawdown = FixProfit - MaxFixProfit\r\n" +
+        "FixDrawdown% = FixDrawdown / InitialDeposit * 100", Constants.En)]
+    public sealed class DrawdownHandler : IValuesHandlerWithNumber
+    {
+        [HelperName("Drawdown kind", Constants.En)]
+        [HelperName("Тип просадки", Constants.Ru)]
+        [HandlerParameter(true, nameof(DrawdownKind.DrawdownAbs))]
+        public DrawdownKind DrawdownKind { get; set; }
+
+        private readonly WholeTimeProfit m_profitUnfixed = new WholeTimeProfit() { ProfitKind = ProfitKind.Unfixed, UnfixedByMin = true };
+        private readonly WholeTimeProfit m_profitFixed = new WholeTimeProfit() { ProfitKind = ProfitKind.Fixed };
+        private readonly WholeTimeProfit m_profitMaxFixed = new WholeTimeProfit() { ProfitKind = ProfitKind.MaxFixed };
+
+        public double Execute(ISecurity source, int barNum)
+        {
+            switch (DrawdownKind)
+            {
+                case DrawdownKind.DrawdownAbs:
+                    return GetDrawdown(source, barNum);
+                case DrawdownKind.DrawdownPrc:
+                    return GetDrawdownPrc(source, barNum);
+                case DrawdownKind.DrawdownLength:
+                    return GetDrawdownLength(source, barNum);
+                case DrawdownKind.FixDrawdown:
+                    return GetFixDrawdown(source, barNum);
+                case DrawdownKind.FixDrawdownPrc:
+                    return GetFixDrawdownPrc(source, barNum);
+                default:
+                    throw new InvalidEnumArgumentException(nameof(DrawdownKind), (int)DrawdownKind, DrawdownKind.GetType());
+            }
+        }
+
+        private double GetDrawdown(ISecurity source, int barNum)
+        {
+            var res = Math.Min(0, m_profitUnfixed.Execute(source, barNum) - m_profitMaxFixed.Execute(source, barNum));
+            return res;
+        }
+
+        private double GetDrawdownPrc(ISecurity source, int barNum)
+        {
+            var drawdown = GetDrawdown(source, barNum);
+            var res = source.InitDeposit == 0 ? 0 : drawdown / source.InitDeposit * 100;
+            return res;
+        }
+
+        private double m_drawdownLength;
+        private double GetDrawdownLength(ISecurity source, int barNum)
+        {
+            if (barNum == 0)
+            {
+                m_drawdownLength = 0;
+            }
+            else
+            {
+                m_drawdownLength = m_profitUnfixed.Execute(source, barNum) < m_profitMaxFixed.Execute(source, barNum)
+                    ? m_drawdownLength + (source.Bars[barNum].Date - source.Bars[barNum - 1].Date).TotalDays
+                    : 0;
+            }
+            return m_drawdownLength;
+        }
+
+        private double GetFixDrawdown(ISecurity source, int barNum)
+        {
+            var res = Math.Min(0, m_profitFixed.Execute(source, barNum) - m_profitMaxFixed.Execute(source, barNum));
+            return res;
+        }
+
+        private double GetFixDrawdownPrc(ISecurity source, int barNum)
+        {
+            var fixDrawdown = GetFixDrawdown(source, barNum);
+            var res = source.InitDeposit == 0 ? 0 : fixDrawdown / source.InitDeposit * 100;
+            return res;
+        }
+    }
+
+    public enum DrawdownKind
+    {
+        [LocalizeDescription("DrawdownKind.DrawdownAbs")]
+        DrawdownAbs,
+        [LocalizeDescription("DrawdownKind.DrawdownPrc")]
+        DrawdownPrc,
+        [LocalizeDescription("DrawdownKind.DrawdownLength")]
+        DrawdownLength,
+        [LocalizeDescription("DrawdownKind.FixDrawdown")]
+        FixDrawdown,
+        [LocalizeDescription("DrawdownKind.FixDrawdownPrc")]
+        FixDrawdownPrc,
     }
 }
 // ReSharper restore MemberCanBePrivate.Global

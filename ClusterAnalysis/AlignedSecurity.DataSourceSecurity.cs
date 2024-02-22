@@ -44,6 +44,8 @@ namespace TSLab.Script.Handlers
 
             public int BalanceDecimals => throw new NotSupportedException();
 
+            public int BalancePriceDecimals => throw new NotSupportedException();
+
             public double Tick => throw new NotSupportedException();
 
             public double GetTick(double price)
@@ -61,15 +63,32 @@ namespace TSLab.Script.Handlers
 
             public IDataSourceSecurity BaseSecurity => throw new NotSupportedException();
 
+            public CalcSourceInfo CalcSecurity { get => throw new NotSupportedException(); set => throw new NotSupportedException(); }
+
             public double Strike => throw new NotSupportedException();
 
             public DateTime ExpirationDate => throw new NotSupportedException();
 
             public double ReducedPrice(double price) => m_source.ReducedPrice(price);
 
+            public double ReducedPrice(double price, CalcSourceParams calcParams)
+            {
+                return m_source.ReducedPrice(price, calcParams);
+            }
+
             public double CalculatePnL(double entryPrice, double exitPrice, double lots)
             {
                 return m_source.CalculatePnL(entryPrice, exitPrice, lots);
+            }
+
+            public double CalculatePnL(double entryPrice, double exitPrice, double lots, CalcSourceParams calcParams)
+            {
+                return m_source.CalculatePnL(entryPrice, exitPrice, lots, calcParams);
+            }
+
+            public double GetCostPrice(CalcSourceParams calcParams)
+            {
+                return m_source.GetCostPrice(calcParams);
             }
         }
     }

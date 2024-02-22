@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using TSLab.DataSource;
+using TSLab.Utils;
 
 // ReSharper disable once CheckNamespace
 namespace TSLab.Script.Handlers
@@ -15,7 +16,7 @@ namespace TSLab.Script.Handlers
 
         public IContext Context { get; set; }
 
-        [HandlerParameter(true, "", NotOptimized = true)]
+        [HandlerParameter(true, "")]
         public string Id { get; set; }
 
         public void Execute(ISecurity security, IList<bool> values)
@@ -70,6 +71,13 @@ namespace TSLab.Script.Handlers
                 dateTimes[i] = bars[i].Date;
 
             Context.StoreGlobalObject(Id, new NotClearableContainer(new Tuple<IReadOnlyList<DateTime>, IList<T>>(dateTimes, values)));
+        }
+
+        public IEnumerable<string> GetValuesForParameter(string paramName)
+        {
+            if (paramName.EqualsIgnoreCase(nameof(Id)))
+                return new[] { Id ?? "" };
+            return new[] { "" };
         }
     }
 }
