@@ -272,6 +272,147 @@ namespace TSLab.Script.Handlers
     }
 
     [HandlerCategory(HandlerCategories.Portfolio)]
+    [HelperName("Table Agents", Language = Constants.En)]
+    [HelperName("Таблица Агенты", Language = Constants.Ru)]
+    [InputsCount(1)]
+    [Input(0, TemplateTypes.SECURITY, Name = "SECURITYSource")]
+    [OutputsCount(1)]
+    [OutputType(TemplateTypes.DOUBLE)]
+    [Description("Предназначен для работы с таблицей Агенты из скрипта.\r\n" +
+        "Возвращает числовое значение, соответствующее выбранному полю таблицы.\r\n" +
+        "В зависимости от поставщика данных, для определения принадлежности инструмента к рынку, используйте счет или валюту счета.\r\n" +
+        "Для большинства рынков достаточно указать Тикер.")]
+    [HelperDescription("Designed to work with the Agents table from a script.\r\n" +
+        "Returns a numeric value corresponding to the selected table field.\r\n" +
+        "Depending on the data provider, use the account or the account currency to determine whether the instrument belongs to the market.\r\n" +
+        "For most markets, it is enough to specify a Ticker.", Constants.En)]
+    public class AgentsInfo : IStreamHandler, IContextUses, ICustomListValues
+    {
+        [HelperName("Agent", Constants.En)]
+        [HelperName("Агент", Constants.Ru)]
+        [Description("Название агента из таблицы Агенты.")]
+        [HelperDescription("The name of the agent from the Agents table.", Constants.En)]
+        [HandlerParameter(true)]
+        public string AgentName { get; set; }
+
+        [HelperName("Tiker", Constants.En)]
+        [HelperName("Тикер", Constants.Ru)]
+        [Description("Название инструмента.")]
+        [HelperDescription("Instrument name.", Constants.En)]
+        [HandlerParameter(true)]
+        public string SecurityName { get; set; }
+
+        [HelperName("Account", Constants.En)]
+        [HelperName("Счет", Constants.Ru)]
+        [Description("Название счета  (необязательно).")]
+        [HelperDescription("Account name (optional).", Constants.En)]
+        [HandlerParameter(true)]
+        public string AccountName { get; set; }
+
+        [HelperName("Currency", Constants.En)]
+        [HelperName("Валюта счета", Constants.Ru)]
+        [Description("Валюта счета  (необязательно).")]
+        [HelperDescription("Account currency (optional).", Constants.En)]
+        [HandlerParameter(true)]
+        public string CurrencyName { get; set; }
+
+        [HelperName("Output value", Constants.En)]
+        [HelperName("Выводимое значение", Constants.Ru)]
+        [Description("Выводимое значение из таблицы, соответствующее настройкам.")]
+        [HelperDescription("The output value from the table corresponding to the settings.", Constants.En)]
+        [HandlerParameter(true, nameof(AgentField.Profit), Name = "Выводимое значение")]
+        public AgentField AgentField { get; set; }
+        
+        public IContext Context { get; set; }
+
+        public IList<double> Execute(ISecurity sec)
+        {
+            var value = 0.0;
+            var agent = Context.Runtime.GetAllAgentRuntimeInfo().FirstOrDefault(x => AgentName.EqualsIgnoreCase(x.AgentName));
+
+            if (agent?.SourceItems != null)
+            {
+                var sources = agent.SourceItems.Where(x => SecurityName.EqualsIgnoreCase(x.SecurityName));
+                if (!string.IsNullOrEmpty(AccountName))
+                    sources = sources.Where(x => AccountName.EqualsIgnoreCase(x.AccountName));
+                if (!string.IsNullOrEmpty(CurrencyName))
+                    sources = sources.Where(x => CurrencyName.EqualsIgnoreCase(x.CurrencyName));
+
+                var source = sources.FirstOrDefault();
+                if (source != null)
+                {
+                    value = GetValue(source, AgentField);
+                }
+            }
+            
+            return Enumerable.Repeat(value, sec.Bars.Count).ToList();
+        }
+
+        private static double GetValue(ISourceRuntimeInfo source, AgentField agentField)
+        {
+            switch (agentField)
+            {
+                case AgentField.ProfitVol:
+                    return source.ProfitVol;
+
+                case AgentField.Profit:
+                    return source.Profit;
+
+                case AgentField.Slippage:
+                    return source.Slippage;
+
+                case AgentField.SlippagePercent:
+                    return source.SlippagePercent;
+
+                case AgentField.PositionInLots:
+                    return source.PositionInLots;
+
+                case AgentField.PositionInMoney:
+                    return source.PositionInMoney;
+
+                case AgentField.DailyProfit:
+                    return source.DailyProfit;
+
+                case AgentField.AssessedPrice:
+                    return source.AssessedPrice;
+
+                case AgentField.BalancePrice:
+                    return source.BalancePrice;
+
+                case AgentField.LastPrice:
+                    return source.LastPrice ?? 0;
+
+                case AgentField.PositionLong:
+                    return source.PositionLong;
+
+                case AgentField.PositionShort:
+                    return source.PositionShort;
+
+                case AgentField.Commission:
+                    return source.Commission;
+            }
+            return 0;
+        }
+
+        public IEnumerable<string> GetValuesForParameter(string paramName)
+        {
+            if (paramName.EqualsIgnoreCase(nameof(AgentName)))
+                return new[] { AgentName ?? "" };
+
+            if (paramName.EqualsIgnoreCase(nameof(SecurityName)))
+                return new[] { SecurityName ?? "" };
+
+            if (paramName.EqualsIgnoreCase(nameof(AccountName)))
+                return new[] { AccountName ?? "" };
+
+            if (paramName.EqualsIgnoreCase(nameof(CurrencyName)))
+                return new[] { CurrencyName ?? "" };
+
+            return new[] { "" };
+        }
+    }
+
+    [HandlerCategory(HandlerCategories.Portfolio)]
     [HelperName("Net value by account", Language = Constants.En)]
     [HelperName("Чистая стоимость по счету", Language = Constants.Ru)]
     [InputsCount(1)]
@@ -322,42 +463,6 @@ namespace TSLab.Script.Handlers
 
             return new[] { "" };
         }
-    }
-
-    public enum PositionField
-    {
-        [LocalizeDescription("PositionField.RealRest")] // Текущая
-        RealRest,
-        [LocalizeDescription("PositionField.IncomeRest")] // Входящая
-        IncomeRest,
-        [LocalizeDescription("PositionField.PlanRest")] // Плановая
-        PlanRest,
-        [LocalizeDescription("PositionField.BalancePrice")] // Учетная цена
-        BalancePrice,
-        [LocalizeDescription("PositionField.AssessedPrice")] // Оценочная цена
-        AssessedPrice,
-        [LocalizeDescription("PositionField.Commission")] // Комиссия
-        Commission,
-        [LocalizeDescription("PositionField.Balance")] // Чистая стоимость
-        Balance,
-        [LocalizeDescription("PositionField.BalForwardVolume")] // Учетная стоимость
-        BalForwardVolume,
-        [LocalizeDescription("PositionField.ProfitVolume")] // НП/У
-        ProfitVolume,
-        [LocalizeDescription("PositionField.DailyPl")] // П/У (дн)
-        DailyPl,
-        [LocalizeDescription("PositionField.VarMargin")] // Вар.маржа
-        VarMargin, 
-    }
-
-    public enum ProfitKind
-    {
-        [LocalizeDescription("ProfitKind.Unfixed")]
-        Unfixed,
-        [LocalizeDescription("ProfitKind.Fixed")]
-        Fixed,
-        [LocalizeDescription("ProfitKind.MaxFixed")]
-        MaxFixed,
     }
 
     // Лучше не вешать категорию на базовые абстрактные классы. Это снижает гибкость дальнейшего управления ими.
@@ -443,14 +548,12 @@ namespace TSLab.Script.Handlers
 
         private DateTime m_oldStartDate;
 
-        /// <summary>
-        /// \~english Trading session start (format HH:MM:SS)
-        /// \~russian Время начала торговой сессии (формат ЧЧ:ММ:СС)
-        /// </summary>
+        private double m_maxProfit;
+
         [HelperName("Session start", Constants.En)]
         [HelperName("Начало сессии", Constants.Ru)]
-        [Description("Время начала торговой сессии (формат ЧЧ:ММ:СС)")]
-        [HelperDescription("Trading session start (format HH:MM:SS)", Constants.En)]
+        [Description("Время начала торговой сессии (формат 1ч 30м 00с)")]
+        [HelperDescription("Trading session start (format 1h 30m 00s)", Constants.En)]
         [HandlerParameter(true, "0:0:0", Min = "0:0:0", Max = "23:59:59", Step = "1:0:0", EditorMin = "0:0:0", EditorMax = "23:59:59")]
         public TimeSpan SessionStart { get; set; }
 
@@ -467,6 +570,7 @@ namespace TSLab.Script.Handlers
             {
                 m_oldStartDate = startDay;
                 m_oldStartBarNum = barNum;
+                m_maxProfit = 0;
             }
             Func<IPosition, int, double> getProfitFunc;
             switch (ProfitKind)
@@ -475,17 +579,22 @@ namespace TSLab.Script.Handlers
                     getProfitFunc = ProfitExtensions.GetProfit;
                     break;
                 case ProfitKind.Fixed:
+                case ProfitKind.MaxFixed:
                     getProfitFunc = ProfitExtensions.GetAccumulatedProfit;
                     break;
                 default:
                     throw new InvalidEnumArgumentException(nameof(ProfitKind), (int)ProfitKind, ProfitKind.GetType());
             }
+            
             var profit = CalcProfit(source, barNum, getProfitFunc, startDay, endDay, m_oldStartBarNum);
-            return profit;
+            m_maxProfit = Math.Max(m_maxProfit, profit);
+            return ProfitKind == ProfitKind.MaxFixed ? m_maxProfit : profit;
         }
 
-        public static double CalcProfit(ISecurity source, int barNum, Func<IPosition, int, double> getProfitFunc, int days, ref DateTime oldStartDate, ref int oldStartBarNum)
+        public static double CalcProfit(ISecurity source, int barNum, Func<IPosition, int, double> getProfitFunc, 
+            int days, ref DateTime oldStartDate, ref int oldStartBarNum, out bool isResetPeriod)
         {
+            isResetPeriod = false;
             var dt = source.Bars[barNum].Date;
             var startDay = dt.Date;
             var endDay = startDay.AddDays(1);
@@ -501,6 +610,7 @@ namespace TSLab.Script.Handlers
             }
             if (startDay > oldStartDate)
             {
+                isResetPeriod = true;
                 oldStartDate = startDay;
                 if (days > 1)
                 {
@@ -517,7 +627,8 @@ namespace TSLab.Script.Handlers
             return profit;
         }
 
-        private static double CalcProfit(ISecurity source, int barNum, Func<IPosition, int, double> getProfitFunc, DateTime startDay, DateTime endDay, int oldStartBarNum)
+        private static double CalcProfit(ISecurity source, int barNum, Func<IPosition, int, double> getProfitFunc, 
+            DateTime startDay, DateTime endDay, int oldStartBarNum)
         {
             double profit = 0;
             foreach (var pos in source.Positions)
@@ -561,6 +672,7 @@ namespace TSLab.Script.Handlers
                 case ProfitKind.Unfixed:
                     return ProfitExtensions.GetProfit;
                 case ProfitKind.Fixed:
+                case ProfitKind.MaxFixed:
                     return ProfitExtensions.GetAccumulatedProfit;
                 default:
                     throw new InvalidEnumArgumentException(nameof(ProfitKind), (int)ProfitKind, ProfitKind.GetType());
@@ -583,9 +695,16 @@ namespace TSLab.Script.Handlers
 
         private DateTime m_oldStartDay;
 
+        private double m_maxProfit;
+
         public override double Execute(ISecurity source, int barNum)
         {
-            return WholeDayProfit.CalcProfit(source, barNum, GetProfitFunc(), Period, ref m_oldStartDay, ref m_oldDayStart);
+            var profit = WholeDayProfit.CalcProfit(source, barNum, GetProfitFunc(), Period, ref m_oldStartDay, 
+                ref m_oldDayStart, out var isResetPeriod);
+            if (isResetPeriod)
+                m_maxProfit = 0;
+            m_maxProfit = Math.Max(m_maxProfit, profit);
+            return ProfitKind == ProfitKind.MaxFixed ? m_maxProfit : profit;
         }
     }
 

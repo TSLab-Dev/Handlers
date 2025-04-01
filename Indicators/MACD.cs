@@ -14,8 +14,8 @@ namespace TSLab.Script.Handlers
     {
         protected IList<double> CalcMACD(IList<double> source, int p1, int p2)
         {
-            var ema1 = Series.EMA(source, p1, Context);
-            var ema2 = Series.EMA(source, p2, Context);
+            var ema1 = Series.EMA(source.AsReadOnly(), p1, Context);
+            var ema2 = Series.EMA(source.AsReadOnly(), p2, Context);
             var res = Context?.GetArray<double>(ema1.Count) ?? new double[ema1.Count];
             for (int i = 0; i < ema1.Count; i++)
             {
@@ -127,7 +127,7 @@ namespace TSLab.Script.Handlers
 
         public IList<double> Execute(IList<double> source)
         {
-            return Series.EMA(source, Period, Context);
+            return Series.EMA(source.AsReadOnly(), Period, Context);
         }
     }
 }

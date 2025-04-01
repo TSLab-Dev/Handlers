@@ -23,6 +23,7 @@ namespace TSLab.Script.Handlers
     public sealed class FormatMessageHandler : IValuesHandlerWithNumber, IContextUses, ICustomListValues
     {
         private const string UserMessageTag = "$UserMessageTag";
+        private const string MessageFormatTag = "$MessageFormat";
         private static readonly CultureInfo m_culture = CultureInfo.CurrentCulture;
 
         public IContext Context { get; set; }
@@ -54,6 +55,13 @@ namespace TSLab.Script.Handlers
         [HelperDescription("Message importance (Info, Warning, Error)", Constants.En)]
         [HandlerParameter(true, "Info")]
         public MessageType Type { get; set; }
+
+        [HelperName("Message format", Constants.En)]
+        [HelperName("Формат сообщения", Constants.Ru)]
+        [Description("Формат сообщения:\r\n{TradeName} - имя агента или скрипта \r\n{Text} - сообщение")]
+        [HelperDescription("Message format:\r\n{TradeName} - agent or script name \r\n{Text} - message", Constants.En)]
+        [HandlerParameter(true, "", NotOptimized = true)]
+        public string MessageFormat { get; set; }
 
         public string Execute(ISecurity sec, bool value, params object[] values)
         {
@@ -105,7 +113,11 @@ namespace TSLab.Script.Handlers
 
         private void Log(string message)
         {
-            var args = new Dictionary<string, object> { { UserMessageTag, Tag ?? string.Empty } };
+            var args = new Dictionary<string, object> 
+            { 
+                { UserMessageTag, Tag ?? string.Empty },
+                { MessageFormatTag, MessageFormat ?? string.Empty },
+            };
             Context.Log(message, Type, true, args);
         }
 

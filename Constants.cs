@@ -54,17 +54,17 @@ namespace TSLab.Script.Handlers.Options
         /// [19-06-2020] PROD-* Люди постоянно ошибаются на вводе даты экспирации в строковом виде.
         /// Обычно нажимают Enter и контрол ввода текста потом честно отправляет этот перенос строки на парсинг даты.
         /// </summary>
-        internal static readonly char[] CharsToTrimDateTimeParameters = new[] { ' ', '\t', '\r', '\n', '.', ',', '-', ';', ':', '+', '_', '=' };
+        public static readonly char[] CharsToTrimDateTimeParameters = new[] { ' ', '\t', '\r', '\n', '.', ',', '-', ';', ':', '+', '_', '=' };
 
         /// <summary>
         /// Статическое поле с пустым неизменяемым листом, чтобы избежать бессмысленных 'new' с последующей сборкой мусора.
         /// </summary>
-        internal static readonly ReadOnlyCollection<double> EmptyListDouble = new ReadOnlyCollection<double>(new List<double>());
+        public static readonly ReadOnlyCollection<double> EmptyListDouble = new ReadOnlyCollection<double>(new List<double>());
 
         /// <summary>
         /// Статическое поле с пустым неизменяемым листом, чтобы избежать бессмысленных 'new' с последующей сборкой мусора.
         /// </summary>
-        internal static readonly ReadOnlyCollection<Double2> EmptyListDouble2 = new ReadOnlyCollection<Double2>(new List<Double2>());
+        public static readonly ReadOnlyCollection<Double2> EmptyListDouble2 = new ReadOnlyCollection<Double2>(new List<Double2>());
 
         /// <summary>
         /// Статическое поле с пустой серией, чтобы избежать бессмысленных 'new' с последующей сборкой мусора.
@@ -74,7 +74,7 @@ namespace TSLab.Script.Handlers.Options
         /// <summary>
         /// Статическое поле с пустым неизменяемым листом, чтобы избежать бессмысленных 'new' с последующей сборкой мусора.
         /// </summary>
-        internal static readonly ReadOnlyCollection<IPosition> EmptyListPositions = new ReadOnlyCollection<IPosition>(new List<IPosition>());
+        public static readonly ReadOnlyCollection<IPosition> EmptyListPositions = new ReadOnlyCollection<IPosition>(new List<IPosition>());
 
         /// <summary>
         /// Неизменяемый класс-наследник для гарантирования того, что коллекция останется пустой

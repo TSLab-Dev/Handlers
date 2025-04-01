@@ -6,7 +6,9 @@ using System.Linq;
 using System.Text;
 using TSLab.DataSource;
 using TSLab.Script.Handlers.Options;
+using TSLab.Script.Options;
 using TSLab.Utils;
+using TSLab.Utils.PathService;
 
 namespace TSLab.Script.Handlers
 {
@@ -15,16 +17,14 @@ namespace TSLab.Script.Handlers
     [HelperName("Сохранить в Глобальный Кеш", Language = Constants.Ru)]
     [HandlerAlwaysKeep]
     [InputsCount(2)]
-    [Input(0, TemplateTypes.SECURITY, Name = Constants.SecuritySource)]
+    [Input(0, TemplateTypes.SECURITY | TemplateTypes.OPTION_SERIES | TemplateTypes.OPTION, Name = Constants.AnyOption)]
     [Input(1, TemplateTypes.DOUBLE, Name = "Indicator")]
     [OutputsCount(1)]
     [OutputType(TemplateTypes.DOUBLE)]
     [Description("Сохранить значение любого индикатора в Глобальный Кеш. " +
-        "Записывается последнее значение. " +
-        "Записанные данные можно посмотреть в файле Temp\\GlobalCache_'name'.txt.")]
+        "Записывается последнее значение.")]
     [HelperDescription("Save any indicator to Global Cache. " +
-        "The last value is recorded. " +
-        "The recorded data can be viewed in the file Temp\\GlobalCache_'name'.txt.", Constants.En)]
+        "The last value is recorded.", Constants.En)]
     public class SaveToGlobalCache2 : IValuesHandlerWithNumber, IContextUses, ICustomListValues
     {
         public const string KeyPrefix = "GC2";
@@ -33,7 +33,7 @@ namespace TSLab.Script.Handlers
         [HelperName("Название", Constants.Ru)]
         [Description("Уникальное название в Глобальном Кеше")]
         [HelperDescription("Unique name in the Global Cache", Language = Constants.En)]
-        [HandlerParameter(true, "")]
+        [HandlerParameter(true, "MyCache")]
         public string Name { get; set; }
 
         [HelperName("Save to disk", Constants.En)]
@@ -64,6 +64,11 @@ namespace TSLab.Script.Handlers
         [HandlerParameter(true, "false")]
         public bool NotTrim { get; set; }
 
+        [HelperName("Логировать в файл")]
+        [Description(@"Логировать данные в файл Temp\GlobalCache_{name}.txt")]
+        [HandlerParameter(true, "false")]
+        public bool IsTraceToFile { get; set; }
+
         public IContext Context { get; set; }
 
         private double[] m_tempValues;
@@ -84,7 +89,7 @@ namespace TSLab.Script.Handlers
                     if (!NotTrim)
                         TrimData(data, MaxValues, sec.Bars.First().Date, dt);
                     data[dt] = value;
-                    SaveData(Context, data, Name, SaveToStorage);
+                    SaveData(Context, data, Name, SaveToStorage, IsTraceToFile);
                 }
             }
 
@@ -97,6 +102,24 @@ namespace TSLab.Script.Handlers
             return res;
         }
 
+        public double Execute(IOption opt, double value, int index)
+        {
+            if ((opt == null) || double.IsNaN(value) || double.IsInfinity(value))
+                return default;
+            
+            var res = Execute(opt.UnderlyingAsset, value, index);
+            return res;
+        }
+
+        public double Execute(IOptionSeries optSer, double value, int index)
+        {
+            if ((optSer == null) || (optSer.UnderlyingAsset == null) || double.IsNaN(value) || double.IsInfinity(value))
+                return default;
+
+            var res = Execute(optSer.UnderlyingAsset, value, index);
+            return res;
+        }
+
         public IEnumerable<string> GetValuesForParameter(string paramName)
         {
             if (paramName.EqualsIgnoreCase(nameof(Name)))
@@ -104,12 +127,12 @@ namespace TSLab.Script.Handlers
             return new[] { "" };
         }
 
-        public static void SaveData(IContext ctx, SortedList<DateTime, double> data, string name, bool isStorage)
+        public static void SaveData(IContext ctx, SortedList<DateTime, double> data, string name, bool isStorage, bool isTraceToFile)
         {
             var key = string.Join("_", KeyPrefix, name);
             ctx.StoreGlobalObject(key, new NotClearableContainer(data), isStorage);
-            TraceToFile(data, name);
-            ctx.Log($"GlobalCache: name='{name}' saved {data.Count} items", MessageType.Debug);
+            if (isTraceToFile)
+                TraceToFile(data, name);
         }
 
         public static SortedList<DateTime, double> LoadData(IContext ctx, string name, bool isStorage)
@@ -130,11 +153,7 @@ namespace TSLab.Script.Handlers
                     foreach (var key2 in d2)
                         res[key2.Key] = key2.Value;
                 }
-
-                if (res != null)
-                    TraceToFile(res, name);
             }
-            ctx.Log($"GlobalCache: name='{name}' loaded {res?.Count} items", MessageType.Debug);
             return res;
         }
 
@@ -167,7 +186,7 @@ namespace TSLab.Script.Handlers
             {
                 if (data == null)
                     return;
-                var fileName = Path.Combine(AppPath.TempFolder, FileUtil.GetValidFilePath($"GlobalCache_{name}.txt"));
+                var fileName = PathLocator.Current.GetPath(AppFolder.Temp, FileUtil.GetValidFilePath($"GlobalCache_{name}.txt"));
                 var sb = new StringBuilder();
                 foreach (var item in data)
                     sb.AppendLine($"{item.Key:dd.MM.yyyy HH:mm:ss.fff}: {item.Value}");

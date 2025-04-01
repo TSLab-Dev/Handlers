@@ -93,9 +93,9 @@ namespace TSLab.Script.Handlers
                     source.CopyTo(result, 0);
                 else
                 {
-                    var ema1 = Series.EMA(source, period, context);
-                    var ema2 = Series.EMA(ema1, period, context);
-                    var ema3 = Series.EMA(ema2, period, context);
+                    var ema1 = Series.EMA(source.AsReadOnly(), period, context);
+                    var ema2 = Series.EMA(ema1.AsReadOnly(), period, context);
+                    var ema3 = Series.EMA(ema2.AsReadOnly(), period, context);
 
                     for (var i = 0; i < result.Length; i++)
                         result[i] = 3 * ema1[i] - 3 * ema2[i] + ema3[i];
@@ -140,8 +140,8 @@ namespace TSLab.Script.Handlers
                     source.CopyTo(result, 0);
                 else
                 {
-                    var ema1 = Series.EMA(source, Period, Context);
-                    var ema2 = Series.EMA(ema1, Period, Context);
+                    var ema1 = Series.EMA(source.AsReadOnly(), Period, Context);
+                    var ema2 = Series.EMA(ema1.AsReadOnly(), Period, Context);
 
                     for (var i = 0; i < result.Length; i++)
                         result[i] = 2 * ema1[i] - ema2[i];

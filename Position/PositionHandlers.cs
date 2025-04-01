@@ -893,7 +893,7 @@ namespace TSLab.Script.Handlers
             for (var i = changeInfos.Count - 1; i >= 0; i--)
             {
                 var changeInfo = changeInfos[i];
-                if (changeInfo.EntryBarNum >= 0)
+                if (changeInfo.EntryBarNum >= 0 && changeInfo.EntryBarNum <= barNum)
                     return changeInfo.EntryBarNum;
             }
             return position.EntryBarNum;
@@ -920,7 +920,7 @@ namespace TSLab.Script.Handlers
             for (var i = changeInfos.Count - 1; i >= 0; i--)
             {
                 var changeInfo = changeInfos[i];
-                if (changeInfo.ExitBarNum >= 0)
+                if (changeInfo.ExitBarNum >= 0 && changeInfo.ExitBarNum <= barNum)
                     return changeInfo.ExitBarNum;
             }
             return -1;

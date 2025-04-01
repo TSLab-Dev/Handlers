@@ -62,7 +62,7 @@ namespace TSLab.Script.Handlers
 
         public IList<double> Execute(IList<double> source1, IList<double> source2)
         {
-            return Series.Max(source1, source2, Context);
+            return Series.Max(source1.AsReadOnly(), source2.AsReadOnly(), Context);
         }
 
         public IList<double> Execute(IList<double> source1, IList<double> source2, IList<double> source3)
@@ -181,7 +181,7 @@ namespace TSLab.Script.Handlers
 
         public IList<double> Execute(IList<double> source1, IList<double> source2)
         {
-            return Series.Min(source1, source2, Context);
+            return Series.Min(source1.AsReadOnly(), source2.AsReadOnly(), Context);
         }
 
         public IList<double> Execute(IList<double> source1, IList<double> source2, IList<double> source3)
@@ -301,7 +301,7 @@ namespace TSLab.Script.Handlers
 
         public IList<double> Execute(IList<double> source1, IList<double> source2)
         {
-            return Series.Add(source1, source2, Context);
+            return Series.Add(source1.AsReadOnly(), source2.AsReadOnly(), Context);
         }
 
         public IList<double> Execute(IList<double> source1, IList<double> source2, IList<double> source3)
@@ -395,7 +395,7 @@ namespace TSLab.Script.Handlers
 
         public IList<double> Execute(IList<double> source1, IList<double> source2)
         {
-            return Series.Sub(source1, source2, Context);
+            return Series.Sub(source1.AsReadOnly(), source2.AsReadOnly(), Context);
         }
 
         #endregion
@@ -456,7 +456,7 @@ namespace TSLab.Script.Handlers
 
         public IList<bool> Execute(IList<bool> source1, IList<bool> source2)
         {
-            return Series.And(source1, source2, Context);
+            return Series.And(source1.AsReadOnly(), source2.AsReadOnly(), Context);
         }
 
         public IList<bool> Execute(IList<bool> source1, IList<bool> source2, IList<bool> source3)
@@ -499,11 +499,11 @@ namespace TSLab.Script.Handlers
             if (srcs.Length < 2)
                 throw new ArgumentOutOfRangeException(nameof(srcs));
 
-            var result = Series.And(srcs[0], srcs[1], Context);
+            var result = Series.And(srcs[0].AsReadOnly(), srcs[1].AsReadOnly(), Context);
             for (var i = 2; i < srcs.Length; i++)
             {
                 var lastResult = result;
-                result = Series.And(result, srcs[i], Context);
+                result = Series.And(result.AsReadOnly(), srcs[i].AsReadOnly(), Context);
                 Context?.ReleaseArray((Array)lastResult);
             }
             return result;
@@ -568,7 +568,7 @@ namespace TSLab.Script.Handlers
 
         public IList<bool> Execute(IList<bool> source1, IList<bool> source2)
         {
-            return Series.Or(source1, source2, Context);
+            return Series.Or(source1.AsReadOnly(), source2.AsReadOnly(), Context);
         }
 
         public IList<bool> Execute(IList<bool> source1, IList<bool> source2, IList<bool> source3)
@@ -611,11 +611,11 @@ namespace TSLab.Script.Handlers
             if (srcs.Length < 2)
                 throw new ArgumentOutOfRangeException(nameof(srcs));
 
-            var result = Series.Or(srcs[0], srcs[1], Context);
+            var result = Series.Or(srcs[0].AsReadOnly(), srcs[1].AsReadOnly(), Context);
             for (var i = 2; i < srcs.Length; i++)
             {
                 var lastResult = result;
-                result = Series.Or(result, srcs[i], Context);
+                result = Series.Or(result.AsReadOnly(), srcs[i].AsReadOnly(), Context);
                 Context?.ReleaseArray((Array)lastResult);
             }
             return result;

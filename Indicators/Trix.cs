@@ -39,10 +39,10 @@ namespace TSLab.Script.Handlers
                 ema3 = source;
             else
             {
-                var ema1 = Series.EMA(source, Period, Context);
-                var ema2 = Series.EMA(ema1, Period, Context);
+                var ema1 = Series.EMA(source.AsReadOnly(), Period, Context);
+                var ema2 = Series.EMA(ema1.AsReadOnly(), Period, Context);
                 Context?.ReleaseArray((Array)ema1);
-                ema3 = Series.EMA(ema2, Period, Context);
+                ema3 = Series.EMA(ema2.AsReadOnly(), Period, Context);
                 Context?.ReleaseArray((Array)ema2);
             }
 

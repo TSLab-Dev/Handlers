@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Xml.Linq;
 using TSLab.Script.Handlers.Options;
 using TSLab.Utils;
 
@@ -54,7 +55,11 @@ namespace TSLab.Script.Handlers.TSChannel
 
         public IEnumerable<string> GetValuesForParameter(string paramName)
         {
-            return new[] { ReceiverApiKey };
+            if (paramName.EqualsIgnoreCase(nameof(ReceiverApiKey)))
+                return new[] { ReceiverApiKey };
+            if (paramName.EqualsIgnoreCase(nameof(ChannelApiKey)))
+                return new[] { ChannelApiKey };
+            return EmptyArrays.String;
         }
 
         public string VariableVisual { get; set; }

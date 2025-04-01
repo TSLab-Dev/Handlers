@@ -19,7 +19,7 @@ namespace TSLab.Script.Handlers
             int count = bars.Count;
 
             var trueRange = Series.TrueRange(bars, context);
-            var atr = Series.EMA(trueRange, period, context);
+            var atr = Series.EMA(trueRange.AsReadOnly(), period, context);
             context?.ReleaseArray((Array)trueRange);
             Check.Assert(atr != null, "atr != null");
             IList<double> diP1 = context?.GetArray<double>(count) ?? new double[count];
@@ -38,7 +38,7 @@ namespace TSLab.Script.Handlers
                 }
                 diP1[i] = dmP;
             }
-            var diP2 = Series.EMA(diP1, period, context);
+            var diP2 = Series.EMA(diP1.AsReadOnly(), period, context);
             context?.ReleaseArray((Array)diP1);
             for (int i = 1; i < count; i++)
             {
@@ -54,7 +54,7 @@ namespace TSLab.Script.Handlers
             int count = bars.Count;
 
             var trueRange = Series.TrueRange(bars, context);
-            var atr = Series.EMA(trueRange, period, context);
+            var atr = Series.EMA(trueRange.AsReadOnly(), period, context);
             context?.ReleaseArray((Array)trueRange);
             IList<double> diM1 = context?.GetArray<double>(count) ?? new double[count];
 
@@ -72,7 +72,7 @@ namespace TSLab.Script.Handlers
                 }
                 diM1[i] = dmM;
             }
-            var diM2 = Series.EMA(diM1, period, context);
+            var diM2 = Series.EMA(diM1.AsReadOnly(), period, context);
             context?.ReleaseArray((Array)diM1);
             for (int i = 1; i < count; i++)
             {
@@ -93,7 +93,7 @@ namespace TSLab.Script.Handlers
                              ? 0
                              : Math.Abs(source1[i] - source2[i]) / (source1[i] + source2[i]) * 100;
             }
-            var dx2 = Series.EMA(dx1, period, context);
+            var dx2 = Series.EMA(dx1.AsReadOnly(), period, context);
             context?.ReleaseArray((Array)dx1);
             return dx2;
         }

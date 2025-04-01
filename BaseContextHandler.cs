@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Collections.Generic;
 
 using TSLab.DataSource;
@@ -15,11 +16,11 @@ namespace TSLab.Script.Handlers.Options
         public static readonly string DateTimeFormatWithMs = "dd-MM-yyyy HH:mm:ss.fff";
 
         // ReSharper disable once InconsistentNaming
-        protected IContext m_context;
+        protected IContext? m_context;
         // ReSharper disable once InconsistentNaming
-        protected string m_variableId;
+        protected string m_variableId = string.Empty;
 
-        public IContext Context
+        public IContext? Context
         {
             get { return m_context; }
             set { m_context = value; }
@@ -39,7 +40,7 @@ namespace TSLab.Script.Handlers.Options
         {
             get
             {
-                int barsCount = m_context.BarsCount;
+                int barsCount = m_context!.BarsCount;
                 if (!m_context.IsLastBarUsed)
                     barsCount--;
                 return barsCount;
@@ -61,7 +62,7 @@ namespace TSLab.Script.Handlers.Options
             var tuple = Tuple.Create(now, state);
             var container = new NotClearableContainer<Tuple<DateTime, bool>>(tuple);
             // Специально без записи на диск, чтобы после перезапуска ТСЛаб объект был пуст
-            m_context.StoreObject(key, container, false);
+            m_context!.StoreObject(key, container, false);
         }
 
         /// <summary>
@@ -90,7 +91,7 @@ namespace TSLab.Script.Handlers.Options
             stateDate = now.AddYears(10);
 
             string key = "Initialized_" + m_variableId;
-            var container = m_context.LoadObject(key, false) as NotClearableContainer<Tuple<DateTime, bool>>;
+            var container = m_context!.LoadObject(key, false) as NotClearableContainer<Tuple<DateTime, bool>>;
             if ((container == null) || (container.Content == null))
                 return false;
 
@@ -113,7 +114,7 @@ namespace TSLab.Script.Handlers.Options
         /// <returns>серия из кеша, либо новый объект (который уже помещен в этот кеш)</returns>
         protected virtual Dictionary<DateTime, double> LoadOrCreateHistoryDict(bool useGlobalCache, string cashKey)
         {
-            var res = LoadOrCreateHistoryDict(Context, useGlobalCache, cashKey);
+            var res = LoadOrCreateHistoryDict(Context!, useGlobalCache, cashKey);
             return res;
         }
 
@@ -126,7 +127,7 @@ namespace TSLab.Script.Handlers.Options
         /// <returns>серия из кеша, либо новый объект (который уже помещен в этот кеш)</returns>
         public static Dictionary<DateTime, double> LoadOrCreateHistoryDict(IContext context, bool useGlobalCache, string cashKey)
         {
-            Dictionary<DateTime, double> history;
+            Dictionary<DateTime, double>? history;
             if (useGlobalCache)
             {
                 object globalObj = context.LoadGlobalObject(cashKey, true);

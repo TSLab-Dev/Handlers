@@ -35,9 +35,9 @@ namespace TSLab.Script.Handlers
         public IList<double> Execute(ISecurity source)
         {
             var high = Context.GetData("Highest", new[] { Period.ToString(CultureInfo.InvariantCulture), source.CacheName },
-                                       () => Series.Highest(source.GetHighPrices(Context), Period));
+                                       () => Series.Highest(source.GetHighPrices(Context).AsReadOnly(), Period));
             var low = Context.GetData("Lowest", new[] { Period.ToString(CultureInfo.InvariantCulture), source.CacheName },
-                                       () => Series.Lowest(source.GetLowPrices(Context), Period));
+                                       () => Series.Lowest(source.GetLowPrices(Context).AsReadOnly(), Period));
             var bars = source.Bars;
             var list = Context?.GetArray<double>(bars.Count) ?? new double[bars.Count];
             for (int i = 0; i < bars.Count; i++)
@@ -68,9 +68,9 @@ namespace TSLab.Script.Handlers
         public IList<double> Execute(ISecurity source)
         {
             var rsi = Context.GetData("RSI", new[] { Period.ToString(CultureInfo.InvariantCulture), source.CacheName },
-                                       () => Series.RSI(source.GetClosePrices(Context), Period));
-            var high = Series.Highest(rsi, Period, Context);
-            var low = Series.Lowest(rsi, Period, Context);
+                                       () => Series.RSI(source.GetClosePrices(Context).AsReadOnly(), Period));
+            var high = Series.Highest(rsi.AsReadOnly(), Period, Context);
+            var low = Series.Lowest(rsi.AsReadOnly(), Period, Context);
             var list = Context?.GetArray<double>(rsi.Count) ?? new double[rsi.Count];
             for (int i = 0; i < rsi.Count; i++)
             {

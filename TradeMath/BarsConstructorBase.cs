@@ -52,6 +52,11 @@ namespace TSLab.Script.Handlers
             public Interval IntervalInstance { get; }
             public int Interval => IntervalInstance.Value;
             public DataIntervals IntervalBase => IntervalInstance.Base;
+
+            public DateTime SessionBegin => m_security.SessionBegin;
+
+            public DateTime SessionEnd => m_security.SessionEnd;
+
             public double LotSize => m_security.LotSize;
             public double LotTick => m_security.LotTick;
             public double Margin => m_security.Margin;
@@ -101,7 +106,7 @@ namespace TSLab.Script.Handlers
             public double RoundShares(double shares) => m_security.RoundShares(shares);
             public CommissionDelegate Commission { get; set; }
             public ISecurity CloneAndReplaceBars(IEnumerable<IDataBar> newcandles) => throw new NotSupportedException();
-            public ISecurity CloneAndReplaceBars(IReadOnlyList<IDataBar> newcandles) => throw new NotSupportedException();
+            public ISecurity CloneAndReplaceBars(IReadOnlyList<IDataBar> newCandles) => throw new NotSupportedException();
             public string CacheName => throw new NotSupportedException();
 
             public void UpdateQueueData()

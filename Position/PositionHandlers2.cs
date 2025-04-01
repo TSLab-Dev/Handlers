@@ -433,11 +433,10 @@ namespace TSLab.Script.Handlers
             var sumShares = 0.0;
             foreach (var p in pos.ChangeInfos)
             {
-                if (p.ExitPrice > 0)
-                {
-                    sum += p.ExitPrice * Math.Abs(p.SharesChange);
-                    sumShares += Math.Abs(p.SharesChange);
-                }
+                if (p.ExitBarNum <= 0 || p.ExitBarNum < barNum || !(p.ExitPrice > 0))
+                    continue;
+                sum += p.ExitPrice * Math.Abs(p.SharesChange);
+                sumShares += Math.Abs(p.SharesChange);
             }
             sum += pos.ExitPrice * Math.Abs(pos.Shares);
             sumShares += Math.Abs(pos.Shares);
@@ -473,11 +472,10 @@ namespace TSLab.Script.Handlers
             var sumShares = 0.0;
             foreach (var p in pos.ChangeInfos)
             {
-                if (p.ExitPrice > 0)
-                {
-                    sum += p.ExitPrice * Math.Abs(p.SharesChange);
-                    sumShares += Math.Abs(p.SharesChange);
-                }
+                if (p.ExitBarNum <= 0 || p.ExitBarNum < barNum || !(p.ExitPrice > 0))
+                    continue;
+                sum += p.ExitPrice * Math.Abs(p.SharesChange);
+                sumShares += Math.Abs(p.SharesChange);
             }
             sum += pos.ExitPrice * Math.Abs(pos.Shares);
             sumShares += Math.Abs(pos.Shares);

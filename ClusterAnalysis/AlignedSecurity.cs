@@ -312,6 +312,10 @@ namespace TSLab.Script.Handlers
 
         public DataIntervals IntervalBase => m_security.IntervalBase;
 
+        public DateTime SessionBegin => m_security.SessionBegin;
+
+        public DateTime SessionEnd => m_security.SessionEnd;
+
         public double LotSize => m_security.LotSize;
 
         public double LotTick => m_security.LotTick;

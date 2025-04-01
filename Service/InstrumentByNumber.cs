@@ -26,7 +26,7 @@ namespace TSLab.Script.Handlers
         {
             if (securities.Length > Number)
                 return securities[Number];
-            throw new Exception(RM.GetString("SecurityNotFound"));
+            throw new Exception($"{RM.GetString("SecurityNotFound")}. Securities count: {securities.Length}, number: {Number}");
         }
     }
 }

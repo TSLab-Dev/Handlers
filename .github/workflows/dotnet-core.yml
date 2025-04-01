@@ -16,14 +16,14 @@ jobs:
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 7.x
+        dotnet-version: 9.0.x
     - name: Restore packages
       run: dotnet restore
     - name: Pack
       run: dotnet pack --configuration Release
     - name: Publish
       id: publish_nuget
-      uses: rohith/publish-nuget@v2
+      uses: alirezanet/publish-nuget@v3.1.0
       with:
         PROJECT_FILE_PATH: ScriptCommonHandlers.csproj
         NUGET_KEY: ${{secrets.NUGET_API_KEY}}

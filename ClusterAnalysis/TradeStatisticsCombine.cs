@@ -49,11 +49,10 @@ namespace TSLab.Script.Handlers.ClusterAnalysis
         private readonly ITradeStatisticsWithKind m_input;
 
         public TradeStatisticsCombine(string id, string stateId, int period, ITradeStatisticsWithKind input)
-            : base(id, stateId)
+            : base(id, stateId, new TradeHistogramSettings(input.TradeHistogramsCache,
+                TimeFrameKind.FromMidnightToNow, input.GetTimeFrameUnit(), new Interval(period, DataIntervals.MINUTE)))
         {
             m_input = input;
-            m_histogramSettings = new TradeHistogramSettings(input.TradeHistogramsCache,
-                TimeFrameKind.FromMidnightToNow, input.GetTimeFrameUnit(), new Interval(period, DataIntervals.MINUTE));
             CalculateHistograms();
         }
 
@@ -102,10 +101,6 @@ namespace TSLab.Script.Handlers.ClusterAnalysis
             LastBarIndex = last.LastBarIndex;
             LowDate = first.LowDate;
             HighDate = last.HighDate;
-        }
-
-        protected CombinedHistogram()
-        {
         }
 
         protected override IReadOnlyList<ICachedTradeHistogram> GetCachedTradeHistograms()

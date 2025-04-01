@@ -44,7 +44,7 @@ namespace TSLab.Script.Handlers
 
         public override IList<double> Execute(IList<double> source)
         {
-            var result = Series.SMMA(source, Period, Shift, Context);
+            var result = Series.SMMA(source.AsReadOnly(), Period, Shift, Context);
             return result;
         }
 

@@ -57,7 +57,7 @@ namespace TSLab.Script.Handlers
     {
         protected override IList<double> GetExtremeValues(IList<double> source)
         {
-            return Series.Highest(source, Period, Context);
+            return Series.Highest(source.AsReadOnly(), Period, Context);
         }
     }
 
@@ -71,7 +71,7 @@ namespace TSLab.Script.Handlers
     {
         protected override IList<double> GetExtremeValues(IList<double> source)
         {
-            return Series.Lowest(source, Period, Context);
+            return Series.Lowest(source.AsReadOnly(), Period, Context);
         }
     }
 }

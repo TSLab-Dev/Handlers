@@ -119,7 +119,7 @@ namespace TSLab.Script.Handlers
     {
         public override IList<double> Execute(IList<double> source)
         {
-            var result = Series.RSI(source, Period, Context);
+            var result = Series.RSI(source.AsReadOnly(), Period, Context);
             return result;
         }
     }
@@ -139,7 +139,7 @@ namespace TSLab.Script.Handlers
     {
         public override IList<double> Execute(IList<double> source)
         {
-            var result = Series.CuttlerRSI(source, Period, Context);
+            var result = Series.CuttlerRSI(source.AsReadOnly(), Period, Context);
             return result;
         }
     }
@@ -226,7 +226,7 @@ namespace TSLab.Script.Handlers
 
         public override IList<double> Execute(IList<double> source)
         {
-            var result = Series.SummFor(source, Period, Context);
+            var result = Series.SummFor(source.AsReadOnly(), Period, Context);
             return result;
         }
     }
@@ -253,7 +253,7 @@ namespace TSLab.Script.Handlers
 
         public override IList<double> Execute(IList<double> source)
         {
-            var result = Series.SMA(source, Period, Context);
+            var result = Series.SMA(source.AsReadOnly(), Period, Context);
             return result;
         }
     }
@@ -327,13 +327,13 @@ namespace TSLab.Script.Handlers
     {
         public override IList<double> Execute(IList<double> source)
         {
-            var result = Series.StDev(source, Period, Context);
+            var result = Series.StDev(source.AsReadOnly(), Period, Context);
             return result;
         }
 
         protected override double Calc()
         {
-            var result = Indicators.StDev(m_source, m_smaValues, m_source.Count - 1, Period);
+            var result = Indicators.StDev(m_source.AsReadOnly(), m_smaValues.AsReadOnly(), m_source.Count - 1, Period);
             return result;
         }
     }
@@ -351,13 +351,13 @@ namespace TSLab.Script.Handlers
     {
         public override IList<double> Execute(IList<double> source)
         {
-            var result = Series.Volatility(source, Period, Context);
+            var result = Series.Volatility(source.AsReadOnly(), Period, Context);
             return result;
         }
 
         protected override double Calc()
         {
-            var result = Indicators.Volatility(m_source, m_smaValues, m_source.Count - 1, Period);
+            var result = Indicators.Volatility(m_source.AsReadOnly(), m_smaValues.AsReadOnly(), m_source.Count - 1, Period);
             return result;
         }
     }
@@ -384,7 +384,7 @@ namespace TSLab.Script.Handlers
 
         public override IList<double> Execute(IList<double> source)
         {
-            var result = Series.EMA(source, Period, Context);
+            var result = Series.EMA(source.AsReadOnly(), Period, Context);
             return result;
         }
 
@@ -584,7 +584,7 @@ namespace TSLab.Script.Handlers
 
         public override IList<double> Execute(IList<double> source)
         {
-            var result = Series.BollingerBands(source, Period, Coef, m_isTopLine, Context);
+            var result = Series.BollingerBands(source.AsReadOnly(), Period, Coef, m_isTopLine, Context);
             return result;
         }
 
@@ -865,7 +865,7 @@ namespace TSLab.Script.Handlers
 
         public override IList<double> Execute(IList<double> source)
         {
-            var result = Series.Highest(source, Period, Context);
+            var result = Series.Highest(source.AsReadOnly(), Period, Context);
             return result;
         }
     }
@@ -894,7 +894,7 @@ namespace TSLab.Script.Handlers
 
         public override IList<double> Execute(IList<double> source)
         {
-            var result = Series.Lowest(source, Period, Context);
+            var result = Series.Lowest(source.AsReadOnly(), Period, Context);
             return result;
         }
     }

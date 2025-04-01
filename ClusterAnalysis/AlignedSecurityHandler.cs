@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel;
 using TSLab.DataSource;
-
 using TSLab.Script.Handlers.Options;
 
 namespace TSLab.Script.Handlers
